@@ -56,6 +56,9 @@ class UserController extends Controller
         }
     }
 
+
+    
+
     /**
      * Change Password
      * @param Request $request
