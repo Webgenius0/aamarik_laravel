@@ -1,0 +1,30 @@
+div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm) {
+    background-color: #7066e0 !important;
+}
+
+div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-cancel) {
+    background-color: #6e7881 !important;
+}
+
+.dropify-wrapper .dropify-message p {
+    font-size: initial;
+
+}
+
+.dropify-wrapper1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dropify-preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dropify-render img {
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+}
