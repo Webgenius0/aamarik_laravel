@@ -19,8 +19,7 @@ class SettingController extends Controller
     
     public function index()
     {
-        $setting = Setting::latest('id')->first();
-        return view('backend.layouts.setting.setting', compact('setting'));
+        return view('backend.layouts.setting.setting');
     }
 
     public function additional()

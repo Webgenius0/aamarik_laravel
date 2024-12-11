@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('address')->default('26985 Brighton Lane, Lake Forest, CA 92630');
             $table->longText('description');
             $table->string('email')->default('example@example.com');
-            $table->string('phone')->default('+8801 123 456 789');
+            $table->string('phone')->nullable();
             $table->string('office_time')->default('10:00 - 18:00');
             $table->string('footer_text')->default('Lorem Ipsam Doller');
             $table->timestamps();
