@@ -2,14 +2,7 @@
 
 namespace App\Helper;
 
-use App\Models\PendingFees;
-use App\Models\User;
-use App\Models\UserMembership;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-
-use Stripe\Stripe;
-use Stripe\Subscription;
 
 class Helper
 {

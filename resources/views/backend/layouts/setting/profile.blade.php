@@ -63,7 +63,7 @@
                         <form action="{{ route('admin.edit.profile.update') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <!-- Start Page Header -->
-                            <div class="card mb-3 p-5 bg-gradient-to-b from-[#FDE9F5] to-[#F786C8] rounded-xl shadow-lg">
+                            <div class="card mb-3 p-5 bg-gradient-to-b from-[#e3f1ff] to-[#60AFFF] rounded-xl shadow-lg">
                                 <!-- Profile Cover -->
                                 <div class="profile-cover">
                                     <div class="profile-cover-img-wrapper ">

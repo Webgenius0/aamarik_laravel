@@ -1,9 +1,9 @@
 @extends('backend.app')
 
-@section('title', 'Create Verse | ' . $setting->title ?? 'SIS')
+@section('title', 'Create Location | ' . $setting->title ?? 'Cazzle')
 
 @push('styles')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.min.css" />
     <style>
         /* Write Css Under Backend */
         .dropify-wrapper .dropify-message p {
@@ -13,9 +13,11 @@
         .dropify-wrapper {
             border-radius: 0.8rem !important;
         }
-        .text-danger strong{
+
+        .text-danger strong {
             font-size: 14px;
         }
+
         .dataTables_wrapper .dataTables_length select {
             width: 68px;
             font-size: 14px;
@@ -33,19 +35,180 @@
 
                             <div class="mb-4 bg-white rounded-xl shadow-lg">
                                 <div class="relative px-4 py-3 border-b flex justify-between align-middle">
-                                    <h6 class="text-lg font-semibold mb-0">Create Verse</h6>
-                                    <a href="{{ route('verse.index') }}"
+                                    <h6 class="text-lg font-semibold mb-0">Create Location</h6>
+                                    <a href="{{ route('location.index') }}"
                                         class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md">View All</a>
                                 </div>
                                 <div class="p-4">
-                                    <form action="{{ route('verse.store') }}" method="POST">
+                                    <form action="{{ route('location.store') }}" method="POST">
                                         @csrf
+                                        <div class="flex">
+                                            <div class="basis-4/12 pe-3 ">
+                                                <div class="pe-3 mb-3">
+                                                    <label class="block text-sm font-medium mb-2" for="title">Location
+                                                        Title</label>
+                                                    <input type="text" name="title" id="title"
+                                                        placeholder="Enter Location Title" value="{{ old('title') }}"
+                                                        class="form-input w-full border border-gray-300 rounded p-2 bg-gray-100">
+                                                    @error('title')
+                                                        <span class="text-red-500 text-sm" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <!-- Address -->
+                                            <div class="basis-4/12 pe-3">
+                                                <div class="pe-3 mb-3">
+                                                    <label class="block text-sm font-medium mb-2" for="address">
+                                                        Address
+                                                    </label>
+                                                    <input type="text" name="address" id="address"
+                                                        placeholder="Enter Location Address" value="{{ old('address') }}"
+                                                        class="form-input w-full border border-gray-300 rounded p-2 bg-gray-100">
+                                                    @error('address')
+                                                        <span class="text-red-500 text-sm" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <!-- Points -->
+                                            <div class="basis-4/12 pe-3">
+                                                <div class="pe-3 mb-3">
+                                                    <label class="block text-sm font-medium mb-2" for="points">
+                                                        Points
+                                                    </label>
+                                                    <input type="number" name="points" id="points"
+                                                        placeholder="Enter Points" value="{{ old('points') }}"
+                                                        class="form-input w-full border border-gray-300 rounded p-2 bg-gray-100">
+                                                    @error('points')
+                                                        <span class="text-red-500 text-sm" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="my-2">
+                                            <!-- title -->
+                                            <div class=" pe-3 mb-3">
+                                                <label class="block text-sm font-medium mb-2" for="subtitle">
+                                                    Subtitle</label>
+                                                    <textarea name="subtitle" id="subtitle" placeholder="Enter Subtitle" class="form-input w-full border border-gray-300 rounded p-2 bg-gray-100" cols="30" rows="5">{{ old('subtitle') }}</textarea>
+                                                @error('subtitle')
+                                                    <span class="text-red-500 text-sm" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="flex">
+                                            <div class="basis-6/12 pe-3 ">
+                                                <div class="pe-3 mb-3">
+                                                    <label class="block text-sm font-medium mb-2" for="latitude">
+                                                        Latitude
+                                                    </label>
+                                                    <input type="text" name="latitude" id="latitude"
+                                                        placeholder="Enter Latitude" value="{{ old('latitude') }}"
+                                                        class="form-input w-full border border-gray-300 rounded p-2 bg-gray-100">
+                                                    @error('latitude')
+                                                        <span class="text-red-500 text-sm" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <!-- Longitude -->
+                                            <div class="basis-6/12 pe-3">
+                                                <div class="pe-3 mb-3">
+                                                    <label class="block text-sm font-medium mb-2" for="longitude">
+                                                        Longitude
+                                                    </label>
+                                                    <input type="text" name="longitude" id="longitude"
+                                                        placeholder="Enter Longitude" value="{{ old('longitude') }}"
+                                                        class="form-input w-full border border-gray-300 rounded p-2 bg-gray-100">
+                                                    @error('longitude')
+                                                        <span class="text-red-500 text-sm" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        
+                                        <div class="flex">
+                                            <div class="basis-6/12 pe-3 ">
+                                                <div class="pe-3 mb-3">
+                                                    <label class="block text-sm font-medium mb-2" for="image">
+                                                        Image
+                                                    </label>
+                                                    <input type="file" name="image" data-default-file="{{asset('backend/assets/images/placeholder.png')}}" id="image" class="dropify form-input w-full border border-gray-300 rounded p-2 bg-gray-100">
+                                                    @error('image')
+                                                        <span class="text-red-500 text-sm" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <div class="basis-6/12 pe-3 ">
+                                                <div class="pe-3 mb-3">
+                                                    <label class="block text-sm font-medium mb-2" for="puzzel_image">
+                                                        Puzle Image
+                                                    </label>
+                                                    <input type="file" name="puzzel_image" id="puzzel_image"  data-default-file="{{asset('backend/assets/images/puzzle-image-placeholder.png')}}" class="dropify form-input w-full border border-gray-300 rounded p-2 bg-gray-100">
+                                                    @error('puzzel_image')
+                                                        <span class="text-red-500 text-sm" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                           
+                                        </div>
+
+                                        <div class="flex items-center justify-center">
+                                            <div class="basis-6/12 pe-3">
+                                                <div class="pe-3 mb-3">
+                                                    <label class="block text-sm font-medium mb-2" for="map_image">
+                                                        Map Image
+                                                    </label>
+                                                    <input type="file" data-default-file="{{asset('backend/assets/images/map-placeholder.jpg')}}" name="image" id="image" class="dropify form-input w-full border border-gray-300 rounded p-2 bg-gray-100">
+                                                    @error('map_image')
+                                                        <span class="text-red-500 text-sm" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <div class="basis-6/12 pe-3">
+                                                <div class="pe-3 mb-3">
+                                                    <label class="block text-sm font-medium mb-2" for="map_url">
+                                                        Map Image
+                                                    </label>
+                                                    <input type="text" name="map_url" id="map_url" placeholder="https://example.com" value="{{ old('map_url') }}" class="form-input w-full border border-gray-300 rounded p-2 bg-gray-100">
+                                                    @error('map_url')
+                                                        <span class="text-red-500 text-sm" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <div class="">
-                                            <!-- Content -->
+                                            <!-- information -->
                                             <div class="basis-6/12 pe-3 mb-3">
-                                                <label class="block text-sm font-medium mb-2" for="content">Content</label>
-                                                <textarea name="content" id="content" cols="30" rows="10" placeholder="Enter Content" class="form-input w-full border border-gray-300 rounded p-2 bg-gray-100">{{ old('content') }}</textarea>
-                                                @error('content')
+                                                <label class="block text-sm font-medium mb-2" for="information">Information(Detais)</label>
+                                                <textarea name="information" id="information" cols="30" rows="10" placeholder="Enter Information"
+                                                    class="form-input w-full border border-gray-300 rounded p-2 bg-gray-100">{{ old('information') }}</textarea>
+                                                @error('information')
                                                     <span class="text-red-500 text-sm" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
@@ -53,25 +216,12 @@
                                             </div>
 
                                         </div>
-                                        <div class="mt-5 ">
-                                            <!-- Reference -->
-                                            <div class=" pe-3 mb-3">
-                                                <label class="block text-sm font-medium mb-2" for="reference">Reference</label>
-                                                <input type="text" name="reference" id="reference" placeholder="Enter Reference" value="{{ old('reference') }}"
-                                                    class="form-input w-full border border-gray-300 rounded p-2 bg-gray-100">
-                                                @error('reference')
-                                                    <span class="text-red-500 text-sm" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-                                        </div>
                                         <div class="mt-10">
                                             <button type="submit"
                                                 class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md">
                                                 Submit
                                             </button>
-                                            <a href="{{ route('verse.index') }}" type="button"
+                                            <a href="{{ route('location.index') }}" type="button"
                                                 class="btn bg-danger text-white py-2 px-5 hover:bg-dark rounded-md">
                                                 Back
                                             </a>
@@ -102,7 +252,7 @@
 
         $(function() {
             const tinymceOptions = {
-                selector: '#content',
+                selector: '#information',
                 menubar: false,
                 statusbar: false,
                 toolbar_sticky: true,
