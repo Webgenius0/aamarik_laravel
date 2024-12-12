@@ -21,18 +21,34 @@ class LocationRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'title' => 'required|string|max:255',
-            'address' => 'required|string|max:300',
-            'latitude' => 'required|string',
-            'longitude' => 'required|string',
-            'subtitle' => 'required|string',
-            'image' => 'required|string',
-            'information' => 'required|string',
-            'map_image' => 'required|string',
-            'map_url' => 'required|url',
-            'points' => 'required|integer',
-            'puzzle_image' => 'required|string',
-        ];
+        if ($this->method() == 'PUT') {
+            return [
+                'title' => 'string|max:255',
+                'address' => 'string|max:300',
+                'latitude' => 'string',
+                'longitude' => 'string',
+                'subtitle' => 'string',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:5120',
+                'information' => 'string',
+                'map_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:5120',
+                'map_url' => 'url',
+                'points' => 'integer',
+                'puzzle_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:5120',
+            ];
+        } else {
+            return [
+                'title' => 'required|string|max:255',
+                'address' => 'required|string|max:300',
+                'latitude' => 'required|string',
+                'longitude' => 'required|string',
+                'subtitle' => 'required|string',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:5120',
+                'information' => 'required|string',
+                'map_image' => 'required|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:5120',
+                'map_url' => 'required|url',
+                'points' => 'required|integer',
+                'puzzle_image' => 'required|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:5120',
+            ];
+        }
     }
 }

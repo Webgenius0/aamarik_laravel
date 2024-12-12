@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('latitude');
             $table->string('longitude');
             $table->string('image');
-            $table->string('information');
+            $table->text('information');
             $table->string('map_image');
             $table->string('map_url');
             $table->integer('points');

@@ -1,20 +1,20 @@
 @extends('auth.app')
 
-@section('title', 'Login | ' . $setting->title ?? 'SIS')
+@section('title', 'Login | ' . $setting->title ?? 'Chazzle')
 
 @push('style')
     <style>
         body {
-            background: linear-gradient(to bottom, #FDE9F5, #F786C8) !important;
+            background: linear-gradient(to bottom, #d7e9fb, #60AFFF) !important;
         }
     </style>
 @endpush
 
 @section('content')
 
-    <div class="bg-gradient-to-b from-[#FDE9F5] to-[#F786C8] h-screen w-screen flex justify-center items-center">
+    <div class="bg-gradient-to-b from-[#d7e8f9] to-[#60AFFF] h-screen w-screen flex justify-center items-center">
         <div>
-            <img class="absolute top-0 left-0" src="{{ asset('backend/assets/images/top-include.png') }}" alt="">
+            <img class="absolute top-0 left-0" src="{{ asset($setting->logo ?? 'backend/assets/images/logo-sm.png') }}" alt="">
         </div>
 
         <div class="2xl:w-1/2 lg:w-1/3 md:w-1/2 w-full">

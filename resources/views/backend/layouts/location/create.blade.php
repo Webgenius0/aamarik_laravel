@@ -40,10 +40,10 @@
                                         class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md">View All</a>
                                 </div>
                                 <div class="p-4">
-                                    <form action="{{ route('location.store') }}" method="POST">
+                                    <form action="{{ route('location.store') }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         <div class="flex">
-                                            <div class="basis-4/12 pe-3 ">
+                                            <div class="basis-5/12 pe-3 ">
                                                 <div class="pe-3 mb-3">
                                                     <label class="block text-sm font-medium mb-2" for="title">Location
                                                         Title</label>
@@ -59,7 +59,7 @@
                                             </div>
 
                                             <!-- Address -->
-                                            <div class="basis-4/12 pe-3">
+                                            <div class="basis-5/12 pe-3">
                                                 <div class="pe-3 mb-3">
                                                     <label class="block text-sm font-medium mb-2" for="address">
                                                         Address
@@ -75,7 +75,7 @@
                                                 </div>
                                             </div>
                                             <!-- Points -->
-                                            <div class="basis-4/12 pe-3">
+                                            <div class="basis-2/12 pe-3">
                                                 <div class="pe-3 mb-3">
                                                     <label class="block text-sm font-medium mb-2" for="points">
                                                         Points
@@ -104,7 +104,7 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="flex">
+                                        <div class="flex my-2">
                                             <div class="basis-6/12 pe-3 ">
                                                 <div class="pe-3 mb-3">
                                                     <label class="block text-sm font-medium mb-2" for="latitude">
@@ -113,6 +113,7 @@
                                                     <input type="text" name="latitude" id="latitude"
                                                         placeholder="Enter Latitude" value="{{ old('latitude') }}"
                                                         class="form-input w-full border border-gray-300 rounded p-2 bg-gray-100">
+                                                    <span class="text-sm text-gray-600">Example: 12.3456789 (Pick up this from google map)</span>
                                                     @error('latitude')
                                                         <span class="text-red-500 text-sm" role="alert">
                                                             <strong>{{ $message }}</strong>
@@ -130,6 +131,7 @@
                                                     <input type="text" name="longitude" id="longitude"
                                                         placeholder="Enter Longitude" value="{{ old('longitude') }}"
                                                         class="form-input w-full border border-gray-300 rounded p-2 bg-gray-100">
+                                                        <span class="text-sm text-gray-600">Example: 12.3456789 (Pick up this from google map)</span>
                                                     @error('longitude')
                                                         <span class="text-red-500 text-sm" role="alert">
                                                             <strong>{{ $message }}</strong>
@@ -140,7 +142,7 @@
                                         </div>
 
                                         
-                                        <div class="flex">
+                                        <div class="flex my-2">
                                             <div class="basis-6/12 pe-3 ">
                                                 <div class="pe-3 mb-3">
                                                     <label class="block text-sm font-medium mb-2" for="image">
@@ -157,11 +159,11 @@
 
                                             <div class="basis-6/12 pe-3 ">
                                                 <div class="pe-3 mb-3">
-                                                    <label class="block text-sm font-medium mb-2" for="puzzel_image">
-                                                        Puzle Image
+                                                    <label class="block text-sm font-medium mb-2" for="puzzle_image">
+                                                        Puzzle Image
                                                     </label>
-                                                    <input type="file" name="puzzel_image" id="puzzel_image"  data-default-file="{{asset('backend/assets/images/puzzle-image-placeholder.png')}}" class="dropify form-input w-full border border-gray-300 rounded p-2 bg-gray-100">
-                                                    @error('puzzel_image')
+                                                    <input type="file" name="puzzle_image" id="puzzle_image"  data-default-file="{{asset('backend/assets/images/puzzle-image-placeholder.png')}}" class="dropify form-input w-full border border-gray-300 rounded p-2 bg-gray-100">
+                                                    @error('puzzle_image')
                                                         <span class="text-red-500 text-sm" role="alert">
                                                             <strong>{{ $message }}</strong>
                                                         </span>
@@ -172,13 +174,13 @@
                                            
                                         </div>
 
-                                        <div class="flex items-center justify-center">
+                                        <div class="flex my-2 items-center justify-center">
                                             <div class="basis-6/12 pe-3">
                                                 <div class="pe-3 mb-3">
                                                     <label class="block text-sm font-medium mb-2" for="map_image">
                                                         Map Image
                                                     </label>
-                                                    <input type="file" data-default-file="{{asset('backend/assets/images/map-placeholder.jpg')}}" name="image" id="image" class="dropify form-input w-full border border-gray-300 rounded p-2 bg-gray-100">
+                                                    <input type="file" data-default-file="{{asset('backend/assets/images/map-placeholder.jpg')}}" name="map_image" id="image" class="dropify form-input w-full border border-gray-300 rounded p-2 bg-gray-100">
                                                     @error('map_image')
                                                         <span class="text-red-500 text-sm" role="alert">
                                                             <strong>{{ $message }}</strong>
@@ -202,7 +204,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="">
+                                        <div class="my-2">
                                             <!-- information -->
                                             <div class="basis-6/12 pe-3 mb-3">
                                                 <label class="block text-sm font-medium mb-2" for="information">Information(Detais)</label>
@@ -216,7 +218,7 @@
                                             </div>
 
                                         </div>
-                                        <div class="mt-10">
+                                        <div class="mt-6">
                                             <button type="submit"
                                                 class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md">
                                                 Submit

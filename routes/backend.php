@@ -66,7 +66,7 @@ Route::controller(LocationController::class)->group(function () {
     Route::get('/locations/create', 'create')->name('location.create');
     Route::post('/locations', 'store')->name('location.store');
     Route::get('/locations/edit/{id}', 'edit')->name('location.edit');
-    Route::put('/locations/{id}', 'update')->name('location.update');
+    Route::put('/locations/update/{id}', 'update')->name('location.update');
     Route::get('/locations/status/{id}', 'status')->name('location.status');
     Route::delete('/locations/{id}', 'destroy')->name('location.destroy');
     

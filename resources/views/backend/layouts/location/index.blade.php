@@ -82,6 +82,18 @@
                                         </th>
                                         <th scope="col"
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Address
+                                        </th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Image
+                                        </th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Puzzle
+                                        </th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Status
                                         </th>
                                         <th scope="col"
@@ -109,7 +121,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    {{-- <script defer src="https://cdn.jsdelivr.net/npm/@flasher/flasher@1.2.4/dist/flasher.min.js"></script> --}}
+    <script defer src="https://cdn.jsdelivr.net/npm/@flasher/flasher@1.2.4/dist/flasher.min.js"></script>
 
 
     <script>
@@ -149,6 +161,24 @@
                     {
                         data: 'title',
                         name: 'title',
+                        orderable: true,
+                        searchable: true
+                    },
+                    {
+                        data: 'address',
+                        name: 'address',
+                        orderable: true,
+                        searchable: true
+                    },
+                    {
+                        data: 'image',
+                        name: 'image',
+                        orderable: true,
+                        searchable: true
+                    },
+                    {
+                        data: 'puzzle_image',
+                        name: 'puzzle_image',
                         orderable: true,
                         searchable: true
                     },
