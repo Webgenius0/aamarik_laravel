@@ -1,6 +1,6 @@
 @extends('auth.app')
 
-@section('title', 'Register | ' . $setting->title ?? 'SIS')
+@section('title', 'Register | ' . $setting->title ?? 'Chazzle')
 
 @push('style')
     <style>
@@ -22,7 +22,7 @@
                 <div class="card overflow-hidden sm:rounded-md rounded-none">
                     <div class="px-6 py-8">
                         <a class='flex justify-center mb-8' href='{{ url('/') }}'>
-                            <img class="h-25" src="{{ asset('backend/assets/images/sis-logo.png') }}" alt="">
+                            <img class="h-25" src="{{ asset($setting->logo ?? 'backend/assets/images/logo-sm.png') }}" alt="">
                         </a>
 
                         <div class="mb-4">
