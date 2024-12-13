@@ -1,6 +1,6 @@
 @extends('backend.app')
 
-@section('title', 'Verse List | ' . $setting->title ?? 'SIS')
+@section('title', 'Location List | ' . $setting->title ?? 'Cazzle')
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
@@ -57,9 +57,9 @@
         <div class="card bg-white overflow-hidden">
             <div class="card-header">
                 <div class="flex justify-between align-middle">
-                    <h3 class="card-title">Verse List</h3>
+                    <h3 class="card-title">Location List</h3>
                     <div>
-                        <a href="{{ route('verse.create') }}"
+                        <a href="{{ route('location.create') }}"
                             class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md">Add New</a>
                     </div>
                 </div>
@@ -78,11 +78,19 @@
                                         </th>
                                         <th scope="col"
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Content
+                                            Title
                                         </th>
                                         <th scope="col"
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Reference
+                                            Address
+                                        </th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Image
+                                        </th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Puzzle
                                         </th>
                                         <th scope="col"
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -113,7 +121,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    {{-- <script defer src="https://cdn.jsdelivr.net/npm/@flasher/flasher@1.2.4/dist/flasher.min.js"></script> --}}
+    <script defer src="https://cdn.jsdelivr.net/npm/@flasher/flasher@1.2.4/dist/flasher.min.js"></script>
 
 
     <script>
@@ -141,7 +149,7 @@
                 pagingType: "full_numbers",
                 dom: "<'flex justify-between items-center mb-3'<'w-full sm:w-auto'l><'w-full text-center sm:w-auto'B><'w-full sm:w-auto'f>>tipr",
                 ajax: {
-                    url: "{{ route('verse.index') }}",
+                    url: "{{ route('location.index') }}",
                     type: "GET",
                 },
                 columns: [{
@@ -151,14 +159,26 @@
                         searchable: false
                     },
                     {
-                        data: 'content',
-                        name: 'content',
+                        data: 'title',
+                        name: 'title',
                         orderable: true,
                         searchable: true
                     },
                     {
-                        data: 'reference',
-                        name: 'reference',
+                        data: 'address',
+                        name: 'address',
+                        orderable: true,
+                        searchable: true
+                    },
+                    {
+                        data: 'image',
+                        name: 'image',
+                        orderable: true,
+                        searchable: true
+                    },
+                    {
+                        data: 'puzzle_image',
+                        name: 'puzzle_image',
                         orderable: true,
                         searchable: true
                     },
@@ -202,7 +222,7 @@
 
         // Delete Button
         function deleteItem(id) {
-            var url = '{{ route('verse.destroy', ':id') }}';
+            var url = '{{ route('location.destroy', ':id') }}';
             $.ajax({
                 type: "DELETE",
                 url: url.replace(':id', id),
@@ -247,7 +267,7 @@
 
         // Status Change
         function statusChange(id) {
-            var url = '{{ route('verse.status', ':id') }}';
+            var url = '{{ route('location.status', ':id') }}';
             $.ajax({
                 type: "GET",
                 url: url.replace(':id', id),

@@ -12,7 +12,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('backend/assets/images/sis-logo.png') }}">
+    <link rel="shortcut icon" href="{{ asset($setting->logo ?? 'backend/assets/images/sis-logo.png') }}">
 
     @vite('resources/css/app.css')
 
@@ -58,7 +58,7 @@
                     <div
                         class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden bg-white shadow py-2 z-10">
                         <a class="flex items-center py-2 px-6 rounded-sm text-gray-800 hover:bg-gray-100"
-                            href="#">
+                            href="{{ route('admin.edit.profile') }}">
                             Profile
                         </a>
                         <form method="POST" action="{{ route('logout') }}">

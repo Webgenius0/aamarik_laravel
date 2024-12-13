@@ -21,39 +21,13 @@
             </li>
 
             <li class="menu-item">
-                <a class='menu-link' href='{{route('message.index')}}'>
-                    <span class="menu-icon"><i class="uil uil-hipchat"></i></span>
-                    <span class="menu-text"> Chats </span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a class='menu-link' href='{{route('news.letter.index')}}'>
-                    <span class="menu-icon"><i class="uil uil-hipchat"></i></span>
-                    <span class="menu-text"> News Letter </span>
+                <a class='menu-link' href='{{route('location.index')}}'>
+                    <span class="menu-icon"><i class="uil uil-compass"></i></span>
+                    <span class="menu-text"> Locations </span>
                 </a>
             </li>
 
             
-
-            <li class="menu-item">
-                <a class='menu-link' href='{{route('dua.category.index')}}'>
-                    <span class="menu-icon"><i class="uil uil-th"></i></span>
-                    <span class="menu-text"> Dua Category </span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a class='menu-link' href='{{route('dua.index')}}'>
-                    <span class="menu-icon"><i class="uil uil-th"></i></span>
-                    <span class="menu-text"> Dua </span>
-                </a>
-            </li>
-
-            <li class="menu-item">
-                <a class='menu-link' href='{{route('verse.index')}}'>
-                    <span class="menu-icon"><i class="uil uil-chart"></i></i></span>
-                    <span class="menu-text"> Verse </span>
-                </a>
-            </li>
 
             <li class="menu-item">
                 <a href="javascript:void(0)" data-hs-collapse="#sidenavLevel" class="menu-link">

@@ -1,18 +1,18 @@
 @extends('auth.app')
 
-@section('title', 'Login | ' . $setting->title ?? 'SIS')
+@section('title', 'Login | ' . $setting->title ?? 'Chazzle')
 
 @push('style')
     <style>
         body {
-            background: linear-gradient(to bottom, #FDE9F5, #F786C8) !important;
+            background: linear-gradient(to bottom, #FDE9F5, #60AFFF) !important;
         }
     </style>
 @endpush
 
 @section('content')
 
-    <div class="bg-gradient-to-b from-[#FDE9F5] to-[#F786C8] h-screen w-screen flex justify-center items-center">
+    <div class="bg-gradient-to-b from-[#FDE9F5] to-[#60AFFF] h-screen w-screen flex justify-center items-center">
         <div>
             <img class="absolute top-0 left-0" src="{{ asset('backend/assets/images/top-include.png') }}" alt="">
         </div>
@@ -25,7 +25,7 @@
                 <div class="card overflow-hidden sm:rounded-md rounded-none">
                     <div class="px-6 py-8">
                         <a class='flex justify-center mb-8' href='{{ url('/') }}'>
-                            <img class="h-25" src="{{ asset('backend/assets/images/sis-logo.png') }}" alt="">
+                            <img class="h-25" src="{{ asset($setting->logo ?? 'backend/assets/images/logo-sm.png') }}" alt="">
                         </a>
 
                         <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">

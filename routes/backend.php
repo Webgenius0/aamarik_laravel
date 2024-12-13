@@ -1,17 +1,18 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Web\Backend\DashboardController;
-use App\Http\Controllers\Web\Backend\DuaCategoryController;
-use App\Http\Controllers\Web\Backend\DuaController;
-use App\Http\Controllers\Web\Backend\MessagingController;
-use App\Http\Controllers\Web\Backend\NewsLetterController;
-use App\Http\Controllers\Web\Backend\SettingController;
-use App\Http\Controllers\Web\Backend\SocialMediaController;
-use App\Http\Controllers\Web\Backend\UserUpdateController;
-use App\Http\Controllers\Web\Backend\VerseController;
 use App\Models\DuaCategory;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Web\Backend\DuaController;
+use App\Http\Controllers\Web\Backend\VerseController;
+use App\Http\Controllers\Web\Backend\SettingController;
+use App\Http\Controllers\Web\Backend\LocationController;
+use App\Http\Controllers\Web\Backend\DashboardController;
+use App\Http\Controllers\Web\Backend\MessagingController;
+use App\Http\Controllers\Web\Backend\NewsLetterController;
+use App\Http\Controllers\Web\Backend\UserUpdateController;
+use App\Http\Controllers\Web\Backend\DuaCategoryController;
+use App\Http\Controllers\Web\Backend\SocialMediaController;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -59,64 +60,14 @@ Route::put('social-media/media/{id}', [SocialMediaController::class, 'update'])-
 Route::get('social-media/media/status/{id}', [SocialMediaController::class, 'status'])->name('social.media.status');
 Route::delete('social-media/media/{id}', [SocialMediaController::class, 'destroy'])->name('social.media.destroy');
 
-
-// Verse
-Route::controller(VerseController::class)->group(function () {
-    Route::get('verse', 'index')->name('verse.index');
-    Route::get('verse/create', 'create')->name('verse.create');
-    Route::post('verse/store', 'store')->name('verse.store');
-    Route::get('verse/edit/{id}', 'edit')->name('verse.edit');
-    Route::post('verse/update/{id}', 'update')->name('verse.update');
-    Route::delete('verse/{id}', 'destroy')->name('verse.destroy');
-    Route::get('verse/status/{id}', 'status')->name('verse.status');
-});
-
-Route::controller(DuaCategoryController::class)->group(function () {
-    Route::get( 'dua/category', 'index' )->name( 'dua.category.index' );
-    Route::get( 'dua/category/create', 'create' )->name( 'dua.category.create' );
-    Route::post( 'dua/category/store', 'store' )->name( 'dua.category.store' );
-    Route::get( 'dua/category/edit/{id}', 'edit' )->name( 'dua.category.edit' );
-    Route::post( 'dua/category/update/{id}', 'update' )->name( 'dua.category.update' );
-    Route::delete( 'dua/category/{id}', 'destroy' )->name( 'dua.category.destroy' );
-    Route::get( 'dua/category/status/{id}', 'status' )->name( 'dua.category.status' );
-});
-Route::post('/sub_category', [DuaCategoryController::class, 'Sub_category'])->name('sub_category.store');
-Route::get('/categories', [DuaCategoryController::class, 'fetchCategories'])->name('fetch.categories');
-Route::delete('/subcategory/delete', [DuaCategoryController::class, 'deleteSubcategory'])->name('subcategory.delete');
-
-
-
-
-
-Route::controller(DuaController::class)->group(function () {
-    Route::get( 'dua', 'index' )->name( 'dua.index' );
-    Route::get( 'dua/create', 'create' )->name( 'dua.create' );
-    Route::post( 'dua/store', 'store' )->name( 'dua.store' );
-    Route::get( 'dua/edit/{id}', 'edit' )->name( 'dua.edit' );
-    Route::post( 'dua/update/{id}', 'update' )->name( 'dua.update' );
-    Route::delete( 'dua/{id}', 'destroy' )->name( 'dua.destroy' );
-    Route::get( 'dua/status/{id}', 'status' )->name( 'dua.status' );
-});
-Route::get('categories/{categoryId}/subcategories', [DuaController::class, 'getSubcategories'])->name('categories.subcategories');
-
-
-
-
-
-Route::controller(MessagingController::class)->group(function () {
-    Route::get( 'messages', 'index' )->name( 'message.index' );
-    Route::get( 'chat/{chat_id}', 'chat' )->name( 'chat' );
-    Route::post( 'chat', 'store' )->name( 'chat.store' );
-});
-
-
-Route::controller(NewsLetterController::class)->group(function () {
-    Route::get( 'news/letter', 'index' )->name( 'news.letter.index' );
-    Route::get( 'news/letter/create', 'create' )->name( 'news.letter.create' );
-    Route::post( 'news/letter/store', 'store' )->name( 'news.letter.store' );
-    Route::get( 'news/letter/edit/{id}', 'edit' )->name( 'news.letter.edit' );
-    Route::post( 'news/letter/update/{id}', 'update' )->name( 'news.letter.update' );
-    Route::delete( 'news/letter/{id}', 'destroy' )->name( 'news.letter.destroy' );
-    Route::get( 'news/letter/status/{id}', 'status' )->name( 'news.letter.status' );
-});
-
+Route::controller(LocationController::class)->group(function () {
+    
+    Route::get('/locations', 'index')->name('location.index');
+    Route::get('/locations/create', 'create')->name('location.create');
+    Route::post('/locations', 'store')->name('location.store');
+    Route::get('/locations/edit/{id}', 'edit')->name('location.edit');
+    Route::put('/locations/update/{id}', 'update')->name('location.update');
+    Route::get('/locations/status/{id}', 'status')->name('location.status');
+    Route::delete('/locations/{id}', 'destroy')->name('location.destroy');
+    
+})->middleware('auth,admin');
