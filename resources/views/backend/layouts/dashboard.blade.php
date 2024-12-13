@@ -56,7 +56,7 @@
                 <div class="p-5 flex items-center justify-between">
                     <span>
                         <span class="text-slate-400 font-semibold block">Chats</span>
-                        <span class="text-xl font-semibold"><span>{{$chat}}</span>+</span>
+                        {{-- <span class="text-xl font-semibold"><span>{{$chat}}</span>+</span> --}}
                     </span>
 
                     <span
@@ -76,7 +76,7 @@
                 <div class="p-5 flex items-center justify-between">
                     <span>
                         <span class="text-slate-400 font-semibold block">Verse</span>
-                        <span class="text-xl font-semibold"><span>{{$verse}}</span></span>
+                        {{-- <span class="text-xl font-semibold"><span>{{$verse}}</span></span> --}}
                     </span>
 
                     <span
