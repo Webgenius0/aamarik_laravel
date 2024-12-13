@@ -16,6 +16,7 @@
                     <span>
                         <span class="text-slate-400 font-semibold block">Total Users</span>
                         <span class="text-xl font-semibold"><span></span></span>
+                        <span class="text-xl font-semibold"><span></span></span>
                     </span>
 
                     <span
