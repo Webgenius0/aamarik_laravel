@@ -14,18 +14,7 @@ class DashboardController extends Controller
     public function index()
     {
 
-        $users = User::where('role', '!=', 'admin')->get()->count();
-        $chat = Messaging::where('seen', 0)->with('user')
-                ->whereIn('id', function ($query) {
-                    $query->select(DB::raw('MAX(id)'))
-                        ->from('messagings')
-                        ->where('seen', 0)
-                        ->groupBy('room_id');
-                })->count();
-
-        $verse = Verse::get()->count();
-
-        return view('backend.layouts.dashboard', compact('users','chat','verse'));
+        return view('backend.layouts.dashboard');
     }
 
      /**

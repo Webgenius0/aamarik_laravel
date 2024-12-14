@@ -12,6 +12,7 @@ use App\Http\Controllers\Web\Backend\MessagingController;
 use App\Http\Controllers\Web\Backend\NewsLetterController;
 use App\Http\Controllers\Web\Backend\UserUpdateController;
 use App\Http\Controllers\Web\Backend\DuaCategoryController;
+use App\Http\Controllers\Web\Backend\LocationGroupController;
 use App\Http\Controllers\Web\Backend\SocialMediaController;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -61,7 +62,7 @@ Route::get('social-media/media/status/{id}', [SocialMediaController::class, 'sta
 Route::delete('social-media/media/{id}', [SocialMediaController::class, 'destroy'])->name('social.media.destroy');
 
 Route::controller(LocationController::class)->group(function () {
-    
+
     Route::get('/locations', 'index')->name('location.index');
     Route::get('/locations/create', 'create')->name('location.create');
     Route::post('/locations', 'store')->name('location.store');
@@ -69,5 +70,15 @@ Route::controller(LocationController::class)->group(function () {
     Route::put('/locations/update/{id}', 'update')->name('location.update');
     Route::get('/locations/status/{id}', 'status')->name('location.status');
     Route::delete('/locations/{id}', 'destroy')->name('location.destroy');
-    
+})->middleware('auth,admin');
+
+//Location Group
+Route::controller(LocationGroupController::class)->group(function () {
+
+    Route::get('groups', 'index')->name('group.index');
+    Route::get('/group/create', 'create')->name('group.create');
+    Route::post('/group', 'store')->name('group.store');
+    Route::get('/group/show/{id}', 'show')->name('group.show');
+    Route::put('/group/update/{id}', 'update')->name('group.update');
+    Route::delete('/group/{id}', 'destroy')->name('group.destroy');
 })->middleware('auth,admin');

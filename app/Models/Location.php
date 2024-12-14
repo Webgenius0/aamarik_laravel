@@ -25,4 +25,31 @@ class Location extends Model
         'puzzle_image',
         'status',
     ];
+
+
+
+    // Casts
+    protected function casts(): array
+    {
+        return [
+            'title'       => 'string',
+            'address'     => 'string',
+            'latitude'    => 'string',
+            'longitude'   => 'string',
+            'subtitle'    => 'string',
+            'image'       => 'string',
+            'information' => 'string',
+            'map_image'   => 'string',
+            'map_url'     => 'string',
+            'points'      => 'integer',
+            'puzzle_image'=> 'string',
+            'status'      => 'string',
+        ];
+    }
+
+    // A location has one location group
+    public function locationGroup()
+    {
+        return $this->hasOne(LocationGroup::class);
+    }
 }
