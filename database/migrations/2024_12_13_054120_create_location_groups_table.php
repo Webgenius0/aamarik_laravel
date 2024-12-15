@@ -15,11 +15,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('location_id');
             $table->string('name');
-            $table->json('images');
             $table->timestamps();
             $table->softDeletes();
 
-            //key
+            //foriegn keys
             $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
         });
     }

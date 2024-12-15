@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Helper\Helper;
 use App\Models\Location;
 use App\Models\LocationGroup;
+use App\Models\LocationGroupImage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
@@ -61,50 +62,68 @@ class LocationGroupController extends Controller
     {
         // Validate input
         $validated = $request->validate([
-            'location_id'  => 'required|integer|exists:locations,id',
-            'name'         => 'required|string|max:255',
-            'images'       => 'required|array|size:9',
-            'images.*'     => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Images must be valid
+            'groupLocation'   => 'required|integer|exists:locations,id',
+            'group_name'      => 'required|string|max:255',
+            'slotImages'      => 'required|array|size:9',
+            'slotImages.*'    => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Images must be valid
+            'slotLocation'    => 'required|array|size:9',
+            'slotLocation.*'  => 'integer|exists:locations,id',
         ], [
-            'location_id.required' => 'Location is required',
-            'location_id.integer'  => 'Location must be an integer',
-            'location_id.exists'   => 'Location does not exist',
-            'name.required'        => 'Name is required',
-            'name.string'          => 'Name must be a string',
-            'name.max'             => 'Name must not be greater than 255 characters',
-            'images.required'      => 'Images are required',
-            'images.*.image'       => 'Images must be valid images',
-            'images.*.mimes'       => 'Images must be in a valid format',
-            'images.*.max'         => 'Images must not be greater than 2048 kiloby',
+            'groupLocation.required' => 'Location is required',
+            'groupLocation.integer'  => 'Location must be an integer',
+            'groupLocation.exists'   => 'Location does not exist',
+            'group_name.required'    => 'Group Name is required',
+            'group_name.string'      => 'Group Name must be a string',
+            'group_name.max'         => 'Group Name must not be greater than 255 characters',
+            'slotImages.required'    => 'Group images are required',
+            'slotImages.size'        => 'Group images must be 9',
+            'slotImages.*.image'     => 'Group images must be an image',
+            'slotImages.*.mimes'     => 'Group images must be a valid image type',
+            'slotImages.*.max'       => 'Group images must not be greater than 2048',
+            'slotLocation.required'  => 'Group location is required',
+            'slotLocation.array'     => 'Group location must be an array',
+            'slotLocation.size'      => 'Group location must be 9',
+            'slotLocation.exists'    => 'Group Location does not exist'
         ]);
+
 
         //check if location exists on location group table
-        $location = LocationGroup::where('location_id', $validated['location_id'])->first();
+        $location = LocationGroup::where('location_id', $validated['groupLocation'])->first();
         if ($location) {
-            return response()->json(['message' => 'Location already exists in location group'], 422);
+            flash()->addError('Location already exists in location group');
         }
 
-
-        // Log uploaded files for debugging
-        if ($request->hasFile('images')) {
-            $uploadedImages = [];
-            if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $file) {
-                    $rand = Str::random(10);
-                    $uploadedImages[] = Helper::fileUpload($file, 'group', $rand);
-                }
-            }
-        }
-
-        //store data in database
-        LocationGroup::create([
-            'location_id' => $validated['location_id'],
-            'name'        => $validated['name'],
-            'images'      => $uploadedImages,
+        // Create a new location group
+        $locationGroup = LocationGroup::create([
+            'location_id' => $validated['groupLocation'],
+            'name'        => $validated['group_name'],
         ]);
 
-        flash()->addSuccess('Location Group created successfully');
 
+        //location group images
+        foreach ($validated['slotImages'] as $key => $image) {
+
+            // Ensure location_id is provided before inserting
+            if (!isset($validated['slotLocation'][$key])) {
+                flash()->addError('Location for image slot is missing');
+                return redirect()->back();
+            }
+            //image upload
+            $imagePath = '';
+            if ($image) {
+                $rand = Str::random(10);
+                $imagePath = Helper::fileUpload($image, 'group', $rand);
+            }
+
+            //store data in database
+            LocationGroupImage::create([
+                'location_group_id'  => $locationGroup->id,
+                'location_id'        => $validated['slotLocation'][$key],
+                'avatar'             => $imagePath,
+            ]);
+        }
+
+        flash()->addSuccess('Location Group created successfully');
         return redirect()->route('group.index');
     }
 
@@ -113,26 +132,59 @@ class LocationGroupController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
+    // public function show($id)
+    // {
+    //     // Fetch the location group and associated location data
+    //     $locationGroup = LocationGroup::with('location','images')->findOrFail($id);
+
+    //     // Fetch all active locations
+    //     $locations = Location::where('status', 'active')->get();
+
+
+    //     $locationGroupImages = $locationGroup->images;
+
+
+
+
+    //     // Ensure image URLs are fully qualified
+    //     $locationGroup->images = array_map(function ($image) {
+    //         return asset($image);
+    //     }, $locationGroup->images);
+
+
+
+
+    //     // Return the data as JSON for the modal
+    //     // return response()->json([
+    //     //     'locationGroup' => $locationGroup,
+    //     //     'locations' => $locations
+    //     // ]);
+    // }
+
     public function show($id)
     {
         // Fetch the location group and associated location data
-        $locationGroup = LocationGroup::with('location')->findOrFail($id);
+        $locationGroup = LocationGroup::with('location', 'images')->findOrFail($id);
 
         // Fetch all active locations
         $locations = Location::where('status', 'active')->get();
 
-
-        // Ensure image URLs are fully qualified
-        $locationGroup->images = array_map(function ($image) {
-            return asset($image);
-        }, $locationGroup->images);
-
-        // Return the data as JSON for the modal
+        // Handle images: Ensure they are an array and map asset URLs correctly
+        if ($locationGroup->images) {
+            $locationGroup->images = $locationGroup->images->map(function ($image) {
+                return asset($image->avatar);
+            });
+        } else {
+            $locationGroup->images = []; // Default to empty array if no images
+        }
         return response()->json([
             'locationGroup' => $locationGroup,
-            'locations' => $locations
+            'locations' => $locations,
+            'images' => $locationGroup->images,
         ]);
     }
+
+
 
 
     /**
@@ -192,4 +244,37 @@ class LocationGroupController extends Controller
         // Redirect back to the location groups index page
         return redirect()->route('group.index');
     }
+
+
+
+
+    //     public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'name' => 'required|string|max:255',
+    //         'location_id' => 'required|integer|exists:locations,id',
+    //         'images' => 'required|array',
+    //         'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+    //         'puzzel_location_id' => 'required|array',
+    //         'puzzel_location_id.*' => 'integer|exists:locations,id',
+    //     ]);
+
+    //     // Store the group
+    //     $group = new Group();
+    //     $group->name = $request->name;
+    //     $group->location_id = $request->location_id;
+    //     $group->save();
+
+    //     // Store images and their locations
+    //     foreach ($request->images as $index => $image) {
+    //         $imagePath = $image->store('group_images', 'public');
+    //         $group->images()->create([
+    //             'image_path' => $imagePath,
+    //             'location_id' => $request->puzzel_location_id[$index],
+    //         ]);
+    //     }
+
+    //     return redirect()->route('group.index');
+    // }
+
 }

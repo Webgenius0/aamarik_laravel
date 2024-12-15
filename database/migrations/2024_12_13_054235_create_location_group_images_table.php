@@ -14,12 +14,14 @@ return new class extends Migration
         Schema::create('location_group_images', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('location_group_id');
+            $table->unsignedBigInteger('location_id');
             $table->string('avatar');
             $table->timestamps();
             $table->softDeletes();
 
-            //key
+            //foriegn keys
             $table->foreign('location_group_id')->references('id')->on('location_groups')->onDelete('cascade');
+            $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
         });
     }
 

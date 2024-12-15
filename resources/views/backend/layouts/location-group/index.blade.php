@@ -86,8 +86,7 @@
 
 
                     <!-- Modal for Editing Location Group -->
-                    <!-- Modal for Editing Location Group -->
-                    <div id="editLocationGroupModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+                    {{-- <div id="editLocationGroupModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
                         <div class="flex items-center justify-center min-h-screen">
                             <div class="bg-white p-6 rounded-lg shadow-lg w-1/3 relative">
                                 <!-- Modal Header with Title and Close Button -->
@@ -95,7 +94,7 @@
                                     <h3 class="text-xl font-semibold">Edit Location Group</h3>
                                     <!-- Close Button -->
                                     <button type="button" class="text-black text-2xl font-bold"
-                                        id="closeModalBtn">&times;</button>
+                                    id="closeModalBtn">&times;</button>
                                 </div>
 
                                 <form id="edit-location-group-form" method="POST" enctype="multipart/form-data">
@@ -140,10 +139,11 @@
                                 </form>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                     <!-- Modal for Editing Location Group End -->
 
-                    <!--Modal for Editing Location Group end-->
+
+
 
 
 
@@ -185,63 +185,105 @@
             </div>
 
 
+            <!--create location group-->
             <div class="card">
                 <div class="p-4">
-                    <!-- Puzzle Upload Form -->
-                    <form action="{{ route('group.store') }}" id="puzzle-form" method="POST" enctype="multipart/form-data"
-                        class="bg-white p-6 rounded shadow">
-                        @csrf
-                        <!-- Group Name Input -->
-                        <div class="mb-4">
-                            <label for="name" class="block text-sm font-medium text-gray-700">Group Name</label>
-                            <input type="text" id="name" name="name"
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
-                            @error('name')
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
+                    @if ($errors->any())
+                        <div class="alert alert-danger mb-4">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li class="text-red-500">{{ $error }}</li>
+                                @endforeach
+                            </ul>
                         </div>
-
-                        <!-- Locations selector Dropdown -->
-                        <div class="mb-4">
-                            <label for="sector" class="block text-sm font-medium text-gray-700">Location</label>
-                            <select id="sector" name="location_id"
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
-                                <option value="" disabled selected>Select a Location</option>
+                    @endif
+                    <!-- Puzzle Upload Form -->
+                    <form class="bg-white space-y-4 p-6 rounded-lg shadow-md max-w-md w-full"
+                        action="{{ route('group.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <fieldset>
+                            <label for="groupName" class="block text-sm font-medium text-gray-700">Group Name</label>
+                            <input type="text" id="groupName" name="group_name" placeholder="Enter group name"
+                                class="mt-1 block w-full border rounded-md p-2 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                                required />
+                        </fieldset>
+                        <fieldset>
+                            <label for="groupLocation" class="block text-sm font-medium text-gray-700">Location</label>
+                            <select id="groupLocation" name="groupLocation"
+                                class="mt-1 block w-full border rounded-md p-2 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                                required>
+                                <option value="" selected disabled>Select a Location</option>
                                 @forelse ($locations as $location)
                                     <option value="{{ $location->id }}">{{ $location->title }}</option>
                                 @empty
-                                    <option value="">No locations available</option>
+                                    <option value="">No Locations Available</option>
                                 @endforelse
                             </select>
-                            @error('location_id')
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- File Slots -->
-                        <div class="grid grid-cols-3 gap-3">
+                        </fieldset>
+                        <div class="grid grid-cols-3 gap-4 mb-6">
                             @for ($i = 0; $i < 9; $i++)
-                                <label for="file-input-{{ $i }}">
-                                    <div id="slot-{{ $i }}" class="file-slot"></div>
-                                    <input type="file" id="file-input-{{ $i }}" name="images[]"
-                                        onchange="previewImage({{ $i }})" class="hidden" accept="image/*">
-                                </label>
-                            @endfor
-                            @error('images')
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
+                                <div id="{{ $i }}"
+                                    class="slot-box border-dashed border-2 border-gray-300 flex justify-center items-center h-24">
+                                    <!-- slot box content start -->
+                                    <div
+                                        class="slot-box-content cursor-pointer w-full h-full flex items-center justify-center">
+                                        <span class="text-gray-500 text-2xl">+</span>
+                                    </div>
+                                    <!-- slot box content end -->
 
-                        <!-- Submit Button -->
-                        <div class="mt-6">
-                            <button type="submit"
-                                class="px-4 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700">
-                                Submit
-                            </button>
+                                    <!-- slot box modal start -->
+                                    <div class="slot-box-modal fixed inset-0 z-50 flex items-center justify-center hidden">
+                                        <div class="overlay bg-gray-800 bg-opacity-50 absolute inset-0 z-[-1]"></div>
+                                        <div class="bg-white rounded-lg shadow-lg space-y-4 max-w-sm w-full p-6">
+                                            <div class="text-lg font-semibold text-gray-800 mb-4">
+                                                Upload Image and Add Text
+                                            </div>
+                                            <fieldset>
+                                                <label class="block text-sm font-medium text-gray-700">Image</label>
+                                                <input type="file" id="slot-image-{{ $i }}"
+                                                    name="slotImages[]"
+                                                    class="mt-1 block w-full border rounded-md p-2 border-gray-300"
+                                                    accept="image/*" />
+                                            </fieldset>
+                                            <fieldset>
+                                                <label class="block text-sm font-medium text-gray-700"
+                                                    for="slot-location-{{ $i }}">Location</label>
+                                                <select id="slot-location-{{ $i }}" name="slotLocation[]"
+                                                    class="mt-1 block w-full border rounded-md p-2 border-gray-300">
+                                                    <option value="" selected disabled>Select a Location</option>
+                                                    @forelse ($locations as $location)
+                                                        <option value="{{ $location->id }}">{{ $location->title }}</option>
+                                                    @empty
+                                                        <option value="">No Locations Available</option>
+                                                    @endforelse
+                                                </select>
+                                            </fieldset>
+
+                                            <!-- Buttons -->
+                                            <div class="flex justify-end">
+                                                <button type="button"
+                                                    class="close-modal-btn px-4 py-2 bg-gray-200 rounded-md mr-2">
+                                                    Cancel
+                                                </button>
+                                                <button type="button"
+                                                    class="open-modal-btn px-4 py-2 bg-blue-600 text-white rounded-md">
+                                                    Save
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- slot box modal end -->
+                                </div>
+                            @endfor
                         </div>
+                        <button type="submit"
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-md">
+                            Submit
+                        </button>
                     </form>
                 </div>
             </div>
+            <!--create location group end-->
 
         </div>
     </main>
@@ -315,7 +357,8 @@
         });
 
 
-        // Open modal and populate form
+
+        //edit modal
         // $(document).on('click', '.edit-location-group-btn', function() {
         //     let groupId = $(this).data('id');
 
@@ -329,7 +372,9 @@
         //         url: url,
         //         method: 'GET',
         //         success: function(response) {
-        //             $('#edit-location-group-form').attr('action', '/location-group/' + groupId);
+        //             // Populate the form with fetched data
+        //             $('#edit-location-group-form').attr('action', '{{ route('group.update', ':id') }}'
+        //                 .replace(':id', groupId));
         //             $('#edit-name').val(response.locationGroup.name);
         //             $('#edit-location').val(response.locationGroup.location_id);
 
@@ -339,105 +384,146 @@
         //             locations.forEach(function(location) {
         //                 $('#edit-location').append(new Option(location.title, location.id));
         //             });
+
+        //             // Show image previews if available
+        //             let images = response.locationGroup.images;
+        //             $('#image-preview-container').empty(); // Clear any existing images
+        //             if (images.length > 0) {
+        //                 images.forEach(function(image) {
+        //                     let imgPreview = `<div class="file-slot">
+    //                         <img src="${image}" alt="Image preview" class="w-24 h-24 object-cover"/>
+    //                     </div>`;
+        //                     $('#image-preview-container').append(imgPreview);
+        //                 });
+        //             }
+        //         },
+        //         error: function() {
+        //             alert('Failed to fetch location group data.');
+        //         }
+        //     });
+        // });
+
+        // Edit modal click event
+        // $(document).on('click', '.edit-location-group-btn', function() {
+        //     let groupId = $(this).data('id'); // Get the ID of the group
+
+        //     // Show the modal
+        //     $('#editLocationGroupModal').removeClass('hidden');
+
+        //     // Make an AJAX request to fetch location group data
+        //     const url = "{{ route('group.show', ['id' => ':id']) }}".replace(':id', groupId);
+
+        //     $.ajax({
+        //         url: url,
+        //         method: 'GET',
+        //         success: function(response) {
+        //             // Populate the form with fetched data
+        //             $('#edit-location-group-form').attr('action', '{{ route('group.update', ':id') }}'
+        //                 .replace(':id', groupId));
+        //             $('#edit-name').val(response.locationGroup.name); // Set group name
+        //             $('#edit-location').val(response.locationGroup.location_id); // Set current location
+
+        //             // Populate location select options dynamically
+        //             let locations = response.locations;
+        //             $('#edit-location').empty(); // Clear existing options
+        //             locations.forEach(function(location) {
+        //                 let selected = location.id == response.locationGroup.location_id ?
+        //                     'selected' : '';
+        //                 $('#edit-location').append(new Option(location.title, location.id,
+        //                     false, selected));
+        //             });
+
+        //             // Show image previews if available
+        //             let images = response.images;
+        //             $('#image-preview-container').empty(); // Clear any existing images
+        //             if (images.length > 0) {
+        //                 images.forEach(function(image) {
+        //                     let imgPreview = `<div class="file-slot">
+        //                 <img src="${image}" alt="Image preview" class="w-24 h-24 object-cover"/>
+        //             </div>`;
+        //                     $('#image-preview-container').append(imgPreview);
+        //                 });
+        //             }
+        //         },
+        //         error: function() {
+        //             alert('Failed to fetch location group data.');
         //         }
         //     });
         // });
 
 
-        // JavaScript for closing the modal
-        // $(document).ready(function() {
-        //     // Close modal when '×' button is clicked
-        //     $('#closeModalBtn').on('click', function() {
-        //         $('#editLocationGroupModal').addClass('hidden'); // Hide modal
-        //     });
+        // // Close Modal when clicking on the close button
+        // $('#closeModalBtn').on('click', function() {
+        //     $('#editLocationGroupModal').addClass('hidden');
+        // });
 
-        //     // Optional: Close modal when clicking outside of the modal content area
-        //     $('#editLocationGroupModal').on('click', function(event) {
-        //         if ($(event.target).is('#editLocationGroupModal')) {
-        //             $('#editLocationGroupModal').addClass('hidden');
-        //         }
-        //     });
+        // // Optional: Close modal when clicking outside of the modal content
+        // $('#editLocationGroupModal').on('click', function(event) {
+        //     if ($(event.target).is('#editLocationGroupModal')) {
+        //         $('#editLocationGroupModal').addClass('hidden');
+        //     }
         // });
 
 
 
-        $(document).on('click', '.edit-location-group-btn', function() {
-            let groupId = $(this).data('id');
 
-            // Show the modal
-            $('#editLocationGroupModal').removeClass('hidden');
 
-            // Make an AJAX request to fetch location group data
-            const url = "{{ route('group.show', ['id' => ':id']) }}".replace(':id', groupId);
 
-            $.ajax({
-                url: url,
-                method: 'GET',
-                success: function(response) {
-                    // Populate the form with fetched data
-                    $('#edit-location-group-form').attr('action', '{{ route('group.update', ':id') }}'.replace(':id', groupId));
-                    $('#edit-name').val(response.locationGroup.name);
-                    $('#edit-location').val(response.locationGroup.location_id);
 
-                    // Populate location select options dynamically
-                    let locations = response.locations;
-                    $('#edit-location').empty();
-                    locations.forEach(function(location) {
-                        $('#edit-location').append(new Option(location.title, location.id));
-                    });
 
-                    // Show image previews if available
-                    let images = response.locationGroup.images;
-                    $('#image-preview-container').empty(); // Clear any existing images
-                    if (images.length > 0) {
-                        images.forEach(function(image) {
-                            let imgPreview = `<div class="file-slot">
-                                <img src="${image}" alt="Image preview" class="w-24 h-24 object-cover"/>
-                            </div>`;
-                            $('#image-preview-container').append(imgPreview);
-                        });
-                    }
-                },
-                error: function() {
-                    alert('Failed to fetch location group data.');
+        //add location group
+        const slotBoxes = document.querySelectorAll(".slot-box");
+
+        slotBoxes.forEach((slotBox) => {
+            const slotBoxModal = slotBox.querySelector(".slot-box-modal");
+            const slotModalCloseBtn =
+                slotBoxModal.querySelector(".close-modal-btn");
+            const slotModalSaveBtn = slotBoxModal.querySelector(".open-modal-btn");
+            const slotContent = slotBox.querySelector(".slot-box-content");
+            const slotImage = slotBoxModal.querySelector("input[type=file]");
+            const overlay = slotBox.querySelector(".overlay")
+
+            function hideModal() {
+                slotBoxModal.classList.add("hidden");
+            }
+
+            overlay.addEventListener("click", (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                hideModal()
+            })
+
+            const defaultContent = slotContent.innerHTML.trim();
+
+            slotContent.addEventListener("click", (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                slotBoxModal.classList.remove("hidden");
+            });
+
+            slotModalCloseBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                hideModal()
+            });
+
+            slotModalSaveBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                const imageFile = slotImage.files[0];
+
+                if (imageFile) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        slotContent.innerHTML =
+                            `<img src="${e.target.result}" alt="Image Preview" class="w-full h-full object-cover" />`;
+                    };
+
+                    reader.readAsDataURL(imageFile);
                 }
+                hideModal()
             });
         });
-
-        // Close Modal when clicking on the close button
-        $('#closeModalBtn').on('click', function() {
-            $('#editLocationGroupModal').addClass('hidden');
-        });
-
-        // Optional: Close modal when clicking outside of the modal content
-        $('#editLocationGroupModal').on('click', function(event) {
-            if ($(event.target).is('#editLocationGroupModal')) {
-                $('#editLocationGroupModal').addClass('hidden');
-            }
-        });
-
-
-
-
-
-
-        // Preview Image Function
-        function previewImage(slot) {
-            const fileInput = document.getElementById(`file-input-${slot}`);
-            const slotDiv = document.getElementById(`slot-${slot}`);
-
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    // Display the uploaded image in the slot
-                    slotDiv.innerHTML = ''; // Clear placeholder text
-                    slotDiv.style.backgroundImage = `url('${e.target.result}')`;
-                    slotDiv.style.backgroundSize = 'cover';
-                    slotDiv.style.backgroundPosition = 'center';
-                    slotDiv.style.border = 'none';
-                };
-                reader.readAsDataURL(fileInput.files[0]);
-            }
-        }
     </script>
 @endpush

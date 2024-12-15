@@ -11,8 +11,9 @@ class LocationGroupImage extends Model
     use SoftDeletes, HasFactory;
 
     protected $fillable = [
+        'avatar',
+        'location_id',
         'location_group_id',
-        'avatar'
     ];
 
     // Casts
@@ -20,6 +21,7 @@ class LocationGroupImage extends Model
     {
         return [
             'avatar'            => 'string',
+            'location_id'       => 'integer',
             'location_group_id' => 'integer'
         ];
     }
