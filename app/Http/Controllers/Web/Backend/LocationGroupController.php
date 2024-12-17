@@ -8,15 +8,14 @@ use App\Helper\Helper;
 use App\Models\Location;
 use App\Models\LocationGroup;
 use App\Models\LocationGroupImage;
+use App\Models\LocationReach;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
 use Yajra\DataTables\Facades\DataTables;
 
 class LocationGroupController extends Controller
 {
-
-
-
     /**
      * List of location groups
      */
@@ -33,7 +32,7 @@ class LocationGroupController extends Controller
                 })
                 ->addColumn('action', function ($data) {
                     return '<div class="inline-flex gap-1">
-                       <a href="javascript:void(0);" class="btn bg-success text-white rounded edit-location-group-btn" data-id="' . $data->id . '">
+                       <a href="' . route('group.edit', $data->id) . '"  class="btn bg-success text-white rounded edit-location-group-btn">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>
                         <a href="#" onclick="showDeleteConfirm(' . $data->id . ')" class="btn bg-danger text-white rounded" title="Delete">
@@ -123,149 +122,120 @@ class LocationGroupController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    // public function show($id)
-    // {
-    //     // Fetch the location group and associated location data
-    //     $locationGroup = LocationGroup::with('location','images')->findOrFail($id);
-
-    //     // Fetch all active locations
-    //     $locations = Location::where('status', 'active')->get();
-
-
-    //     $locationGroupImages = $locationGroup->images;
-
-
-
-
-    //     // Ensure image URLs are fully qualified
-    //     $locationGroup->images = array_map(function ($image) {
-    //         return asset($image);
-    //     }, $locationGroup->images);
-
-
-
-
-    //     // Return the data as JSON for the modal
-    //     // return response()->json([
-    //     //     'locationGroup' => $locationGroup,
-    //     //     'locations' => $locations
-    //     // ]);
-    // }
-
-    public function show($id)
+    public function edit($id)
     {
         // Fetch the location group and associated location data
-        $locationGroup = LocationGroup::with('location', 'images')->findOrFail($id);
+        $locationGroup = LocationGroup::with('images')->findOrFail($id);
 
         // Fetch all active locations
         $locations = Location::where('status', 'active')->get();
 
-        // Handle images: Ensure they are an array and map asset URLs correctly
-        if ($locationGroup->images) {
-            $locationGroup->images = $locationGroup->images->map(function ($image) {
-                return asset($image->avatar);
-            });
-        } else {
-            $locationGroup->images = []; // Default to empty array if no images
-        }
-        return response()->json([
-            'locationGroup' => $locationGroup,
-            'locations' => $locations,
-            'images' => $locationGroup->images,
-        ]);
+        // Return the view with the locations
+        return view('backend.layouts.location-group.edit', compact('locationGroup', 'locations'));
     }
 
-
-
-
-    /**
-     * Location group data update in database
-     */
+    // Update the Location Group
     public function update(Request $request, $id)
     {
-        // Validate input
-        $validated = $request->validate([
-            'location_id'  => 'required|integer|exists:locations,id',
-            'name'         => 'required|string|max:255',
-            'images'       => 'nullable|array|size:9',
-            'images.*'     => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Images must be valid
-        ], [
-            'location_id.required' => 'Location is required',
-            'location_id.integer'  => 'Location must be an integer',
-            'location_id.exists'   => 'Location does not exist',
-            'name.required'        => 'Name is required',
-            'name.string'          => 'Name must be a string',
-            'name.max'             => 'Name must not be greater than 255 characters',
-            'images.nullable'      => 'No new images provided',
-            'images.*.image'       => 'Images must be valid images',
-            'images.*.mimes'       => 'Images must be in a valid format',
-            'images.*.max'         => 'Images must not be greater than 2048 kilobytes',
+        // Validation rules
+        $request->validate([
+            'name'      => 'required|string|max:255',
+            'locations' => 'required|array',
+            'images'    => 'nullable|array',
+            'images.*'  => 'nullable|image|max:2048',
         ]);
 
-        // Fetch the location group record to update
-        $locationGroup = LocationGroup::findOrFail($id);
+        // Find the Location Group by ID
+        $locationGroup = LocationGroup::find($id);
 
-        // Check if the location already exists in another group
-        $existingLocationGroup = LocationGroup::where('location_id', $validated['location_id'])->where('id', '!=', $id)->first();
-        if ($existingLocationGroup) {
-            return response()->json(['message' => 'Location already exists in another location group'], 422);
+        if (!$locationGroup) {
+            // If Location Group not found, add error and redirect
+            flash()->addError('Location Group not found');
+            return redirect()->route('group.index');
         }
 
-        // Handle file uploads if there are new images
-        $uploadedImages = $locationGroup->images; // Default to existing images
-        if ($request->hasFile('images')) {
-            // If new images are uploaded, replace the old ones
-            $uploadedImages = [];
-            foreach ($request->file('images') as $file) {
-                $rand = Str::random(10);
-                $uploadedImages[] = Helper::fileUpload($file, 'group', $rand);
+        // Update the Location Group name
+        $locationGroup->update([
+            'name' => $request->input('name')
+        ]);
+
+        // Process the images and locations
+        if ($request->has('locations') && count($request->input('locations')) > 0) {
+            foreach ($request->locations as $key => $location) {
+                // Find the corresponding LocationGroupImage by the key
+                $locationGroupImage = LocationGroupImage::find($key);
+
+                if ($locationGroupImage) {
+                    // Get the current avatar path (old image)
+                    $imagePath = $locationGroupImage->avatar;
+
+                    // Get the new uploaded image if available
+                    $newImage = $request->images[$key] ?? null;
+
+                    // If a new image is provided, process it
+                    if ($newImage && $newImage->isValid()) {
+                        // Delete the old image file if it exists
+                        if ($imagePath && File::exists(public_path($imagePath))) {
+                            File::delete(public_path($imagePath));
+                        }
+
+                        // Generate a random name and upload the new image
+                        $rand = Str::random(10);
+                        $imagePath = Helper::fileUpload($newImage, 'group', $rand);
+                    }
+
+                    // Update the LocationGroupImage record
+                    $locationGroupImage->update([
+                        'location_id' => $location,  // Update the location ID
+                        'avatar'      => $imagePath,  // Update the avatar path (image path)
+                    ]);
+                }
             }
         }
 
-        // Update the location group data in the database
-        $locationGroup->update([
-            'location_id' => $validated['location_id'],
-            'name'        => $validated['name'],
-            'images'      => $uploadedImages, // Update the images field
-        ]);
-
-        // Flash success message
-        flash()->addSuccess('Location Group updated successfully');
-
-        // Redirect back to the location groups index page
+        flash()->addSuccess('Location Group updated successfully!');
+        // Redirect back with a success message
         return redirect()->route('group.index');
     }
 
 
+    /**
+     * destroy  the form for editing the specified resource.
+     */
+    public function destroy($id)
+    {
+        // Load the LocationGroup with its associated 'reachs' and 'images' relationships
+        $locationGroup = LocationGroup::with(['reachs', 'images'])->find($id);
 
+        if (!$locationGroup) {
+            // If Location Group not found, add error and redirect
+            flash()->addError('Location Group not found');
+            return redirect()->route('group.index');
 
-    //     public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'name' => 'required|string|max:255',
-    //         'location_id' => 'required|integer|exists:locations,id',
-    //         'images' => 'required|array',
-    //         'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-    //         'puzzel_location_id' => 'required|array',
-    //         'puzzel_location_id.*' => 'integer|exists:locations,id',
-    //     ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Location Group not found',
+            ]);
+        }
 
-    //     // Store the group
-    //     $group = new Group();
-    //     $group->name = $request->name;
-    //     $group->location_id = $request->location_id;
-    //     $group->save();
+        // Delete all associated LocationReach records using the relationship method
+        $locationGroup->reachs()->delete();
 
-    //     // Store images and their locations
-    //     foreach ($request->images as $index => $image) {
-    //         $imagePath = $image->store('group_images', 'public');
-    //         $group->images()->create([
-    //             'image_path' => $imagePath,
-    //             'location_id' => $request->puzzel_location_id[$index],
-    //         ]);
-    //     }
+        // Delete the associated LocationGroupImages and their files
+        foreach ($locationGroup->images as $image) {
+            if ($image->avatar && File::exists(public_path($image->avatar))) {
+                File::delete(public_path($image->avatar)); // Delete the image file
+            }
+            $image->delete(); // Delete the image record from the database
+        }
 
-    //     return redirect()->route('group.index');
-    // }
+        // Finally, delete the LocationGroup itself
+        $locationGroup->delete();
 
+        // Return a JSON response with success message
+        return response()->json([
+            'success' => true,
+            'message' => 'Location Group deleted successfully!',
+        ]);
+    }
 }

@@ -322,5 +322,53 @@
                 hideModal()
             });
         });
+
+
+
+
+         // delete Confirm
+         function showDeleteConfirm(id) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Are you sure you want to delete this record?',
+                text: 'If you delete this, it will be gone forever.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deleteItem(id);
+                }
+            });
+        };
+
+
+        // Delete Button
+        function deleteItem(id) {
+            var url = '{{ route('group.destroy', ':id') }}';
+            $.ajax({
+                type: "DELETE",
+                url: url.replace(':id', id),
+                success: function(resp) {
+                    console.log(resp);
+                    // Reloade DataTable
+                    $('#data-table').DataTable().ajax.reload();
+                    if (resp.success === true) {
+                        // show toast message
+                        flasher.success(resp.message);
+
+                    } else if (resp.errors) {
+                        flasher.error(resp.errors[0]);
+                    } else {
+                        flasher.error(resp.message);
+                    }
+                }, // success end
+                error: function(error) {
+                    // location.reload();
+                } // Error
+            })
+        }
     </script>
 @endpush

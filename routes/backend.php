@@ -78,7 +78,8 @@ Route::controller(LocationGroupController::class)->group(function () {
     Route::get('groups', 'index')->name('group.index');
     Route::get('/group/create', 'create')->name('group.create');
     Route::post('/group', 'store')->name('group.store');
-    Route::get('/group/show/{id}', 'show')->name('group.show');
+    Route::get('/group/edit/{id}', 'edit')->name('group.edit');
     Route::put('/group/update/{id}', 'update')->name('group.update');
     Route::delete('/group/{id}', 'destroy')->name('group.destroy');
+
 })->middleware('auth,admin');

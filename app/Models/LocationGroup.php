@@ -28,4 +28,9 @@ class LocationGroup extends Model
         return $this->hasMany(LocationGroupImage::class);
     }
 
+    public function reachs()
+    {
+        return $this->hasMany(LocationReach::class, 'group_id', 'id');
+    }
+
 }
