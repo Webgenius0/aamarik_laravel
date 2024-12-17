@@ -12,8 +12,6 @@ class LocationGroup extends Model
 
     protected $fillable = [
         'name',
-        'images',
-        'location_id'
     ];
 
     // Casts
@@ -21,8 +19,6 @@ class LocationGroup extends Model
     {
         return [
             'name'        => 'string',
-            'images'      => 'array',
-            'location_id' => 'integer'
         ];
     }
 
@@ -32,10 +28,4 @@ class LocationGroup extends Model
         return $this->hasMany(LocationGroupImage::class);
     }
 
-
-    // A location group belongs to a location
-    public function location()
-    {
-        return $this->belongsTo(Location::class);
-    }
 }

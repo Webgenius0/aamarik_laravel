@@ -19,7 +19,7 @@ Route::controller(UserAuthController::class)->group(function () {
     Route::post('register', 'register');
 
     // Resend Otp
-    Route::post('resend-otp', [UserAuthController::class, 'resendOtp']);
+    Route::post('resend-otp', 'resendOtp');
 
     // Forget Password
     Route::post('forget-password', 'forgetPassword');
@@ -43,8 +43,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     // Get Notifications
     Route::get('/my-notifications', [UserController::class, 'getMyNotifications']);
-    Route::get('/my-payments', [UserController::class, 'getMyPeyments']);
-
 
     // Verse
     Route::get('/verse', [UserController::class, 'getVerse']);

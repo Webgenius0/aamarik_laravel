@@ -13,13 +13,9 @@ return new class extends Migration
     {
         Schema::create('location_groups', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('location_id');
             $table->string('name');
             $table->timestamps();
             $table->softDeletes();
-
-            //foriegn keys
-            $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
         });
     }
 

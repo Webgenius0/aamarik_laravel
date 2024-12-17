@@ -24,13 +24,10 @@ class LocationGroupController extends Controller
     {
         if ($request->ajax()) {
             // Fetch the location groups with their associated locations
-            $locationGroups = LocationGroup::with(['location'])->latest()->get();
+            $locationGroups = LocationGroup::latest()->get();
 
             return DataTables::of($locationGroups)
                 ->addIndexColumn()
-                ->addColumn('location_name', function ($data) {
-                    return Str::limit($data->location->title, 50, '...');
-                })
                 ->addColumn('group_name', function ($data) {
                     return Str::limit($data->name, 50, '...');
                 })
@@ -44,7 +41,7 @@ class LocationGroupController extends Controller
                         </a>
                     </div>';
                 })
-                ->rawColumns(['location_name', 'group_name', 'action'])
+                ->rawColumns(['group_name', 'action'])
                 ->make(true);
         }
 
@@ -62,16 +59,12 @@ class LocationGroupController extends Controller
     {
         // Validate input
         $validated = $request->validate([
-            'groupLocation'   => 'required|integer|exists:locations,id',
-            'group_name'      => 'required|string|max:255',
+            'group_name'      => 'required|string|max:255|unique:location_groups,name',
             'slotImages'      => 'required|array|size:9',
             'slotImages.*'    => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Images must be valid
             'slotLocation'    => 'required|array|size:9',
             'slotLocation.*'  => 'integer|exists:locations,id',
         ], [
-            'groupLocation.required' => 'Location is required',
-            'groupLocation.integer'  => 'Location must be an integer',
-            'groupLocation.exists'   => 'Location does not exist',
             'group_name.required'    => 'Group Name is required',
             'group_name.string'      => 'Group Name must be a string',
             'group_name.max'         => 'Group Name must not be greater than 255 characters',
@@ -86,16 +79,14 @@ class LocationGroupController extends Controller
             'slotLocation.exists'    => 'Group Location does not exist'
         ]);
 
-
         //check if location exists on location group table
-        $location = LocationGroup::where('location_id', $validated['groupLocation'])->first();
+        $location = LocationGroup::where('name', $validated['group_name'])->first();
         if ($location) {
             flash()->addError('Location already exists in location group');
         }
 
         // Create a new location group
         $locationGroup = LocationGroup::create([
-            'location_id' => $validated['groupLocation'],
             'name'        => $validated['group_name'],
         ]);
 

@@ -82,71 +82,6 @@
                             <h3 class="card-title">List Of Location Groups</h3>
                         </div>
                     </div>
-
-
-
-                    <!-- Modal for Editing Location Group -->
-                    {{-- <div id="editLocationGroupModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
-                        <div class="flex items-center justify-center min-h-screen">
-                            <div class="bg-white p-6 rounded-lg shadow-lg w-1/3 relative">
-                                <!-- Modal Header with Title and Close Button -->
-                                <div class="flex justify-between items-center mb-4">
-                                    <h3 class="text-xl font-semibold">Edit Location Group</h3>
-                                    <!-- Close Button -->
-                                    <button type="button" class="text-black text-2xl font-bold"
-                                    id="closeModalBtn">&times;</button>
-                                </div>
-
-                                <form id="edit-location-group-form" method="POST" enctype="multipart/form-data">
-                                    @csrf
-                                    @method('PUT')
-
-                                    <!-- Group Name -->
-                                    <div class="mb-4">
-                                        <label for="edit-name" class="block text-sm font-medium text-gray-700">Group
-                                            Name</label>
-                                        <input type="text" id="edit-name" name="name"
-                                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
-                                    </div>
-
-                                    <!-- Location Selector -->
-                                    <div class="mb-4">
-                                        <label for="edit-location"
-                                            class="block text-sm font-medium text-gray-700">Location</label>
-                                        <select id="edit-location" name="location_id"
-                                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
-                                            <!-- Dynamic locations will be populated here -->
-                                        </select>
-                                    </div>
-
-                                    <!-- Image Preview -->
-                                    <div class="mb-4">
-                                        <label class="block text-sm font-medium text-gray-700">Images</label>
-                                        <div id="image-preview-container" class="grid grid-cols-3 gap-3">
-                                            <!-- Images will be dynamically inserted here -->
-                                        </div>
-                                        <input type="file" id="edit-images" name="images[]" accept="image/*" multiple
-                                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                                    </div>
-
-                                    <!-- Submit Button -->
-                                    <div class="mt-6">
-                                        <button type="submit"
-                                            class="px-4 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700">
-                                            Update Location Group
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div> --}}
-                    <!-- Modal for Editing Location Group End -->
-
-
-
-
-
-
                     <div class="p-4">
                         <div class="overflow-x-auto custom-scroll">
                             <div class="min-w-full inline-block align-middle p-2">
@@ -157,10 +92,6 @@
                                                 <th scope="col"
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                     S/L
-                                                </th>
-                                                <th scope="col"
-                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Location Name
                                                 </th>
                                                 <th scope="col"
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -184,7 +115,6 @@
                 </div>
             </div>
 
-
             <!--create location group-->
             <div class="card">
                 <div class="p-4">
@@ -206,19 +136,6 @@
                             <input type="text" id="groupName" name="group_name" placeholder="Enter group name"
                                 class="mt-1 block w-full border rounded-md p-2 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                                 required />
-                        </fieldset>
-                        <fieldset>
-                            <label for="groupLocation" class="block text-sm font-medium text-gray-700">Location</label>
-                            <select id="groupLocation" name="groupLocation"
-                                class="mt-1 block w-full border rounded-md p-2 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                                required>
-                                <option value="" selected disabled>Select a Location</option>
-                                @forelse ($locations as $location)
-                                    <option value="{{ $location->id }}">{{ $location->title }}</option>
-                                @empty
-                                    <option value="">No Locations Available</option>
-                                @endforelse
-                            </select>
                         </fieldset>
                         <div class="grid grid-cols-3 gap-4 mb-6">
                             @for ($i = 0; $i < 9; $i++)
@@ -335,12 +252,6 @@
                         searchable: false
                     },
                     {
-                        data: 'location_name',
-                        name: 'location_name',
-                        orderable: true,
-                        searchable: true
-                    },
-                    {
                         data: 'group_name',
                         name: 'group_name',
                         orderable: true,
@@ -355,120 +266,6 @@
                 ],
             });
         });
-
-
-
-        //edit modal
-        // $(document).on('click', '.edit-location-group-btn', function() {
-        //     let groupId = $(this).data('id');
-
-        //     // Show the modal
-        //     $('#editLocationGroupModal').removeClass('hidden');
-
-        //     // Make an AJAX request to fetch location group data
-        //     const url = "{{ route('group.show', ['id' => ':id']) }}".replace(':id', groupId);
-
-        //     $.ajax({
-        //         url: url,
-        //         method: 'GET',
-        //         success: function(response) {
-        //             // Populate the form with fetched data
-        //             $('#edit-location-group-form').attr('action', '{{ route('group.update', ':id') }}'
-        //                 .replace(':id', groupId));
-        //             $('#edit-name').val(response.locationGroup.name);
-        //             $('#edit-location').val(response.locationGroup.location_id);
-
-        //             // Populate location select options dynamically
-        //             let locations = response.locations;
-        //             $('#edit-location').empty();
-        //             locations.forEach(function(location) {
-        //                 $('#edit-location').append(new Option(location.title, location.id));
-        //             });
-
-        //             // Show image previews if available
-        //             let images = response.locationGroup.images;
-        //             $('#image-preview-container').empty(); // Clear any existing images
-        //             if (images.length > 0) {
-        //                 images.forEach(function(image) {
-        //                     let imgPreview = `<div class="file-slot">
-    //                         <img src="${image}" alt="Image preview" class="w-24 h-24 object-cover"/>
-    //                     </div>`;
-        //                     $('#image-preview-container').append(imgPreview);
-        //                 });
-        //             }
-        //         },
-        //         error: function() {
-        //             alert('Failed to fetch location group data.');
-        //         }
-        //     });
-        // });
-
-        // Edit modal click event
-        // $(document).on('click', '.edit-location-group-btn', function() {
-        //     let groupId = $(this).data('id'); // Get the ID of the group
-
-        //     // Show the modal
-        //     $('#editLocationGroupModal').removeClass('hidden');
-
-        //     // Make an AJAX request to fetch location group data
-        //     const url = "{{ route('group.show', ['id' => ':id']) }}".replace(':id', groupId);
-
-        //     $.ajax({
-        //         url: url,
-        //         method: 'GET',
-        //         success: function(response) {
-        //             // Populate the form with fetched data
-        //             $('#edit-location-group-form').attr('action', '{{ route('group.update', ':id') }}'
-        //                 .replace(':id', groupId));
-        //             $('#edit-name').val(response.locationGroup.name); // Set group name
-        //             $('#edit-location').val(response.locationGroup.location_id); // Set current location
-
-        //             // Populate location select options dynamically
-        //             let locations = response.locations;
-        //             $('#edit-location').empty(); // Clear existing options
-        //             locations.forEach(function(location) {
-        //                 let selected = location.id == response.locationGroup.location_id ?
-        //                     'selected' : '';
-        //                 $('#edit-location').append(new Option(location.title, location.id,
-        //                     false, selected));
-        //             });
-
-        //             // Show image previews if available
-        //             let images = response.images;
-        //             $('#image-preview-container').empty(); // Clear any existing images
-        //             if (images.length > 0) {
-        //                 images.forEach(function(image) {
-        //                     let imgPreview = `<div class="file-slot">
-        //                 <img src="${image}" alt="Image preview" class="w-24 h-24 object-cover"/>
-        //             </div>`;
-        //                     $('#image-preview-container').append(imgPreview);
-        //                 });
-        //             }
-        //         },
-        //         error: function() {
-        //             alert('Failed to fetch location group data.');
-        //         }
-        //     });
-        // });
-
-
-        // // Close Modal when clicking on the close button
-        // $('#closeModalBtn').on('click', function() {
-        //     $('#editLocationGroupModal').addClass('hidden');
-        // });
-
-        // // Optional: Close modal when clicking outside of the modal content
-        // $('#editLocationGroupModal').on('click', function(event) {
-        //     if ($(event.target).is('#editLocationGroupModal')) {
-        //         $('#editLocationGroupModal').addClass('hidden');
-        //     }
-        // });
-
-
-
-
-
-
 
 
         //add location group
