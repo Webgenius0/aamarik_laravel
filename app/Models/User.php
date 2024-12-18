@@ -49,18 +49,18 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return mixed
      */
-     public function getJWTIdentifier()
-     {
-         return $this->getKey();
-     }
- 
-     public function getJWTCustomClaims()
-     {
-         return [];
-     }
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 
 
-     /**
+    /**
      * User Email Verification
      * Return true if email is verified
      */
@@ -69,5 +69,12 @@ class User extends Authenticatable implements JWTSubject
         $otp = rand(1000, 9999);
         $this->notify(new EmailVerificationNotification($otp));
         return $otp;
+    }
+
+
+    //define relactionship wishlists
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
     }
 }

@@ -11,10 +11,12 @@ use App\Http\Controllers\API\BookmarkController;
 use App\Http\Controllers\API\UserAuthController;
 use App\Http\Controllers\API\CommunityController;
 use App\Http\Controllers\API\LocationGroupContoller;
+use App\Http\Controllers\API\LocationGroupImageContoller;
 use App\Http\Controllers\API\LocationReachContoller;
 use App\Http\Controllers\API\MessagingController;
 use App\Http\Controllers\API\NewsLetterController;
 use App\Http\Controllers\API\WebHooksController;
+use App\Http\Controllers\API\WishlistContoller;
 
 Route::controller(UserAuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -55,7 +57,18 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('/location-group/{groupID}', [LocationGroupContoller::class, 'show']);
 
     //! Route for location Reach
-    Route::get('/location-reach/{groupID}/{puzzelID}', [LocationReachContoller::class, 'set_location_reach']);
+    Route::post('/location-reach/{groupID}/{puzzelID}', [LocationReachContoller::class, 'set_location_reach']);
+
+    //! Route for location group image
+    Route::get('/puzzles', [LocationGroupImageContoller::class, 'index']);
+
+    //! Route for puzzles details
+    Route::get('/puzzle/{puzzleID}', [LocationGroupImageContoller::class, 'show']);
+
+
+    //! Route for wish list
+    Route::get('/wishlist/toggle/{locationID}', [WishlistContoller::class, 'toggleWishlist']);
+    Route::get('/wishlists', [WishlistContoller::class, 'index']);
 });
 
 

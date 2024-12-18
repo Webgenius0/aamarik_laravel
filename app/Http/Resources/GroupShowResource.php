@@ -19,7 +19,7 @@ class GroupShowResource extends JsonResource
         return [
             'id'   => $this->id,
             'name' => $this->name,
-            'puzzels' => $this->images->map(function ($image) {
+            'puzzles' => $this->images->map(function ($image) {
                 return [
                     'id'      => $image->id,
                     'avatar'  => $image->avatar,
