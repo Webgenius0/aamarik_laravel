@@ -10,6 +10,8 @@ use App\Http\Controllers\API\RepliesController;
 use App\Http\Controllers\API\BookmarkController;
 use App\Http\Controllers\API\UserAuthController;
 use App\Http\Controllers\API\CommunityController;
+use App\Http\Controllers\API\LocationGroupContoller;
+use App\Http\Controllers\API\LocationReachContoller;
 use App\Http\Controllers\API\MessagingController;
 use App\Http\Controllers\API\NewsLetterController;
 use App\Http\Controllers\API\WebHooksController;
@@ -46,6 +48,14 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     // Verse
     Route::get('/verse', [UserController::class, 'getVerse']);
+
+
+    //! Route for location group
+    Route::get('/location-groups', [LocationGroupContoller::class, 'index']);
+    Route::get('/location-group/{groupID}', [LocationGroupContoller::class, 'show']);
+
+    //! Route for location Reach
+    Route::get('/location-reach/{groupID}/{puzzelID}', [LocationReachContoller::class, 'set_location_reach']);
 });
 
 

@@ -32,4 +32,10 @@ class LocationGroupImage extends Model
     {
         return $this->belongsTo(LocationGroup::class);
     }
+
+    // A location group image belongs to a location
+    public function location()
+    {
+        return $this->belongsTo(Location::class, 'location_id');
+    }
 }
