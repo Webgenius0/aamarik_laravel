@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PuzzelReachResource;
+use App\Models\Location;
 use App\Models\LocationGroup;
 use App\Models\LocationGroupImage;
 use App\Models\LocationReach;
@@ -14,39 +15,42 @@ class LocationReachContoller extends Controller
     /**
      * set location reach
      */
-    public function set_location_reach($groupID, $puzzelID)
+    public function set_location_reach(Request $request)
     {
+        $latitude  = $request->input('lat');
+        $longitude = $request->input('long');
+
         try {
+            //get current user
+            $user = auth()->user();
+
             //check if groupID and puzzelID are valid
-            if ($groupID == null || $puzzelID == null) {
-                return $this->sendError('Invalid groupID or puzzelID', 400);
-            }
-
-            //find the location group with the given ID
-            $locationGroup = LocationGroup::find($groupID);
-            if (!$locationGroup) {
-                return $this->sendResponse((object)[], 'Location group not found');
+            if ($latitude == null || $longitude == null) {
+                return $this->sendError('Invalid latitude or longitude', [], 400);
             }
 
 
-            //find the puzzel with the given ID
-            $puzzel = LocationGroupImage::find($puzzelID);
-            if (!$puzzel) {
-                return $this->sendResponse((object)[], 'Puzzel not found');
+            //find the location
+            $location = Location::where('latitude', $latitude)->where('longitude', $longitude)->first();
+            if (!$location) {
+                return $this->sendError('Location not found', [], 404);
             }
 
+            //find location group image with the location ID
+            $puzzle = LocationGroupImage::where('location_id', $location->id)->first();
 
-            //check alrady reach this puzzel
-            $locationReach = LocationReach::where('group_id', $groupID)->where('image_id', $puzzelID)->first();
-            if ($locationReach) {
+
+
+            $puzzleReach = LocationReach::where('user_id', $user->id)->where('group_id', $puzzle->locationGroup->id)->where('image_id', $puzzle->id)->first();
+
+            if ($puzzleReach) {
                 return $this->sendResponse([], 'Already reach this puzzel');
             }
-
             //set the location reach
             $locationReach = LocationReach::create([
-                'user_id'  => auth()->user()->id,
-                'group_id' => $groupID,
-                'image_id' => $puzzelID,
+                'user_id'  => $user->id,
+                'group_id' => $puzzle->locationGroup->id,
+                'image_id' => $puzzle->id,
             ]);
 
             return $this->sendResponse(new PuzzelReachResource($locationReach), 'Location reach set successfully');

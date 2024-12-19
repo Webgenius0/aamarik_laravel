@@ -57,7 +57,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('/location-group/{groupID}', [LocationGroupContoller::class, 'show']);
 
     //! Route for location Reach
-    Route::post('/location-reach/{groupID}/{puzzelID}', [LocationReachContoller::class, 'set_location_reach']);
+    Route::post('/location-reach', [LocationReachContoller::class, 'set_location_reach']);
 
     //! Route for location group image
     Route::get('/puzzles', [LocationGroupImageContoller::class, 'index']);
