@@ -10,6 +10,7 @@ use App\Http\Controllers\API\RepliesController;
 use App\Http\Controllers\API\BookmarkController;
 use App\Http\Controllers\API\UserAuthController;
 use App\Http\Controllers\API\CommunityController;
+use App\Http\Controllers\API\FriendshipController;
 use App\Http\Controllers\API\LeaderboardController;
 use App\Http\Controllers\API\LocationGroupContoller;
 use App\Http\Controllers\API\LocationGroupImageContoller;
@@ -74,7 +75,11 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     //! Route for Leaderboard
     Route::get('/leaderboard', [LeaderboardController::class, 'index']);
-    Route::get('/leaderboard/{locationID}', [LeaderboardController::class, 'show']);
+
+
+    //! Route for friendship toggle
+    Route::get('/friendship/toggle/{friendID}', [FriendshipController::class, 'friendship']);
+
 });
 
 
