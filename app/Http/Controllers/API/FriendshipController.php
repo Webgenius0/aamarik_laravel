@@ -3,11 +3,32 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\FriendsResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class FriendshipController extends Controller
 {
+    /**
+     * List of following all friends
+     */
+    public function index()
+    {
+        try {
+            // Get the authenticated user
+            $currentUser = auth()->user();
+
+            // Get the list of friends
+            $friends = $currentUser->following;
+
+            return $this->sendResponse(FriendsResource::collection($friends), $friends ? 'Friends fetched successfully' : 'No friends found');
+        } catch (\Throwable $th) {
+            return $this->sendError('Error fetching friends', $th->getMessage());
+        }
+    }
+
+
+
     /**
      * Follow and unfollow a user
      */
