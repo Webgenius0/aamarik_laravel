@@ -35,12 +35,41 @@ class FriendshipController extends Controller
             // Get the list of friends
             $friends = $leader->following;
 
-            return $this->sendResponse(FriendsResource::collection($friends),$friends->isEmpty() ? 'No friends found' : 'Friends fetched successfully');
+            return $this->sendResponse(FriendsResource::collection($friends),$friends->isEmpty() ? 'No Following friends found' : 'Following Friends fetched successfully');
         } catch (\Throwable $th) {
             return $this->sendError('Error fetching friends', $th->getMessage());
         }
     }
 
+
+    /**
+     * List of follower friends with Leader profile by ID or if not provided then show the current user profile
+     */
+     public function follower(Request $request)
+     {
+         try {
+             $leaderID = $request->input('leaderID');
+
+             // If leaderID is provided, find the user by ID
+             if ($leaderID) {
+                 $leader = User::find($leaderID);
+
+                 // If the user doesn't exist, return a 404 response
+                 if (!$leader) {
+                     return $this->sendResponse((object)[], 'Leader not found');
+                 }
+             } else {
+                 $leader = auth()->user();
+             }
+
+             // Get the list of friends
+             $friends = $leader->followers;
+
+             return $this->sendResponse(FriendsResource::collection($friends),$friends->isEmpty() ? 'No Follower friends found' : 'Follower Friends fetched successfully');
+         } catch (\Throwable $th) {
+             return $this->sendError('Error fetching friends', $th->getMessage());
+         }
+     }
 
     /**
      * Follow and unfollow a user
