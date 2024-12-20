@@ -53,6 +53,10 @@ class LocationReachContoller extends Controller
                 'image_id' => $puzzle->id,
             ]);
 
+            //add points to the user
+            $user->points += $puzzle->location->points;
+            $user->save();
+
             return $this->sendResponse(new PuzzelReachResource($locationReach), 'Location reach set successfully');
         } catch (\Throwable $th) {
             //throw $th;
