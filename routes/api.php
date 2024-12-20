@@ -10,6 +10,7 @@ use App\Http\Controllers\API\RepliesController;
 use App\Http\Controllers\API\BookmarkController;
 use App\Http\Controllers\API\UserAuthController;
 use App\Http\Controllers\API\CommunityController;
+use App\Http\Controllers\API\LeaderboardController;
 use App\Http\Controllers\API\LocationGroupContoller;
 use App\Http\Controllers\API\LocationGroupImageContoller;
 use App\Http\Controllers\API\LocationReachContoller;
@@ -69,6 +70,11 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     //! Route for wish list
     Route::get('/wishlist/toggle/{locationID}', [WishlistContoller::class, 'toggleWishlist']);
     Route::get('/wishlists', [WishlistContoller::class, 'index']);
+
+
+    //! Route for Leaderboard
+    Route::get('/leaderboard', [LeaderboardController::class, 'index']);
+    Route::get('/leaderboard/{locationID}', [LeaderboardController::class, 'show']);
 });
 
 
