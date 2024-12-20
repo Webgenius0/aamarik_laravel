@@ -7,26 +7,39 @@ use App\Http\Resources\FriendsResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 
+use function PHPUnit\Framework\isEmpty;
+
 class FriendshipController extends Controller
 {
+
     /**
-     * List of following all friends
+     * List of following friends with Leader profile by ID or if not provided then show the current user profile
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            // Get the authenticated user
-            $currentUser = auth()->user();
+            $leaderID = $request->input('leaderID');
+
+            // If leaderID is provided, find the user by ID
+            if ($leaderID) {
+                $leader = User::find($leaderID);
+
+                // If the user doesn't exist, return a 404 response
+                if (!$leader) {
+                    return $this->sendResponse((object)[], 'Leader not found');
+                }
+            } else {
+                $leader = auth()->user();
+            }
 
             // Get the list of friends
-            $friends = $currentUser->following;
+            $friends = $leader->following;
 
-            return $this->sendResponse(FriendsResource::collection($friends), $friends ? 'Friends fetched successfully' : 'No friends found');
+            return $this->sendResponse(FriendsResource::collection($friends),$friends->isEmpty() ? 'No friends found' : 'Friends fetched successfully');
         } catch (\Throwable $th) {
             return $this->sendError('Error fetching friends', $th->getMessage());
         }
     }
-
 
 
     /**

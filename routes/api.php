@@ -81,7 +81,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     //! Route for friendship toggle
     Route::get('/friendship/toggle/{friendID}', [FriendshipController::class, 'friendship']);
-    Route::get('/friendships', [FriendshipController::class, 'index']);//! Route for following friends
+     //! Route for  following friends with Leader profile by ID or if not provided then show the current user profile
+    Route::post('/friendships', [FriendshipController::class, 'index']);
 
 });
 
