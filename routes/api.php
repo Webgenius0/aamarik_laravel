@@ -75,6 +75,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     //! Route for Leaderboard
     Route::get('/leaderboard', [LeaderboardController::class, 'index']);
+    //! Route for show Leader profile by ID or if not provided then show the current user profile
+    Route::post('/leader', [LeaderboardController::class, 'show']);
 
 
     //! Route for friendship toggle
