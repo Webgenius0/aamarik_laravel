@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -40,7 +41,7 @@ class LocationShowResource extends JsonResource
     {
         //get currect auth user
         $user = auth()->user();
-        $is_wishlist = $user->wishlists->where('location_id', $locationID)->first();
+        $is_wishlist = Wishlist::where('user_id', $user->id)->where('location_id', $locationID)->first();
         return $is_wishlist ? 'yes' : 'no';
     }
 }
