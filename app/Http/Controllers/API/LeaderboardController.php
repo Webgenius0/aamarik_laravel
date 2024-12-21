@@ -133,7 +133,11 @@ class LeaderboardController extends Controller
         $totalPointsWithoutLeader = User::where('role', '!=', 'admin')
             ->sum('points');
 
-        $leaderPoint = $leader->points . '/' . $totalPointsWithoutLeader;
+        $leaderPoint = [
+            'leader_points' => $leader->points,
+            'total_points' => (int)$totalPointsWithoutLeader,
+            '%' => $totalPointsWithoutLeader == 0 ? 0 : ($leader->points / $totalPointsWithoutLeader) * 100
+        ];
 
         return $leaderPoint;
     }
