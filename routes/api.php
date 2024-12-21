@@ -10,6 +10,7 @@ use App\Http\Controllers\API\RepliesController;
 use App\Http\Controllers\API\BookmarkController;
 use App\Http\Controllers\API\UserAuthController;
 use App\Http\Controllers\API\CommunityController;
+use App\Http\Controllers\API\FirebaseTokenController;
 use App\Http\Controllers\API\FriendshipController;
 use App\Http\Controllers\API\LeaderboardController;
 use App\Http\Controllers\API\LocationGroupContoller;
@@ -19,6 +20,7 @@ use App\Http\Controllers\API\MessagingController;
 use App\Http\Controllers\API\NewsLetterController;
 use App\Http\Controllers\API\WebHooksController;
 use App\Http\Controllers\API\WishlistContoller;
+use App\Models\FirebaseTokens;
 
 Route::controller(UserAuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -95,3 +97,10 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('/follower/friendships', 'follower');         //! Route for  follower friends with Leader profile by ID or if not provided then show the current user profile
     }); // End of Leaderboard Controller
 });
+
+//! Route for Firebase Token  Controller
+Route::controller(FirebaseTokenController::class)->group(function () {
+    Route::post('/firebase/token/add', 'store');
+    Route::post('/firebase/token/get', 'getToken');
+    Route::post('/firebase/token/detele', 'deleteToken');
+}); // End of Firebase Token Controller

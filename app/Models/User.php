@@ -89,4 +89,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(User::class, 'friendships', 'followed_id', 'follower_id');
     }
+
+    // Relationship: User has many FirebaseTokens
+    public function firebaseTokens()
+    {
+        return $this->hasMany(FirebaseTokens::class);
+    }
 }
