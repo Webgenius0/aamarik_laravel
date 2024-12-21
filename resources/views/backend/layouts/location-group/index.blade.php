@@ -135,7 +135,7 @@
                             <label for="groupName" class="block text-sm font-medium text-gray-700">Group Name</label>
                             <input type="text" id="groupName" name="group_name" placeholder="Enter group name"
                                 class="mt-1 block w-full border rounded-md p-2 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                                required />
+                                value="{{ old('group_name') }}" required />
                         </fieldset>
                         <div class="grid grid-cols-3 gap-4 mb-6">
                             @for ($i = 0; $i < 9; $i++)
@@ -160,7 +160,7 @@
                                                 <input type="file" id="slot-image-{{ $i }}"
                                                     name="slotImages[]"
                                                     class="mt-1 block w-full border rounded-md p-2 border-gray-300"
-                                                    accept="image/*" />
+                                                    accept="image/jpeg, image/png, image/jpg, image/gif" onchange="validateFile(this)" />
                                             </fieldset>
                                             <fieldset>
                                                 <label class="block text-sm font-medium text-gray-700"
@@ -169,7 +169,9 @@
                                                     class="mt-1 block w-full border rounded-md p-2 border-gray-300">
                                                     <option value="" selected disabled>Select a Location</option>
                                                     @forelse ($locations as $location)
-                                                        <option value="{{ $location->id }}">{{ $location->title }}</option>
+                                                        <option value="{{ $location->id }}"
+                                                            {{ old('slotLocation.' . $i) == $location->id ? 'selected' : '' }}>
+                                                            {{ $location->title }}</option>
                                                     @empty
                                                         <option value="">No Locations Available</option>
                                                     @endforelse
@@ -267,6 +269,28 @@
             });
         });
 
+        // Function to validate file size and type
+        function validateFile(input) {
+            const file = input.files[0];
+
+            if (file) {
+                // Validate file type
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Invalid file type. Only jpeg, png, jpg, gif are allowed.');
+                    input.value = ''; // Clear the file input
+                    return;
+                }
+
+                // Validate file size (2MB = 2048 KB)
+                const maxSize = 2048 * 1024; // 2048 KB in bytes
+                if (file.size > maxSize) {
+                    alert('File is too large. Maximum file size is 2MB.');
+                    input.value = ''; // Clear the file input
+                    return;
+                }
+            }
+        }
 
         //add location group
         const slotBoxes = document.querySelectorAll(".slot-box");
@@ -326,8 +350,8 @@
 
 
 
-         // delete Confirm
-         function showDeleteConfirm(id) {
+        // delete Confirm
+        function showDeleteConfirm(id) {
             event.preventDefault();
             Swal.fire({
                 title: 'Are you sure you want to delete this record?',
