@@ -18,12 +18,13 @@ class LeadersResource extends JsonResource
     {
         // return parent::toArray($request);
         return [
-            'id'     => $this->id,
-            'name'   => $this->name,
-            'avatar' => $this->avatar,
-            'points' => $this->points,
-            'level'  => $this->levelCalculation($this->id),
-            'rank'   => $this->rankCalculation(),
+            'id'        => $this->id,
+            'name'      => $this->name,
+            'avatar'    => $this->avatar,
+            'points'    => $this->points,
+            'level'     => $this->levelCalculation($this->id),
+            'rank'      => $this->rankCalculation(),
+            'is_follow' => $this->isFollowing($this->id),
         ];
     }
 
@@ -71,5 +72,23 @@ class LeadersResource extends JsonResource
             }
         }
         return $level; // Return the calculated level
+    }
+
+    /**
+     * check if the current user is following the leader or check it's own profile
+     */
+    private function isFollowing($leaderID)
+    {
+        // Retrieve the current user
+        $currentUser = auth()->user();
+
+        // If the current user is the leader, return 'self'
+        if ($currentUser->id == $leaderID) {
+            return 'self';
+        } else {
+            // Check if the user is already following the friend
+            $isFollowing = $currentUser->following()->where('followed_id', $leaderID)->exists();
+            return $isFollowing ? 'yes' : 'no';
+        }
     }
 }
