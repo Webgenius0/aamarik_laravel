@@ -75,9 +75,9 @@ class User extends Authenticatable implements JWTSubject
     //define relactionship wishlists
     public function wishlists()
     {
-        return $this->hasMany(Wishlist::class);
+        return $this->hasMany(WishList::class);
     }
-    
+
     // Relationship for users that this user is following
     public function following()
     {
