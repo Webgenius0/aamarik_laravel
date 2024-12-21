@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
 use App\Http\Requests\LocationRequest;
+use App\Models\User;
+use App\Notifications\SendChallengeNotifyUser;
 use Yajra\DataTables\Facades\DataTables;
 
 class LocationController extends Controller
@@ -21,7 +23,7 @@ class LocationController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Location::latest(); 
+            $data = Location::latest();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('title', function ($data) {
@@ -73,7 +75,7 @@ class LocationController extends Controller
     {
         try {
             $validated = $request->only(['title', 'address', 'latitude', 'longitude','subtitle','image','information','map_image','map_url','points','puzzle_image']);
-            
+
             if ($request->hasFile('image')) {
                 $rand = Str::random(10);
                 $url = Helper::fileUpload($request->file('image'), 'location', $rand);
@@ -93,6 +95,17 @@ class LocationController extends Controller
             }
 
             Location::create($validated);
+
+            //send notification to all users
+            $users = User::where('role', 'user')->get();
+            foreach ($users as $user) {
+                $data = [
+                    'title'   => 'New Location Added',
+                    'message' => 'New Location Added',
+                ];
+                $user->notify(new SendChallengeNotifyUser($data, $user));
+            }
+
 
             flash()->addSuccess('Location created successfully');
 
@@ -134,7 +147,7 @@ class LocationController extends Controller
                 return redirect()->route('location.index');
             }
             $validated = $request->only(['title', 'address', 'latitude', 'longitude','subtitle','information','map_url','points']);
-            
+
             if ($request->hasFile('image')) {
                 $rand = Str::random(10);
                 $url = Helper::fileUpload($request->file('image'), 'location', $rand);
