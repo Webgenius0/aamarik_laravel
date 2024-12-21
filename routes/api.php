@@ -37,53 +37,61 @@ Route::controller(UserAuthController::class)->group(function () {
 });
 
 Route::group(['middleware' => ['jwt.verify']], function () {
-    Route::post('logout', [UserAuthController::class, 'logout']);
-    Route::get('me', [UserAuthController::class, 'me']);
-    Route::post('refresh', [UserAuthController::class, 'refresh']);
 
-    Route::delete('/delete/user', [UserController::class, 'deleteUser']);
-
-
-    Route::post('change-password', [UserController::class, 'changePassword']);
-    Route::post('user-update', [UserController::class, 'updateUserInfo']);
-
-    // Get Notifications
-    Route::get('/my-notifications', [UserController::class, 'getMyNotifications']);
-
-    // Verse
-    Route::get('/verse', [UserController::class, 'getVerse']);
+    //! Route for User  Controller
+    Route::controller(UserController::class)->group(function () {
+        Route::post('change-password', 'changePassword');
+        Route::post('user-update',  'updateUserInfo');
+        Route::get('/my-notifications', 'getMyNotifications');
+        Route::delete('/delete/user', 'deleteUser');
+    }); // End of User Controller
 
 
-    //! Route for location group
-    Route::get('/location-groups', [LocationGroupContoller::class, 'index']);
-    Route::get('/location-group/{groupID}', [LocationGroupContoller::class, 'show']);
+    //! Route for User Auth  Controller
+    Route::controller(UserAuthController::class)->group(function () {
+        Route::post('logout', 'logout');
+        Route::get('me', 'me');
+        Route::post('refresh', 'refresh');
+    }); // End of User Auth Controller
 
-    //! Route for location Reach
+
+    //! Route for location group  Controller
+    Route::controller(LocationGroupContoller::class)->group(function () {
+        Route::get('/location-groups',  'index');
+        Route::get('/location-group/{groupID}', 'show');
+    }); // End of location group Controller
+
+
+    //! Route for location Reach Controller
     Route::post('/location-reach', [LocationReachContoller::class, 'set_location_reach']);
 
-    //! Route for location group image
-    Route::get('/puzzles', [LocationGroupImageContoller::class, 'index']);
 
-    //! Route for puzzles details
-    Route::get('/puzzle/{puzzleID}', [LocationGroupImageContoller::class, 'show']);
-
-
-    //! Route for wish list
-    Route::get('/wishlist/toggle/{locationID}', [WishlistContoller::class, 'toggleWishlist']);
-    Route::get('/wishlists', [WishlistContoller::class, 'index']);
+    //! Route for location group image  Controller
+    Route::controller(LocationGroupImageContoller::class)->group(function () {
+        Route::get('/puzzles',  'index'); //! Route for location group image
+        Route::get('/puzzle/{puzzleID}', 'show'); //! Route for puzzles details
+    }); // End of location group image Controller
 
 
-    //! Route for Leaderboard
-    Route::get('/leaderboard', [LeaderboardController::class, 'index']);
-    //! Route for show Leader profile by ID or if not provided then show the current user profile
-    Route::post('/leader', [LeaderboardController::class, 'show']);
+    //! Route for wish list  Controller
+    Route::controller(WishlistContoller::class)->group(function () {
+        Route::get('/wishlist/toggle/{locationID}', 'toggleWishlist');
+        Route::get('/wishlists',  'index');
+    }); // End of wish list Controller
 
 
-    //! Route for friendship toggle
-    Route::get('/friendship/toggle/{friendID}', [FriendshipController::class, 'friendship']);
-    //! Route for  following friends with Leader profile by ID or if not provided then show the current user profile
-    Route::post('/friendships', [FriendshipController::class, 'index']);
+    //! Route for Leaderboard  Controller
+    Route::controller(LeaderboardController::class)->group(function () {
+        Route::get('/leaderboard',  'index'); //! Route for Leaderboard
+        Route::post('/leader', 'show'); //! Route for show Leader profile by ID or if not provided then show the current user profile
+    }); // End of Leaderboard Controller
 
-    //! Route for  follower friends with Leader profile by ID or if not provided then show the current user profile
-    Route::post('/follower/friendships', [FriendshipController::class, 'follower']);
+
+
+    //! Route for Leaderboard  Controller
+    Route::controller(FriendshipController::class)->group(function () {
+        Route::get('/friendship/toggle/{friendID}',  'friendship');        //! Route for friendship toggle
+        Route::post('/friendships', 'index'); //! Route for  following friends with Leader profile by ID or if not provided then show the current user profile
+        Route::post('/follower/friendships', 'follower');         //! Route for  follower friends with Leader profile by ID or if not provided then show the current user profile
+    }); // End of Leaderboard Controller
 });
