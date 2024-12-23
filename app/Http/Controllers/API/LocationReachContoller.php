@@ -15,25 +15,16 @@ class LocationReachContoller extends Controller
     /**
      * set location reach
      */
-    public function set_location_reach(Request $request)
+    public function set_location_reach($locationID)
     {
-        $latitude  = $request->input('lat');
-        $longitude = $request->input('long');
-
         try {
             //get current user
             $user = auth()->user();
 
-            //check if groupID and puzzelID are valid
-            if ($latitude == null || $longitude == null) {
-                return $this->sendError('Invalid latitude or longitude', [], 400);
-            }
-
-
-            //find the location
-            $location = Location::where('latitude', $latitude)->where('longitude', $longitude)->first();
+            //find the location with the location ID
+            $location = Location::find($locationID);
             if (!$location) {
-                return $this->sendError('Location not found', [], 404);
+                return $this->sendResponse((object)[], 'Location not found');
             }
 
             //find location group image with the location ID

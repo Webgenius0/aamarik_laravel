@@ -68,7 +68,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
 
     //! Route for location Reach Controller
-    Route::post('/location-reach', [LocationReachContoller::class, 'set_location_reach']);
+    Route::get('/location-reach/{locationID}', [LocationReachContoller::class, 'set_location_reach']);
 
 
     //! Route for location group image  Controller
