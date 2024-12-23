@@ -13,6 +13,7 @@ use App\Http\Controllers\API\CommunityController;
 use App\Http\Controllers\API\FirebaseTokenController;
 use App\Http\Controllers\API\FriendshipController;
 use App\Http\Controllers\API\LeaderboardController;
+use App\Http\Controllers\API\LocationController;
 use App\Http\Controllers\API\LocationGroupContoller;
 use App\Http\Controllers\API\LocationGroupImageContoller;
 use App\Http\Controllers\API\LocationReachContoller;
@@ -56,6 +57,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('refresh', 'refresh');
     }); // End of User Auth Controller
 
+    //! Route for Location Controller
+    Route::get('/locations', [LocationController::class, 'index']);
 
     //! Route for location group  Controller
     Route::controller(LocationGroupContoller::class)->group(function () {
