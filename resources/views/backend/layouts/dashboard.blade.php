@@ -15,8 +15,7 @@
                 <div class="p-5 flex items-center justify-between">
                     <span>
                         <span class="text-slate-400 font-semibold block">Total Users</span>
-                        <span class="text-xl font-semibold"><span></span></span>
-                        <span class="text-xl font-semibold"><span></span></span>
+                        <span class="text-xl font-semibold"><span></span>{{ $total_users }}</span>
                     </span>
 
                     <span
@@ -34,18 +33,18 @@
             <div class="card">
                 <div class="p-5 flex items-center justify-between">
                     <span>
-                        <span class="text-slate-400 font-semibold block">Revenue</span>
-                        <span class="text-xl font-semibold">$<span>7564</span></span>
+                        <span class="text-slate-400 font-semibold block">Active Location</span>
+                        <span class="text-xl font-semibold"><span></span>{{ $total_locations }}</span>
                     </span>
 
                     <span
                         class="flex justify-center items-center h-14 w-14 bg-blue-600/5 shadow shadow-blue-600/5 text-blue-600">
-                        <i class="uil uil-dollar-sign-alt text-xl"></i>
+                        <i class="uil uil-location-point text-xl"></i>
                     </span>
                 </div>
 
                 <div class="px-5 py-4 bg-slate-50">
-                    <a href="#"
+                    <a href="{{ route('location.index') }}"
                         class="relative inline-block font-semibold tracking-wide align-middle text-base text-center border-none after:content-[''] after:absolute after:h-px after:w-0 hover:after:w-full after:end-0 hover:after:end-auto after:bottom-0 after:start-0 after:transition-all after:duration-500 text-blue-600 hover:text-blue-600 after:bg-blue-600">View
                         data <i class="uil uil-arrow-right"></i></a>
                 </div>
@@ -54,18 +53,19 @@
             <div class="card">
                 <div class="p-5 flex items-center justify-between">
                     <span>
-                        <span class="text-slate-400 font-semibold block">Chats</span>
-                        <span class="text-xl font-semibold"><span></span>+</span>
+                        <span class="text-slate-400 font-semibold block">Location Group</span>
+                        <span class="text-xl font-semibold"><span></span>{{ $total_location_groups }}</span>
                     </span>
 
                     <span
                         class="flex justify-center items-center h-14 w-14 bg-blue-600/5 shadow shadow-blue-600/5 text-blue-600">
-                        <i class="uil uil-shopping-bag text-xl"></i>
+                        <i class="uil uil-map-marker text-xl"></i>
+
                     </span>
                 </div>
 
                 <div class="px-5 py-4 bg-slate-50">
-                    <a href="#"
+                    <a href="{{ route('group.index') }}"
                         class="relative inline-block font-semibold tracking-wide align-middle text-base text-center border-none after:content-[''] after:absolute after:h-px after:w-0 hover:after:w-full after:end-0 hover:after:end-auto after:bottom-0 after:start-0 after:transition-all after:duration-500 text-blue-600 hover:text-blue-600 after:bg-blue-600">View
                         data <i class="uil uil-arrow-right"></i></a>
                 </div>
@@ -74,32 +74,14 @@
             <div class="card">
                 <div class="p-5 flex items-center justify-between">
                     <span>
-                        <span class="text-slate-400 font-semibold block">Verse</span>
+                        <span class="text-slate-400 font-semibold block">Today Reach Location</span>
                         <span class="text-xl font-semibold"><span></span></span>
                     </span>
 
                     <span
                         class="flex justify-center items-center h-14 w-14 bg-blue-600/5 shadow shadow-blue-600/5 text-blue-600">
-                        <i class="uil uil-store text-xl"></i>
-                    </span>
-                </div>
+                        <i class="uil uil-puzzle-piece text-xl"></i>
 
-                <div class="px-5 py-4 bg-slate-50">
-                    <a href="#"
-                        class="relative inline-block font-semibold tracking-wide align-middle text-base text-center border-none after:content-[''] after:absolute after:h-px after:w-0 hover:after:w-full after:end-0 hover:after:end-auto after:bottom-0 after:start-0 after:transition-all after:duration-500 text-blue-600 hover:text-blue-600 after:bg-blue-600">View
-                        data <i class="uil uil-arrow-right"></i></a>
-                </div>
-            </div><!--end-->
-            <div class="card">
-                <div class="p-5 flex items-center justify-between">
-                    <span>
-                        <span class="text-slate-400 font-semibold block">Verse</span>
-                        <span class="text-xl font-semibold"><span>486</span></span>
-                    </span>
-
-                    <span
-                        class="flex justify-center items-center h-14 w-14 bg-blue-600/5 shadow shadow-blue-600/5 text-blue-600">
-                        <i class="uil uil-store text-xl"></i>
                     </span>
                 </div>
 

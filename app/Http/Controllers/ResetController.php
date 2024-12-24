@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Artisan;
 
 class ResetController extends Controller
 {
-        /**
+    /**
      * Reset Database and Optimize Clear
      *
      * @return JsonResponse
@@ -22,10 +22,10 @@ class ResetController extends Controller
 
         // Check if there are any errors in the output
         if ($migrateOutput !== 0 || $optimizeOutput !== 0) {
-            return $this->sendError('An error occurred while running migrations or clearing cache.',[], 500);
+            return $this->sendError('An error occurred while running migrations or clearing cache.', [], 500);
         }
 
-        return $this->sendResponse([],'Database and cache successfully reset and cleared.');
+        return $this->sendResponse([], 'Database and cache successfully reset and cleared.');
     }
 
 
@@ -36,9 +36,9 @@ class ResetController extends Controller
 
         // Check if there are any errors in the output
         if ($optimizeOutput !== 0) {
-            return $this->sendError('An error occurred while clearing cache.',[], 500);
+            return $this->sendError('An error occurred while clearing cache.', [], 500);
         }
-        return $this->sendResponse([],'Cache successfully cleared.');
+        return $this->sendResponse([], 'Cache successfully cleared.');
     }
 
     public function dumpAutoLoad(): JsonResponse
@@ -48,10 +48,10 @@ class ResetController extends Controller
 
         // Check if there are any errors in the output
         if ($composerOutput !== 0) {
-            return $this->sendError('An error occurred while updating the autoloader.',[], 500);
+            return $this->sendError('An error occurred while updating the autoloader.', [], 500);
         }
 
-        return $this->sendResponse([],'Autoloader updated successfully.');
+        return $this->sendResponse([], 'Autoloader updated successfully.');
     }
 
     public function composerUpdate(): JsonResponse
@@ -61,25 +61,29 @@ class ResetController extends Controller
 
         // Check if there are any errors in the output
         if ($composerOutput !== 0) {
-            return $this->sendError('An error occurred while updating composer.',[], 500);
+            return $this->sendError('An error occurred while updating composer.', [], 500);
         }
 
-        return $this->sendResponse([],'Composer updated successfully.');
+        return $this->sendResponse([], 'Composer updated successfully.');
     }
 
 
     public function comand($comand): JsonResponse
     {
-        // Capture the output of the Artisan command
-        $exitCode = Artisan::call($comand);
 
-        // Check if the command was successful
-        if ($exitCode !== 0) {
-            return $this->sendError('An error occurred while running the command: ' . $comand,[], 500);
+        try {
+            $exitCode = Artisan::call($comand);
+            return response()->json([
+                'status' => true,
+                'message' => Artisan::output(),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'An error occurred while running the command: ' . $comand,
+                'error' => $e->getMessage(),
+                'code' => 500,
+            ]);
         }
-
-        // Optionally, capture the output of the Artisan command for logging or debugging
-        $output = Artisan::output();
-        return $this->sendResponse([],'Command executed successfully: ' . $output);
     }
 }

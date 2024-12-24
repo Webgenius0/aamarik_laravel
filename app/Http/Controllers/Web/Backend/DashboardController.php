@@ -8,13 +8,17 @@ use App\Models\Messaging;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Location;
+use App\Models\LocationGroup;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-
-        return view('backend.layouts.dashboard');
+        $total_users = User::where('role', 'user')->count();
+        $total_locations = Location::where('status', 'active')->count();
+        $total_location_groups = LocationGroup::count();
+        return view('backend.layouts.dashboard', compact('total_users','total_locations','total_location_groups'));
     }
 
      /**
