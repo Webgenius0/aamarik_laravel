@@ -51,7 +51,7 @@ class LocationController extends Controller
                         </a>
                     </div>';
                 })
-                ->rawColumns(['title', 'image','puzzle_image','status', 'action'])
+                ->rawColumns(['title', 'image', 'puzzle_image', 'status', 'action'])
                 ->make(true);
         }
         return view('backend.layouts.location.index');
@@ -74,7 +74,15 @@ class LocationController extends Controller
     public function store(LocationRequest $request)
     {
         try {
-            $validated = $request->only(['title', 'address', 'latitude', 'longitude','subtitle','image','information','map_image','map_url','points','puzzle_image']);
+            $validated = $request->only(['title', 'address', 'latitude', 'longitude', 'subtitle', 'image', 'information', 'map_image', 'map_url', 'points', 'puzzle_image']);
+
+
+            //check if already exists or not latutude and longitude
+            $location = Location::where('latitude', $request->latitude)->where('longitude', $request->longitude)->first();
+            if ($location) {
+                flash()->error('Location already exists');
+                return redirect()->back()->withInput();
+            }
 
             if ($request->hasFile('image')) {
                 $rand = Str::random(10);
@@ -88,20 +96,20 @@ class LocationController extends Controller
                 $validated['map_image'] = $url;
             }
 
-            if($request->hasFile('puzzle_image')){
+            if ($request->hasFile('puzzle_image')) {
                 $rand = Str::random(10);
                 $url = Helper::fileUpload($request->file('puzzle_image'), 'location', $rand);
                 $validated['puzzle_image'] = $url;
             }
 
-            Location::create($validated);
+            $location = Location::create($validated);
 
             //send notification to all users
             $users = User::where('role', 'user')->get();
             foreach ($users as $user) {
                 $data = [
-                    'title'   => 'New Location Added',
-                    'message' => 'New Location Added',
+                    'title'   =>  $location->title,
+                    'message' =>  $location->address,
                 ];
                 $user->notify(new SendChallengeNotifyUser($data, $user));
             }
@@ -110,12 +118,10 @@ class LocationController extends Controller
             flash()->addSuccess('Location created successfully');
 
             return redirect()->route('location.index');
-
         } catch (\Exception $exception) {
             flash()->error($exception->getMessage());
             return redirect()->back()->withInput();
         }
-
     }
 
     /**
@@ -126,7 +132,7 @@ class LocationController extends Controller
     public function edit($id)
     {
         $location = Location::where('id', $id)->first();
-        if(empty($location)){
+        if (empty($location)) {
             flash()->error('Location not found');
             return redirect()->route('location.index');
         }
@@ -142,11 +148,11 @@ class LocationController extends Controller
     {
         try {
             $location = Location::where('id', $id)->first();
-            if(empty($location)){
+            if (empty($location)) {
                 flash()->error('Location not found');
                 return redirect()->route('location.index');
             }
-            $validated = $request->only(['title', 'address', 'latitude', 'longitude','subtitle','information','map_url','points']);
+            $validated = $request->only(['title', 'address', 'latitude', 'longitude', 'subtitle', 'information', 'map_url', 'points']);
 
             if ($request->hasFile('image')) {
                 $rand = Str::random(10);
@@ -160,7 +166,7 @@ class LocationController extends Controller
                 $validated['map_image'] = $url;
             }
 
-            if($request->hasFile('puzzle_image')){
+            if ($request->hasFile('puzzle_image')) {
                 $rand = Str::random(10);
                 $url = Helper::fileUpload($request->file('puzzle_image'), 'location', $rand);
                 $validated['puzzle_image'] = $url;
@@ -171,7 +177,6 @@ class LocationController extends Controller
             flash()->success('Location Updated successfully');
 
             return redirect()->route('location.index');
-
         } catch (\Exception $exception) {
             flash()->error($exception->getMessage());
             return redirect()->back()->withInput();
@@ -212,15 +217,15 @@ class LocationController extends Controller
     {
         $data = Location::where('id', $id)->first();
 
-        if($data->image || File::exists(public_path($data->image))){
+        if ($data->image || File::exists(public_path($data->image))) {
             File::delete(public_path($data->image));
         }
 
-        if($data->map_image || File::exists(public_path($data->map_image))){
+        if ($data->map_image || File::exists(public_path($data->map_image))) {
             File::delete(public_path($data->map_image));
         }
 
-        if($data->puzzle_image || File::exists(public_path($data->puzzle_image))){
+        if ($data->puzzle_image || File::exists(public_path($data->puzzle_image))) {
             File::delete(public_path($data->puzzle_image));
         }
 
