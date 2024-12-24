@@ -19,6 +19,7 @@ class LocationController extends Controller
                 return [
                     'id'          => $location->id,
                     'title'       => $location->title,
+                    'subtitle'    => $location->subtitle,
                     'address'     => $location->address,
                     'latitude'    => $location->latitude,
                     'longitude'   => $location->longitude,
