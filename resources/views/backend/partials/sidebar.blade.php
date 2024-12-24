@@ -19,6 +19,12 @@
                     <span class="badge bg-primary rounded ms-auto">01</span>
                 </a>
             </li>
+            <li class="menu-item">
+                <a class='menu-link' href='{{route('location.index')}}'>
+                    <span class="menu-icon"><i class="uil uil-compass"></i></span>
+                    <span class="menu-text"> Locations </span>
+                </a>
+            </li>
 
             <li class="menu-item">
                 <a class='menu-link' href='{{route('group.index')}}'>
@@ -27,12 +33,6 @@
                 </a>
             </li>
 
-            <li class="menu-item">
-                <a class='menu-link' href='{{route('location.index')}}'>
-                    <span class="menu-icon"><i class="uil uil-compass"></i></span>
-                    <span class="menu-text"> Locations </span>
-                </a>
-            </li>
 
 
 
