@@ -70,9 +70,10 @@ class ResetController extends Controller
 
     public function comand($comand): JsonResponse
     {
-
         try {
-            $exitCode = Artisan::call($comand);
+            // Add the '--force' flag when in production mode
+            $exitCode = Artisan::call($comand, ['--force' => true]);
+
             return response()->json([
                 'status' => true,
                 'message' => Artisan::output(),
