@@ -46,11 +46,14 @@ class UserAuthController extends Controller
         // Create token for user
         $token = JWTAuth::fromUser($user);
 
-        return $this->success([
-            'user' => $user,
-            'token' => $token,
-        ], 'User successfully registered.',
-            200);
+        return $this->success(
+            [
+                'user' => $user,
+                'token' => $token,
+            ],
+            'User successfully registered.',
+            200
+        );
     }
 
 
@@ -152,7 +155,6 @@ class UserAuthController extends Controller
             'otp_created_at' => null,
         ]);
         return $this->success([], 'Password Reset Successfully', 200);
-
     }
 
     // Resend Otp
@@ -215,9 +217,14 @@ class UserAuthController extends Controller
      */
     public function logout()
     {
-        auth()->logout();
-
-        return response()->json(['message' => 'Successfully logged out']);
+        try {
+            // Invalidate the token
+            JWTAuth::invalidate(JWTAuth::getToken());
+            return $this->sendResponse([], 'User logged out successfully', 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to log out, please try again.'], 500);
+            return $this->sendError('Failed to log out, please try again.' . $e->getMessage(), [], 400);
+        }
     }
 
     /**
