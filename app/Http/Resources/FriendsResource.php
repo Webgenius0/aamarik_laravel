@@ -30,6 +30,10 @@ class FriendsResource extends JsonResource
     {
         // Get the authenticated user
         $currentUser = auth()->user();
+        //if currentUser and friendid same this time return self
+        if ($currentUser->id == $friendID) {
+            return $isFollowing = 'self';
+        }
 
         // Check if the user is already following the friend
         $isFollowing = $currentUser->following()->where('followed_id', $friendID)->exists();
