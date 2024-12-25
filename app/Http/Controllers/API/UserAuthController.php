@@ -222,7 +222,6 @@ class UserAuthController extends Controller
             JWTAuth::invalidate(JWTAuth::getToken());
             return $this->sendResponse([], 'User logged out successfully', 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to log out, please try again.'], 500);
             return $this->sendError('Failed to log out, please try again.' . $e->getMessage(), [], 400);
         }
     }
