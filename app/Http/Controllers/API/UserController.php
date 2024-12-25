@@ -25,28 +25,31 @@ class UserController extends Controller
     public function updateUserInfo(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255',
-            'latitude' => 'required|string|max:255',
-            'longitude' => 'required|string|max:255',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'name'        => 'nullable|string|max:255',
+            'username'    => 'nullable|string|max:255',
+            'latitude'    => 'nullable|string|max:255',
+            'longitude'   => 'nullable|string|max:255',
+            'avatar'      => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'avatar_path' => 'nullable|string',
+
         ]);
 
         if ($validation->fails()) {
             return $this->error([], $validation->errors(), 500);
         }
 
-        try
-        {
+        try {
             $user = User::where('id', Auth::id())->first();
-            $user->name = $request->name;
-            $user->username = $request->username;
-            $user->latitude = $request->latitude;
-            $user->longitude = $request->longitude;
+            $user->name      = $request->name ?? $user->name;
+            $user->username  = $request->username ?? $user->username;
+            $user->latitude  = $request->latitude ?? $user->latitude;
+            $user->longitude = $request->longitude ?? $user->longitude;
 
             if ($request->hasFile('avatar')) {
                 $url = Helper::fileUpload($request->file('avatar'), 'users', $user->name . "-" . time());
                 $user->avatar = $url;
+            } elseif ($request->avatar_path) {
+                $user->avatar = $request->avatar_path; // Save predefined path
             }
 
             $user->save();
@@ -57,7 +60,7 @@ class UserController extends Controller
     }
 
 
-     
+
 
     /**
      * Change Password
@@ -75,8 +78,7 @@ class UserController extends Controller
             return $this->error([], $validation->errors(), 500);
         }
 
-        try
-        {
+        try {
             $user = User::where('id', Auth::id())->first();
             if (password_verify($request->old_password, $user->password)) {
                 $user->password = Hash::make($request->new_password);
@@ -128,7 +130,5 @@ class UserController extends Controller
         } else {
             return $this->error("User not found", 404);
         }
-
     }
-
 }
