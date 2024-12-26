@@ -87,13 +87,16 @@ class LeaderboardController extends Controller
         if ($all !== 'yes') {
             $query->take(2); // Limit the number of puzzles based on the provided value
         }
+        // Execute the query and retrieve the results
+        $puzzleReach = $query->get();
+
         // Check if no results were found
-        if ($query->isEmpty()) {
+        if ($puzzleReach->isEmpty()) {
             return [];
         }
 
         //custom response
-        $response = $query->map(function ($reach) {
+        $response = $puzzleReach->map(function ($reach) {
             return [
                 'id'     => $reach->image->location->id ?? null,
                 'name'   => $reach->group->name ?? null,
