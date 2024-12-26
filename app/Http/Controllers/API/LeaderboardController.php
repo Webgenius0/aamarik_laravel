@@ -59,9 +59,9 @@ class LeaderboardController extends Controller
                 ->latest();
 
             // Add condition to limit the number of puzzles if 'all' is not 'yes'
-            if ($all !== 'yes') {
-                $query->take(1); // Limit the number to 20 if 'all' is not 'yes'
-            }
+            // if ($all !== 'yes') {
+            //     $query->take(1); // Limit the number to 20 if 'all' is not 'yes'
+            // }
 
             // Execute the query and retrieve the results
             $puzzleReach = $query->get();
