@@ -70,11 +70,10 @@ class LeaderboardController extends Controller
     private function getLeaderReachPuzzles($leaderID, $all)
     {
         $puzzleReach  = LocationReach::with(['group', 'user', 'image'])->where('user_id', $leaderID)
-            ->latest()
             ->when($all == 'no', function ($query) {
                 return $query->take(20);
             })
-            ->get();
+            ->latest()->get();
 
         if (empty($puzzleReach)) {
             return  $this->sendResponse([], 'No location group images found');
