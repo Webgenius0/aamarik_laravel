@@ -67,7 +67,7 @@ class LeaderboardController extends Controller
             $puzzleReach = $query->get();
 
 
-            return response($puzzleReach);
+            return response($locationGroupImages);
 
 
 
