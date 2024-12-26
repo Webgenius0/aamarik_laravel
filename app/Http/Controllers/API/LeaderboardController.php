@@ -54,8 +54,6 @@ class LeaderboardController extends Controller
             // Get the leader's reach puzzles
             $locationGroupImages = $this->getLeaderReachPuzzles($leader->id, $all);
 
-            return response($locationGroupImages);
-
             // Check if the result is an array or collection before calling count
             $puzzleStopsVisited = is_array($locationGroupImages) || $locationGroupImages instanceof \Illuminate\Support\Collection
                 ? count($locationGroupImages)
