@@ -85,10 +85,12 @@ class LeaderboardController extends Controller
 
         // Apply the limit only if provided
         if ($all !== 'yes') {
-            $query->take(1); // Limit the number of puzzles based on the provided value
+            $query->take(2); // Limit the number of puzzles based on the provided value
+        }else{
+            return [];
         }
         // Check if no results were found
-        if (!$query) {
+        if ($query->isEmpty()) {
             return [];
         }
 
