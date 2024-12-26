@@ -69,27 +69,22 @@ class LeaderboardController extends Controller
      */
     private function getLeaderReachPuzzles($leaderID, $all)
     {
-        // $puzzleReach  = LocationReach::with(['group', 'user', 'image'])->where('user_id', $leaderID)
-        //     ->when($all == 'no', function ($query) {
-        //         return $query->take(20);
-        //     })
-        //     ->latest()->get();
+        // Default the query for fetching location reach data
+        $query = LocationReach::with(['group', 'user', 'image'])
+            ->where('user_id', $leaderID)
+            ->latest();
 
-
-
-        $puzzleReach = '';
-        if ($all == 'no') {
-            $puzzleReach  = LocationReach::with(['group', 'user', 'image'])->where('user_id', $leaderID)->take(20)->latest();
-        } else {
-            $puzzleReach  = LocationReach::with(['group', 'user', 'image'])->where('user_id', $leaderID)->latest()->get();
+        // Add condition to limit the number of puzzles if 'all' is not 'yes'
+        if ($all !== 'yes') {
+            $query->take(20); // Limit the number to 20 if 'all' is not 'yes'
         }
 
+        // Execute the query and retrieve the results
+        $puzzleReach = $query->get();
 
-        return response($puzzleReach);
-
-
-        if (empty($puzzleReach)) {
-            return  $this->sendResponse([], 'No location group images found');
+        // Check if no results were found
+        if ($puzzleReach->isEmpty()) {
+            return $this->sendResponse([], 'No location group images found');
         }
 
         //custom response
@@ -110,8 +105,6 @@ class LeaderboardController extends Controller
      */
     private function getLeaderReachPuzzlesGroup($leaderID)
     {
-        $leader = User::find($leaderID);
-
         // Get unique group IDs
         $uniqueGroupCount = LocationReach::where('user_id', $leaderID)
             ->distinct('group_id')  // Ensure distinct groups
