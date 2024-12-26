@@ -88,7 +88,7 @@ class LeaderboardController extends Controller
             $query->take(1); // Limit the number of puzzles based on the provided value
         }
         // Check if no results were found
-        if ($query->isEmpty()) {
+        if (!$query) {
             return [];
         }
 
