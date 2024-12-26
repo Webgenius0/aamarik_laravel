@@ -69,14 +69,23 @@ class LeaderboardController extends Controller
      */
     private function getLeaderReachPuzzles($leaderID, $all)
     {
-        $puzzleReach  = LocationReach::with(['group', 'user', 'image'])->where('user_id', $leaderID)
-            ->when($all == 'no', function ($query) {
-                return $query->take(20);
-            })
-            ->latest()->get();
+        // $puzzleReach  = LocationReach::with(['group', 'user', 'image'])->where('user_id', $leaderID)
+        //     ->when($all == 'no', function ($query) {
+        //         return $query->take(20);
+        //     })
+        //     ->latest()->get();
 
 
-    return response($puzzleReach);
+
+        $puzzleReach = '';
+        if ($all == 'no') {
+            $puzzleReach  = LocationReach::with(['group', 'user', 'image'])->where('user_id', $leaderID)->take(20)->latest();
+        } else {
+            $puzzleReach  = LocationReach::with(['group', 'user', 'image'])->where('user_id', $leaderID)->latest()->get();
+        }
+
+
+        return response($puzzleReach);
 
 
         if (empty($puzzleReach)) {
