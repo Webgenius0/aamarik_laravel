@@ -36,6 +36,8 @@ class LeaderboardController extends Controller
         $leaderID = $request->input('leaderID');
         $all  = $request->input('all') ? 'yes' : 'no';
 
+        return response($all);
+
         // If leaderID is provided, find the user by ID
         if ($leaderID) {
             $leader = User::find($leaderID);
@@ -50,9 +52,9 @@ class LeaderboardController extends Controller
 
         try {
             // Get the leader's reach puzzles
-            $locationGroupImages = $this->getLeaderReachPuzzles($leader->id, $all);
+            $locationGroupImages = $this->getLeaderReachPuzzles($leader->id, $all );
 
-          
+
 
             // Check if the result is an array or collection before calling count
             $puzzleStopsVisited = is_array($locationGroupImages) || $locationGroupImages instanceof \Illuminate\Support\Collection
@@ -74,28 +76,24 @@ class LeaderboardController extends Controller
     /**
      * get leader reach puzzles
      */
-    private function getLeaderReachPuzzles($leaderID, $all)
+    private function getLeaderReachPuzzles($leaderID, $limit = null)
     {
         // Default the query for fetching location reach data
         $query = LocationReach::with(['group', 'user', 'image'])
             ->where('user_id', $leaderID)
             ->latest();
 
-        // Add condition to limit the number of puzzles if 'all' is not 'yes'
-        if ($all !== 'yes') {
-            $query->take(1); // Limit the number to 20 if 'all' is not 'yes'
+        // Apply the limit only if provided
+        if ($limit !== null) {
+            $query->take($limit); // Limit the number of puzzles based on the provided value
         }
-
-        // Execute the query and retrieve the results
-        $puzzleReach = $query->get();
-
         // Check if no results were found
-        if ($puzzleReach->isEmpty()) {
+        if ($query->isEmpty()) {
             return [];
         }
 
         //custom response
-        $response = $puzzleReach->map(function ($reach) {
+        $response = $query->map(function ($reach) {
             return [
                 'id'     => $reach->image->location->id ?? null,
                 'name'   => $reach->group->name ?? null,
