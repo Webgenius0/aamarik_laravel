@@ -75,6 +75,10 @@ class LeaderboardController extends Controller
             })
             ->latest()->get();
 
+
+    return response($puzzleReach);
+
+
         if (empty($puzzleReach)) {
             return  $this->sendResponse([], 'No location group images found');
         }
