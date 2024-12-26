@@ -89,7 +89,7 @@ class LeaderboardController extends Controller
 
         // Check if no results were found
         if ($puzzleReach->isEmpty()) {
-            return $this->sendResponse([], 'No location group images found');
+            return [];
         }
 
         //custom response
