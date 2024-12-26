@@ -71,39 +71,39 @@ class LeaderboardController extends Controller
 
 
 
-            /**
-             * get leader reach puzzles
-             */
-            private function getLeaderReachPuzzles($leaderID, $all)
-            {
-                // Default the query for fetching location reach data
-                $query = LocationReach::with(['group', 'user', 'image'])
-                    ->where('user_id', $leaderID)
-                    ->latest();
+    /**
+     * get leader reach puzzles
+     */
+    private function getLeaderReachPuzzles($leaderID, $all)
+    {
+        // Default the query for fetching location reach data
+        $query = LocationReach::with(['group', 'user', 'image'])
+            ->where('user_id', $leaderID)
+            ->latest();
 
-                // Apply the limit only if provided
-                if ($all !== 'yes') {
-                    $query->take(2); // Limit the number of puzzles based on the provided value
-                }
-                // Execute the query and retrieve the results
-                $puzzleReach = $query->get();
+        // Apply the limit only if provided
+        if ($all !== 'yes') {
+            $query->take(2); // Limit the number of puzzles based on the provided value
+        }
+        // Execute the query and retrieve the results
+        $puzzleReach = $query->get();
 
-                // Check if no results were found
-                if ($puzzleReach->isEmpty()) {
-                    return [];
-                }
+        // Check if no results were found
+        if ($puzzleReach->isEmpty()) {
+            return [];
+        }
 
-                //custom response
-                $response = $puzzleReach->map(function ($reach) {
-                    return [
-                        'id'     => $reach->image->location->id ?? null,
-                        'name'   => $reach->group->name ?? null,
-                        'points' => $reach->image->location->points ?? null,
-                        'avatar' => $reach->image->location->puzzle_image ?? null,
-                    ];
-                });
-                return $response;
-            }
+        //custom response
+        $response = $puzzleReach->map(function ($reach) {
+            return [
+                'id'     => $reach->image->location->id ?? null,
+                'name'   => $reach->group->name ?? null,
+                'points' => $reach->image->location->points ?? null,
+                'avatar' => $reach->image->location->puzzle_image ?? null,
+            ];
+        });
+        return $response;
+    }
 
 
     /**
