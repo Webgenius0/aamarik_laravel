@@ -52,8 +52,13 @@ class LeaderboardController extends Controller
             // Get the leader's reach puzzles
             $locationGroupImages = $this->getLeaderReachPuzzles($leader->id, $all);
 
+            // Check if the result is an array or collection before calling count
+            $puzzleStopsVisited = is_array($locationGroupImages) || $locationGroupImages instanceof \Illuminate\Support\Collection
+                ? count($locationGroupImages)
+                : 0;
+
             // Return the custom response
-            $response = $this->customResponse($locationGroupImages, $leader);
+            $response = $this->customResponse($locationGroupImages, $leader, $puzzleStopsVisited);
 
             return $this->sendResponse($response, $leaderID ? 'leader profile fetched successfully' : 'user profile fetched successfully');
         } catch (\Throwable $th) {
@@ -105,7 +110,6 @@ class LeaderboardController extends Controller
      */
     private function getLeaderReachPuzzlesGroup($leaderID)
     {
-        dd($leaderID);
         // Get unique group IDs
         $uniqueGroupCount = LocationReach::where('user_id', $leaderID)
             ->distinct('group_id')  // Ensure distinct groups
@@ -151,12 +155,12 @@ class LeaderboardController extends Controller
     /**
      * Custom response for the leader or user profile
      */
-    private function customResponse($locationGroupImages, $leader)
+    private function customResponse($locationGroupImages, $leader, $puzzleStopsVisited)
     {
         $response = [
             'profile'   => new LeadersResource($leader),
             'points'    => $this->getLeaderPoints($leader->id),
-            'puzzle_stops_visited' => $this->getLeaderReachPuzzles($leader->id, 'yes')->count(),
+            'puzzle_stops_visited' => $puzzleStopsVisited,
             'puzzle_board' => $this->getLeaderReachPuzzlesGroup($leader->id),
             'start_date' => $this->getStartDate($leader->id),
             'followers' => $leader->followers->count(),
