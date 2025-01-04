@@ -162,4 +162,37 @@ class LeaderboardController extends Controller
         ];
         return $response;
     }
+
+    /**
+     * Get all reach puzzles by leader or current user
+     */
+    public function getAllPuzzlesByLeader($leaderID)
+    {
+        try {
+            // Default the query for fetching location reach data
+            $puzzleReach  = LocationReach::with(['group', 'user', 'image'])
+                ->where('user_id', $leaderID)
+                ->latest()
+                ->get();
+
+            // Check if no results were found
+            if ($puzzleReach->isEmpty()) {
+                return $this->sendResponse([], 'No Reach puzzles found');
+            }
+
+            //custom response
+            $response = $puzzleReach->map(function ($reach) {
+                return [
+                    'id'     => $reach->image->location->id ?? null,
+                    'name'   => $reach->group->name ?? null,
+                    'points' => $reach->image->location->points ?? null,
+                    'avatar' => $reach->image->location->puzzle_image ?? null,
+                ];
+            });
+            return $this->sendResponse($response, 'Reach puzzles found');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError('Error fetching reach puzzles');
+        }
+    }
 }

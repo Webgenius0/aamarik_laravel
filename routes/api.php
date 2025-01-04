@@ -89,6 +89,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::controller(LeaderboardController::class)->group(function () {
         Route::get('/leaderboard',  'index'); //! Route for Leaderboard
         Route::post('/leader', 'show'); //! Route for show Leader profile by ID or if not provided then show the current user profile
+        Route::get('/leader/get-reach-all-puzzle/{leaderID}', 'getAllPuzzlesByLeader'); //! Route for get reach all puzzle by leader or current user
     }); // End of Leaderboard Controller
 
 
