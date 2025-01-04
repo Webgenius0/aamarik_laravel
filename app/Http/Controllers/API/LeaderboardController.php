@@ -77,7 +77,7 @@ class LeaderboardController extends Controller
         $puzzleReach  = LocationReach::with(['group', 'user', 'image'])
             ->where('user_id', $leaderID)
             ->latest()
-            ->take(2)
+            ->take(20)
             ->get();
 
         // Check if no results were found
