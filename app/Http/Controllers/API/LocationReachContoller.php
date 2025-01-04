@@ -8,6 +8,7 @@ use App\Models\Location;
 use App\Models\LocationGroup;
 use App\Models\LocationGroupImage;
 use App\Models\LocationReach;
+use App\Notifications\LocationReachNotification;
 use Illuminate\Http\Request;
 
 class LocationReachContoller extends Controller
@@ -47,6 +48,9 @@ class LocationReachContoller extends Controller
             //add points to the user
             $user->points += $puzzle->location->points;
             $user->save();
+
+            //notify the user
+            $user->notify(new LocationReachNotification($location, $user));
 
             return $this->sendResponse(new PuzzelReachResource($locationReach), 'Location reach set successfully');
         } catch (\Throwable $th) {
