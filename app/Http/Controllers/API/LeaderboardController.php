@@ -34,9 +34,6 @@ class LeaderboardController extends Controller
     public function show(Request $request)
     {
         $leaderID = $request->input('leaderID');
-        $all  = $request->input('all') ? 'yes' : 'no';
-
-
 
         // If leaderID is provided, find the user by ID
         if ($leaderID) {
@@ -52,7 +49,7 @@ class LeaderboardController extends Controller
 
         try {
             // Get the leader's reach puzzles
-            $locationGroupImages = $this->getLeaderReachPuzzles($leader->id, $all);
+            $locationGroupImages = $this->getLeaderReachPuzzles($leader->id);
 
             // Check if the result is an array or collection before calling count
             $puzzleStopsVisited = is_array($locationGroupImages) || $locationGroupImages instanceof \Illuminate\Support\Collection
@@ -74,19 +71,14 @@ class LeaderboardController extends Controller
     /**
      * get leader reach puzzles
      */
-    private function getLeaderReachPuzzles($leaderID, $all)
+    private function getLeaderReachPuzzles($leaderID)
     {
         // Default the query for fetching location reach data
-        $query = LocationReach::with(['group', 'user', 'image'])
+        $puzzleReach  = LocationReach::with(['group', 'user', 'image'])
             ->where('user_id', $leaderID)
-            ->latest();
-
-        // Apply the limit only if provided
-        if ($all !== 'yes') {
-            $query->take(2); // Limit the number of puzzles based on the provided value
-        }
-        // Execute the query and retrieve the results
-        $puzzleReach = $query->get();
+            ->latest()
+            ->take(2)
+            ->get();
 
         // Check if no results were found
         if ($puzzleReach->isEmpty()) {
