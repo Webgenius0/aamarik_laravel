@@ -39,7 +39,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
+            'date_of_birth'     => 'date',
+            'reset_code'        => 'string',
+            'reset_code_expires_at' => 'datetime',
         ];
     }
 
@@ -59,36 +62,6 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-
-    /**
-     * User Email Verification
-     * Return true if email is verified
-     */
-    public function PasswordResetNotification()
-    {
-        $otp = rand(1000, 9999);
-        $this->notify(new EmailVerificationNotification($otp));
-        return $otp;
-    }
-
-
-    //define relactionship wishlists
-    public function wishlists()
-    {
-        return $this->hasMany(WishList::class);
-    }
-
-    // Relationship for users that this user is following
-    public function following()
-    {
-        return $this->belongsToMany(User::class, 'friendships', 'follower_id', 'followed_id');
-    }
-
-    // Relationship for users that are following this user
-    public function followers()
-    {
-        return $this->belongsToMany(User::class, 'friendships', 'followed_id', 'follower_id');
-    }
 
     // Relationship: User has many FirebaseTokens
     public function firebaseTokens()

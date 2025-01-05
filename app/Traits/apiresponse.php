@@ -1,27 +1,45 @@
 <?php
+
 namespace App\Traits;
 
 use Illuminate\Http\Request;
 
 trait apiresponse
 {
-    public function success($data, $message = null, $code = 200)
+    // Success response
+    public function sendResponse($data = [], $message, $code = 200, $token = null)
     {
-        return response()->json([
-            'success' => true,
+        $response = [
+            'status' => true,
             'message' => $message,
-            'data' => $data,
-            'code' => $code
-        ], $code);
+            'code' => $code,
+        ];
+
+        if ($token) {
+            $response['token_type'] = 'bearer';
+            $response['token'] = $token;
+        }
+
+        if (!empty($data)) {
+            $response['data'] = $data;
+        }
+
+        return response()->json($response, $code);
     }
 
-    public function error($data, $message = null, $code = 500)
+    // Error response
+    public function sendError($error, $errorMessages = [], $code = 404)
     {
-        return response()->json([
+        $response = [
             'status' => false,
-            'message' => $message,
-            'data' => $data,
-            'code' => $code
-        ], $code);
+            'message' => $error,
+            'code' => $code,
+        ];
+
+        if (!empty($errorMessages)) {
+            $response['data'] = $errorMessages;
+        }
+
+        return response()->json($response, $code);
     }
 }

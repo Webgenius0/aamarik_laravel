@@ -16,18 +16,16 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('username')->unique();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
-            $table->string('latitude')->nullable();
-            $table->string('longitude')->nullable();
-            $table->string('otp')->nullable();
-            $table->timestamp('otp_created_at')->nullable();
+            $table->string('reset_code')->nullable();
+            $table->timestamp('reset_code_expires_at')->nullable();
+            $table->date('date_of_birth')->nullable();
 
             $table->string('avatar')->nullable();
 
-            $table->enum('role', ['admin', 'user'])->default('user');
+            $table->enum('role', ['admin', 'user', 'doctor'])->default('user');
 
             $table->rememberToken();
             $table->timestamps();
@@ -47,7 +45,7 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
-     }
+    }
 
     /**
      * Reverse the migrations.

@@ -22,6 +22,5 @@ class FirebaseTokens extends Model
         'device_id'         => 'string',
         'token'             => 'string',
         'is_active'         => 'boolean',
-
     ];
 }
