@@ -1,0 +1,19 @@
+name: Deploy Private GitHub repository to Our server cpanel
+on:
+  push:
+    branches:
+      - main
+jobs:
+  FTP-Deploy-Action:
+    name: FTP-Deploy-Action
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.1.0
+        with:
+          fetch-depth: 2
+      - name: FTP-Deploy-Action
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: ftp.softvencefsd.xyz
+          username: aamairk@aamairk.softvencefsd.xyz
+          password: "HGt$!7_M-0It"
