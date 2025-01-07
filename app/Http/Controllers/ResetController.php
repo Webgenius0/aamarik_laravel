@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Traits\apiresponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Artisan;
 
 class ResetController extends Controller
 {
+    use apiresponse;
     /**
      * Reset Database and Optimize Clear
      *
