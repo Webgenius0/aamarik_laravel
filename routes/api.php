@@ -7,6 +7,8 @@ use App\Http\Controllers\API\Auth\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\FirebaseTokenController;
+use App\Http\Controllers\API\Frontend\CMSController;
+use App\Http\Controllers\API\Frontend\SectionController;
 use App\Models\FirebaseTokens;
 
 /**
@@ -53,6 +55,18 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
 });
 
+
+
+//! Route for CMS controller
+Route::controller(CMSController::class)->group(function () {
+    Route::get('/cms/get-banner-page-data', 'homeBanner');
+    Route::get('/cms/get-personalized-page-data', 'personalized');
+}); // End of CMS Controller
+
+//! Route for CMS controller
+Route::controller(SectionController::class)->group(function () {
+    Route::post('/section/data', 'getSection');
+}); // End of CMS Controller
 
 
 //! Route for Firebase Token  Controller

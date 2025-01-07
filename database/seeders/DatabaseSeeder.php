@@ -33,5 +33,14 @@ class DatabaseSeeder extends Seeder
             'title' => 'pharmacy',
             'description' => "Lorem Ipsdam Doller"
         ]);
+
+
+        // Call the CMSseeder
+        $this->call(CMSseeder::class);
+
+        $this->call([
+            Sectionseeder::class,
+            SectionCardseeder::class,
+        ]);
     }
 }
