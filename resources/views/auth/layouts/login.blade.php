@@ -56,9 +56,6 @@
                         </div>
                     </div>
                 </div>
-
-                <p class="text-white text-center mt-8">Create an Account ?<a class='font-medium ms-1'
-                        href='{{ route('register') }}'>Register</a></p>
             </form>
         </div>
     </div>
