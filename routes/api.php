@@ -17,6 +17,8 @@ use App\Models\FirebaseTokens;
 Route::controller(AuthenticationController::class)->group(function () {
     Route::post('/login', 'login');
     Route::post('/register', 'register');
+
+    //login with google
 });
 
 
