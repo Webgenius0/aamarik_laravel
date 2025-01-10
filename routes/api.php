@@ -17,9 +17,12 @@ use App\Models\FirebaseTokens;
 Route::controller(AuthenticationController::class)->group(function () {
     Route::post('/login', 'login');
     Route::post('/register', 'register');
-
-    //login with google
 });
+
+/**
+ * Route for SocialLogin
+ */
+Route::post('/social-login',[\App\Http\Controllers\API\Auth\SocialLoginController::class,'SocialLogin']);
 
 
 //! Route for forget password
