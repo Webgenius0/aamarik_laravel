@@ -68,8 +68,9 @@ Route::controller(\App\Http\Controllers\Web\Backend\FaqController::class)->group
     Route::get('faqs','index')->name('faq.index');
     Route::post('faqs/store', 'store')->name('faq.store');
     Route::get('faq/status/update/{id}','updateStatus')->name('update.status.faq');
+    Route::get('faqs/edit/{id}', 'edit')->name('faq.edit');
+    Route::put('faqs/update/{id}', 'update')->name('faq.update');
+    Route::delete('faqs/destroy/{id}','destroy')->name('faq.destroy');
+})->middleware('auth,admin');
 
-   Route::get('faqs/edit/{id}', 'edit')->name('faq.edit');
-   Route::put('faqs/update/{id}', 'update')->name('faq.update');
-   Route::delete('faqs/destroy/{id}','destroy')->name('faq.destroy');
-});
+//cms
