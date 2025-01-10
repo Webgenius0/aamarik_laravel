@@ -3,8 +3,8 @@
 
     <!-- Brand Logo -->
     <a class='logo-box' href='{{route('dashboard')}}'>
-        <img src="{{ asset($setting->logo ?? 'backend/assets/images/sis-logo.png') }}" class="logo-light h-16" alt="Light logo">
-        <img src="{{ asset($setting->logo ?? 'backend/assets/images/sis-logo.png') }}" class="logo-dark h-16" alt="Dark logo">
+        <img src="{{ asset($setting->logo ?? 'uploads/defult-image/logo.png') }}" class="logo-light h-16" alt="Light logo">
+        <img src="{{ asset($setting->logo ?? 'uploads/defult-image/logo.png') }}" class="logo-dark h-16" alt="Dark logo">
     </a>
 
     <!--- Menu -->
@@ -19,22 +19,15 @@
                     <span class="badge bg-primary rounded ms-auto">01</span>
                 </a>
             </li>
-            <li class="menu-item">
-                <a class='menu-link' href='{{route('location.index')}}'>
-                    <span class="menu-icon"><i class="uil uil-compass"></i></span>
-                    <span class="menu-text"> Locations </span>
-                </a>
-            </li>
+
+            <li class="menu-title">Frontend</li>
 
             <li class="menu-item">
-                <a class='menu-link' href='{{route('group.index')}}'>
+                <a class='menu-link' href='{{route('faq.index')}}'>
                     <span class="menu-icon"><i class="uil uil-compass"></i></span>
-                    <span class="menu-text"> Location Groups </span>
+                    <span class="menu-text"> FAQ </span>
                 </a>
             </li>
-
-
-
 
             <li class="menu-item">
                 <a href="javascript:void(0)" data-hs-collapse="#sidenavLevel" class="menu-link">

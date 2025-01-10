@@ -1,6 +1,6 @@
 @extends('backend.app')
 
-@section('title', 'Admin Dashboard | ' . ($setting ? $setting->title : 'SIS'))
+@section('title', 'Admin Dashboard | ' . ($setting ? $setting->title : 'PrimeCare'))
 
 @push('styles')
     <style>
@@ -33,8 +33,8 @@
             <div class="card">
                 <div class="p-5 flex items-center justify-between">
                     <span>
-                        <span class="text-slate-400 font-semibold block">Active Location</span>
-                        <span class="text-xl font-semibold"><span></span>{{ $total_locations }}</span>
+                        <span class="text-slate-400 font-semibold block">New order</span>
+                        <span class="text-xl font-semibold"><span></span>0</span>
                     </span>
 
                     <span
@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="px-5 py-4 bg-slate-50">
-                    <a href="{{ route('location.index') }}"
+                    <a href=""
                         class="relative inline-block font-semibold tracking-wide align-middle text-base text-center border-none after:content-[''] after:absolute after:h-px after:w-0 hover:after:w-full after:end-0 hover:after:end-auto after:bottom-0 after:start-0 after:transition-all after:duration-500 text-blue-600 hover:text-blue-600 after:bg-blue-600">View
                         data <i class="uil uil-arrow-right"></i></a>
                 </div>
@@ -53,8 +53,8 @@
             <div class="card">
                 <div class="p-5 flex items-center justify-between">
                     <span>
-                        <span class="text-slate-400 font-semibold block">Location Group</span>
-                        <span class="text-xl font-semibold"><span></span>{{ $total_location_groups }}</span>
+                        <span class="text-slate-400 font-semibold block">Total Medicine</span>
+                        <span class="text-xl font-semibold"><span></span>0</span>
                     </span>
 
                     <span
@@ -65,7 +65,7 @@
                 </div>
 
                 <div class="px-5 py-4 bg-slate-50">
-                    <a href="{{ route('group.index') }}"
+                    <a href=""
                         class="relative inline-block font-semibold tracking-wide align-middle text-base text-center border-none after:content-[''] after:absolute after:h-px after:w-0 hover:after:w-full after:end-0 hover:after:end-auto after:bottom-0 after:start-0 after:transition-all after:duration-500 text-blue-600 hover:text-blue-600 after:bg-blue-600">View
                         data <i class="uil uil-arrow-right"></i></a>
                 </div>
@@ -75,7 +75,7 @@
                 <div class="p-5 flex items-center justify-between">
                     <span>
                         <span class="text-slate-400 font-semibold block">Today Reach Location</span>
-                        <span class="text-xl font-semibold"><span></span>{{ $today_location_reach }}</span>
+                        <span class="text-xl font-semibold"><span></span>0</span>
                     </span>
 
                     <span

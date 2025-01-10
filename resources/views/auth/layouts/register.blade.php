@@ -1,6 +1,6 @@
 @extends('auth.app')
 
-@section('title', 'Register | ' . $setting->title ?? 'Chazzle')
+@section('title', 'Register | ' . $setting->title ?? 'PrimeCare')
 
 @push('style')
     <style>
@@ -85,7 +85,7 @@
 
 
 
-{{-- 
+{{--
 <x-guest-layout>
     <form method="POST" action="{{ route('register') }}">
         @csrf

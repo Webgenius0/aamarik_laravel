@@ -1,6 +1,6 @@
 @extends('auth.app')
 
-@section('title', 'Login | ' . optional($setting)->title ?? 'Chazzle')
+@section('title', 'Login | ' . $setting->title ?? 'PrimeCare')
 
 
 @push('style')
@@ -14,16 +14,13 @@
 @section('content')
 
     <div class="bg-gradient-to-b from-[#dfeaf6] to-[#60AFFF] h-screen w-screen flex justify-center items-center">
-        <div>
-            <img class="absolute top-0 left-0" src="{{ asset('backend/assets/images/top-include.png') }}" alt="">
-        </div>
         <div class="2xl:w-1/2 lg:w-1/3 md:w-1/2 w-full">
             <form method="POST" action="{{ route('login') }}">
                 @csrf
                 <div class="card overflow-hidden sm:rounded-md rounded-none">
                     <div class="px-6 py-8">
                         <a class='flex justify-center mb-8' href='{{ url('/') }}'>
-                            <img class="h-22" src="{{ asset($setting->logo ?? 'backend/assets/images/logo-sm.png') }}" alt="">
+                            <img class="h-22" src="{{ asset($setting->logo ?? 'uploads/defult-image/logo.png') }}" alt="">
                         </a>
 
                         <div class="mb-4">

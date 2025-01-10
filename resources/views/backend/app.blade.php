@@ -12,7 +12,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset($setting->logo ?? 'backend/assets/images/sis-logo.png') }}">
+    <link rel="shortcut icon" href="{{ asset($setting->logo ?? 'uploads/defult-image/logo.png') }}">
 
     @vite('resources/css/app.css')
 

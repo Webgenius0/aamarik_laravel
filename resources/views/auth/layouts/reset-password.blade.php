@@ -1,6 +1,6 @@
 @extends('auth.app')
 
-@section('title', 'Login | ' . $setting->title ?? 'Chazzle')
+@section('title', 'Login | ' . $setting->title ?? 'PrimeCare')
 
 @push('style')
     <style>
@@ -13,19 +13,15 @@
 @section('content')
 
     <div class="bg-gradient-to-b from-[#d7e8f9] to-[#60AFFF] h-screen w-screen flex justify-center items-center">
-        <div>
-            <img class="absolute top-0 left-0" src="{{ asset($setting->logo ?? 'backend/assets/images/logo-sm.png') }}" alt="">
-        </div>
 
         <div class="2xl:w-1/2 lg:w-1/3 md:w-1/2 w-full">
-
 
             <form method="POST" action="{{ route('password.store') }}">
                 @csrf
                 <div class="card overflow-hidden sm:rounded-md rounded-none">
                     <div class="px-6 py-8">
                         <a class='flex justify-center mb-8' href='{{ url('/') }}'>
-                            <img class="h-25" src="{{ asset('backend/assets/images/sis-logo.png') }}" alt="">
+                            <img class="h-25" src="{{ asset($setting->logo ?? 'uploads/defult-image/logo.png') }}" alt="logo">
                         </a>
 
                         <!-- Password Reset Token -->
@@ -61,9 +57,7 @@
                         </div>
                     </div>
                 </div>
-                
-                <p class="text-white text-center mt-8">Create an Account ?<a class='font-medium ms-1'
-                        href='{{ route('register') }}'>Register</a></p>
+
             </form>
         </div>
     </div>
