@@ -53,15 +53,16 @@ class SocialLoginController extends Controller
                     // Get the birthdate from the social provider response
                     $dateOfBirth = $socialUser->user['birthday'] ?? null;  // Birthdate provided by Google
 
-                    // If a birthdate exists, format it as Y-m-d (e.g., 1990-01-01)
-                    if ($dateOfBirth) {
-                        $dateOfBirth = Carbon::parse($dateOfBirth)->format('Y-m-d');
+                    // Check if the 'user' object is not null and contains a 'birthday'
+                    $dateOfBirth = null;
+                    if (isset($socialUser->user) && isset($socialUser->user['birthday'])) {
+                        $dateOfBirth = Carbon::parse($socialUser->user['birthday'])->format('Y-m-d');
                     }
 
                     $user     = User::create([
                         'name'              => $socialUser->getName(),
                         'email'             => $socialUser->getEmail(),
-                        'date_of_birth'     =>  $dateOfBirth,
+                        'date_of_birth'     =>  $dateOfBirth ?? '1990-01-01',
                         'role'              => 'user',
                         'password'          => bcrypt($password),
                         'email_verified_at' => now(),
