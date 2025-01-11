@@ -41,8 +41,7 @@ class SocialLoginController extends Controller
         try {
             $provider   = $request->provider;
             $socialUser = Socialite::driver($provider)->stateless()->userFromToken($request->token);
-
-            return response($socialUser);
+            
             if ($socialUser) {
                 $user      = User::where('email', $socialUser->email)->first();
                 $isNewUser = false;
@@ -50,19 +49,10 @@ class SocialLoginController extends Controller
                 if (!$user) {
                     $password = Str::random(16);
 
-
-
-
-                    // Check if the 'user' object is not null and contains a 'birthday'
-                    $dateOfBirth = null;
-                    if (isset($socialUser->user) && isset($socialUser->user['birthday'])) {
-                        $dateOfBirth = Carbon::parse($socialUser->user['birthday'])->format('Y-m-d');
-                    }
-
                     $user     = User::create([
                         'name'              => $socialUser->getName(),
                         'email'             => $socialUser->getEmail(),
-                        'date_of_birth'     =>  $dateOfBirth ?? '1990-01-01',
+                        'date_of_birth'     =>  null,
                         'role'              => 'user',
                         'password'          => bcrypt($password),
                         'email_verified_at' => now(),
