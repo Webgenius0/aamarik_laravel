@@ -42,7 +42,7 @@ class SocialLoginController extends Controller
             $provider   = $request->provider;
             $socialUser = Socialite::driver($provider)->stateless()->userFromToken($request->token);
 
-            dd($socialUser);
+            return response($socialUser);
             if ($socialUser) {
                 $user      = User::where('email', $socialUser->email)->first();
                 $isNewUser = false;
