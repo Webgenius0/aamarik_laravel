@@ -45,14 +45,21 @@ class ResetController extends Controller
 
     public function dumpAutoLoad(): JsonResponse
     {
-        // Run the composer dump-autoload command using exec
-        $composerOutput = exec('composer dump-autoload');
+        // Capture the output and return status of the exec command
+        $output = [];
+        $statusCode = null;
+        exec('composer dump-autoload', $output, $statusCode);
 
-        // Check if there are any errors in the output
-        if ($composerOutput !== 0) {
+        // Check if the status code indicates success (0 is success for exec)
+        if ($statusCode !== 0) {
+            // Log the output for debugging purposes
+            \Log::error('Composer dump-autoload error', ['output' => $output, 'status' => $statusCode]);
+
+            // Return the error response with the message
             return $this->sendError('An error occurred while updating the autoloader.', [], 500);
         }
 
+        // Return success response if no error occurred
         return $this->sendResponse([], 'Autoloader updated successfully.');
     }
 
