@@ -42,6 +42,7 @@ class SocialLoginController extends Controller
             $provider   = $request->provider;
             $socialUser = Socialite::driver($provider)->stateless()->userFromToken($request->token);
 
+            dd($socialUser);
             if ($socialUser) {
                 $user      = User::where('email', $socialUser->email)->first();
                 $isNewUser = false;
@@ -49,7 +50,7 @@ class SocialLoginController extends Controller
                 if (!$user) {
                     $password = Str::random(16);
 
-                    dd($socialUser);
+
 
                     // Get the birthdate from the social provider response
                     $dateOfBirth = $socialUser->user['birthday'] ?? null;  // Birthdate provided by Google
