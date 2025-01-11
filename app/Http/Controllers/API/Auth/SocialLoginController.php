@@ -52,8 +52,6 @@ class SocialLoginController extends Controller
 
 
 
-                    // Get the birthdate from the social provider response
-                    $dateOfBirth = $socialUser->user['birthday'] ?? null;  // Birthdate provided by Google
 
                     // Check if the 'user' object is not null and contains a 'birthday'
                     $dateOfBirth = null;
