@@ -14,7 +14,7 @@ class Sectionseeder extends Seeder
     public function run(): void
     {
         DB::table('sections')->insert([
-            ['title' => 'Quick, Confidential, and Reliable Healthcare', 'type' => 'healthcare'],
+            ['title' => "Quick, Confidential, and Reliable Healthcare", 'type' => 'healthcare'],
             ['title' => 'Our Working Process', 'type' => 'process'],
         ]);
     }

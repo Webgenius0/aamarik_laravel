@@ -16,20 +16,20 @@ class CMSseeder extends Seeder
         // Example CMS data to seed
         $cmsPages = [
             [
-                'title' => 'Welcome to Our Website',
-                'sub_title' => 'Your journey begins here.',
+                'title' => 'Pharmacy',
+                'sub_title' => 'Operational bottlenecks, frequent billing errors, and mismanaged schedules can lead to revenue loss and frustrated patients.',
                 'description' => null,
                 'avatar' => 'uploads/defult-image/home_banner.png', // You might need to upload this file to the public directory
-                'button_name' => 'Get Started',
+                'button_name' => 'Start Consultation',
                 'button_url' => 'https://example.com/start',
                 'type' => 'banner',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'title' => 'About Us',
+                'title' => 'Personalized Healthcare, Just a Click Away',
                 'sub_title' => null,
-                'description' => 'We are dedicated to providing quality content and services to our users.',
+                'description' => "Experience healthcare that's designed around your needs. Access safe, approved treatments without the hassle of waiting rooms. Get genuine prescriptions delivered discreetly to your door, so you can focus on what matters most — your health.",
                 'avatar' => 'uploads/defult-image/personalized.png', // You might need to upload this file to the public directory
                 'button_name' => null,
                 'button_url' => null,
