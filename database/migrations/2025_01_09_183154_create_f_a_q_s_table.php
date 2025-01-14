@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->text('question');
             $table->text('answer');
-            $table->enum('type', ["Placing an order","Delivery","About myhealthneeds"]);
+            $table->enum('type', ["Placing an order","Delivery","About myhealthneeds","Supplement"]);
             $table->enum('status', ["active","inactive"]);
             $table->timestamps();
         });

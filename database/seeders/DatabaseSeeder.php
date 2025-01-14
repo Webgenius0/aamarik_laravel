@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
             'title' => 'pharmacy',
             'description' => "Lorem Ipsdam Doller"
         ]);
+        $this->call(DoctorSeeder::class);
 
 
         // Call the CMSseeder
@@ -42,5 +43,7 @@ class DatabaseSeeder extends Seeder
             Sectionseeder::class,
             SectionCardseeder::class,
         ]);
+
+        $this->call(FAQSeeder::class);
     }
 }

@@ -4,6 +4,8 @@ use App\Http\Controllers\API\Auth\AuthenticationController;
 use App\Http\Controllers\API\Auth\ForgetPasswordController;
 use App\Http\Controllers\API\Auth\LoginController;
 use App\Http\Controllers\API\Auth\ProfileController;
+use App\Http\Controllers\API\Frontend\DoctoreController;
+use App\Http\Controllers\API\Frontend\FAQController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\FirebaseTokenController;
@@ -73,6 +75,17 @@ Route::controller(SectionController::class)->group(function () {
     Route::post('/section/data', 'getSection');
 }); // End of CMS Controller
 
+
+//! Route for faqs controller
+Route::controller(FAQController::class)->group(function () {
+ Route::get('/faq/supplement', 'index');
+ Route::get('/faqs', 'faq');
+});
+
+//! Route for doctore controller
+Route::controller(DoctoreController::class)->group(function () {
+    Route::get('/doctores', 'index');
+});
 
 //! Route for Firebase Token  Controller
 Route::controller(FirebaseTokenController::class)->group(function () {
