@@ -1,3 +1,6 @@
+@php
+    $systemSetting = App\Models\Setting::first();
+@endphp
 <!DOCTYPE html>
 <html lang="en" data-sidebar-color="light" data-topbar-color="light" data-sidebar-view="default">
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />

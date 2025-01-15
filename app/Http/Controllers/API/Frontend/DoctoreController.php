@@ -16,10 +16,15 @@ class DoctoreController extends Controller
      */
     public function index()
     {
-        $doctores = User::where('role','doctor')->get();
-        if ($doctores->isEmpty()) {
-            return $this->sendResponse((object)[], 'Doctors List not found');
+        try {
+            $doctores = User::where('role','doctor')->get();
+            if ($doctores->isEmpty()) {
+                return $this->sendResponse((object)[], 'Doctors List not found');
+            }
+            return  $this->sendResponse(DoctoresResource::collection($doctores), 'Doctors List retrieved');
+        }catch (\Exception $exception){
+            $statusCode = is_numeric($exception->getCode()) ? $exception->getCode() : 500;
+            return $this->sendError($exception->getMessage(),[],  $statusCode);
         }
-        return  $this->sendResponse(DoctoresResource::collection($doctores), 'Doctors List retrieved');
     }
 }

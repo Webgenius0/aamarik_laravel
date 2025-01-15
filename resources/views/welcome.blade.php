@@ -11,7 +11,7 @@
 
     {{-- FAVICON --}}
     <link rel="shortcut icon" type="image/x-icon"
-        href="{{ isset($systemSetting->favicon) && !empty($systemSetting->favicon) ? asset($systemSetting->favicon) : asset('frontend/defult_fav_icon.png') }}" />
+        href="{{ isset($systemSetting->favicon) && !empty($systemSetting->favicon) ? asset($systemSetting->favicon) : asset('uploads/defult-image/favicon.png') }}" />
 
     <title>{{ $systemSetting->system_name }}</title>
     <style>
