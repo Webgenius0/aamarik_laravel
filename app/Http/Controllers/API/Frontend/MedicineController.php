@@ -24,6 +24,8 @@ class MedicineController extends Controller
                 ->where('status', 'active')
                 ->latest()->limit(4)->get();
 
+            return response($medicines);
+
             if ($medicines->isEmpty()) {
                 return $this->sendResponse((object)[], 'Medicine List not found');
             }
