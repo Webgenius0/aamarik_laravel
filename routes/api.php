@@ -6,6 +6,7 @@ use App\Http\Controllers\API\Auth\LoginController;
 use App\Http\Controllers\API\Auth\ProfileController;
 use App\Http\Controllers\API\Frontend\DoctoreController;
 use App\Http\Controllers\API\Frontend\FAQController;
+use App\Http\Controllers\API\Frontend\MedicineController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\FirebaseTokenController;
@@ -85,6 +86,11 @@ Route::controller(FAQController::class)->group(function () {
 //! Route for doctore controller
 Route::controller(DoctoreController::class)->group(function () {
     Route::get('/doctores', 'index');
+});
+
+//! Route for medicine controller
+Route::controller(MedicineController::class)->group(function () {
+    Route::get('/medicines', 'index');
 });
 
 //! Route for Firebase Token  Controller

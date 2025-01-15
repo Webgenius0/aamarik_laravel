@@ -45,5 +45,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call(FAQSeeder::class);
+
+        //call the medicineSeeder
+        $this->call(MedicineSeeder::class);
     }
 }
