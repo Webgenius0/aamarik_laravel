@@ -16,7 +16,7 @@ class MedicineController extends Controller
      */
     public  function  index()
     {
-        return response()->json('hi');
+        return response('hi');
 //        try {
 //            // Get medicines that are active and have stock available.
 ////            $medicines = Medicine::with(['details' => function ($query) {
