@@ -52,16 +52,19 @@ class FAQController extends Controller
             // Group by the 'type' field (this can be adjusted if needed)
             $groupedFaqs = $faqs->groupBy('type');
 
+
             // Format the response
-            $response = $groupedFaqs->map(function ($faqGroup) {
-                return $faqGroup->map(function ($faq) {
-                    return [
-                        'id' => $faq->id,
-                        'question' => $faq->question,
-                        'answer' => $faq->answer,
-                    ];
-                });
-            });
+            $response = $groupedFaqs->map(function ($faqGroup, $category) {
+                return [
+                    'category' => $category,
+                    'questions' => $faqGroup->map(function ($faq) {
+                        return [
+                            'question' => $faq->question,
+                            'answer' => $faq->answer,
+                        ];
+                    }),
+                ];
+            })->values();
 
             // Return the grouped and formatted response
             return $this->sendResponse($response, 'FAQ List found');
