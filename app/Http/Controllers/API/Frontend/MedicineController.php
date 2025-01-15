@@ -30,7 +30,8 @@ class MedicineController extends Controller
 
             return $this->sendResponse(MedicinesResource::collection($medicines), 'Medicines retrieved successfully');
         }catch (\Exception $exception){
-            return $this->sendError($exception->getMessage(),[], $exception->getCode());
+            $statusCode = is_numeric($exception->getCode()) ? $exception->getCode() : 500;
+            return $this->sendError($exception->getMessage(),[],  $statusCode);
         }
     }
 }
