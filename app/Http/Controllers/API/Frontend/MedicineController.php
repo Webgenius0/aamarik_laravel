@@ -10,31 +10,27 @@ use Illuminate\Http\Request;
 
 class MedicineController extends Controller
 {
-    use apiresponse;
+  use apiresponse;
     /**
     * List of medicin - HealthCare Services->Our Test Kit
      */
     public  function  index()
     {
-        return response('hi');
-//        try {
-//            // Get medicines that are active and have stock available.
-////            $medicines = Medicine::with(['details' => function ($query) {
-////                $query->where('stock_quantity', '>', 0);
-////            }])
-////                ->where('status', 'active')
-////                ->latest()->limit(4)->get();
-//            $medicines = Medicine::all();
-//
-//            return response($medicines);
-//
-//            if ($medicines->isEmpty()) {
-//                return $this->sendResponse((object)[], 'Medicine List not found');
-//            }
-//
-//            return $this->sendResponse(MedicinesResource::collection($medicines), 'Medicines retrieved successfully');
-//        }catch (\Exception $exception){
-//            return $this->sendError($exception->getMessage(),[], $exception->getCode());
-//        }
+        try {
+            //Get medicines that are active and have stock available.
+            $medicines = Medicine::with(['details' => function ($query) {
+                $query->where('stock_quantity','>', 0);
+            }])
+                ->where('status', 'active')
+                ->latest()->limit(4)->get();
+
+            if ($medicines->isEmpty()) {
+                return $this->sendResponse((object)[], 'Medicine List not found');
+            }
+
+            return $this->sendResponse(MedicinesResource::collection($medicines), 'Medicines retrieved successfully');
+        }catch (\Exception $exception){
+            return $this->sendError($exception->getMessage(),[], $exception->getCode());
+        }
     }
 }
