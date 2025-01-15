@@ -18,11 +18,12 @@ class MedicineController extends Controller
     {
         try {
             // Get medicines that are active and have stock available.
-            $medicines = Medicine::with(['details' => function ($query) {
-                $query->where('stock_quantity', '>', 0);
-            }])
-                ->where('status', 'active')
-                ->latest()->limit(4)->get();
+//            $medicines = Medicine::with(['details' => function ($query) {
+//                $query->where('stock_quantity', '>', 0);
+//            }])
+//                ->where('status', 'active')
+//                ->latest()->limit(4)->get();
+            $medicines = Medicine::all();
 
             return response($medicines);
 
