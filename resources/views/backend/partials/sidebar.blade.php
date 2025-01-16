@@ -2,7 +2,7 @@
 <div class="app-menu">
 
     <!-- Brand Logo -->
-    <a class='logo-box' href='{{route('dashboard')}}'>
+    <a class='logo-box' href="{{route('dashboard')}}">
         <img src="{{ asset($setting->logo ?? 'uploads/defult-image/logo.png') }}" class="logo-light h-16" alt="Light logo">
         <img src="{{ asset($setting->logo ?? 'uploads/defult-image/logo.png') }}" class="logo-dark h-16" alt="Dark logo">
     </a>
@@ -13,7 +13,7 @@
             <li class="menu-title">Menu</li>
 
             <li class="menu-item">
-                <a class='menu-link' href='{{route('dashboard')}}'>
+                <a class='menu-link' href="{{route('dashboard')}}">
                     <span class="menu-icon"><i class="uil uil-estate"></i></span>
                     <span class="menu-text"> Dashboard </span>
                     <span class="badge bg-primary rounded ms-auto">01</span>
@@ -23,10 +23,38 @@
             <li class="menu-title">Frontend</li>
 
             <li class="menu-item">
-                <a class='menu-link' href='{{route('faq.index')}}'>
+                <a class='menu-link' href="{{route('faq.index')}}">
                     <span class="menu-icon"><i class="uil uil-compass"></i></span>
                     <span class="menu-text"> FAQ </span>
                 </a>
+            </li>
+
+            <!-- CMS -->
+            <li class="menu-item">
+                <a href="javascript:void(0)" data-hs-collapse="#sidenavLevel1" class="menu-link">
+                    <span class="menu-icon">
+                        <i class="uil uil-share-alt"></i>
+                    </span>
+                    <span class="menu-text"> CMS </span>
+                    <span class="menu-arrow"></span>
+                </a>
+
+                <ul id="sidenavLevel1" class="sub-menu hidden">
+                    <li class="menu-item">
+                        <a href="{{route('banner')}}" class="menu-link">
+                            <span class="menu-dot"></span>
+                            <span class="menu-text">Banner</span>
+                        </a>
+                    </li>
+                    
+                    <li class="menu-item">
+                        <a href="{{route('home.section')}}" class="menu-link">
+                            <span class="menu-dot"></span>
+                            <span class="menu-text">Home Section</span>
+                        </a>
+                    </li>
+                    
+                </ul>
             </li>
 
             <li class="menu-item">
