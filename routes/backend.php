@@ -1,5 +1,6 @@
 <?php
 
+//use App\Http\Controllers\API\Frontend\CMSController;
 use App\Models\DuaCategory;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Web\Backend\MessagingController;
 use App\Http\Controllers\Web\Backend\NewsLetterController;
 use App\Http\Controllers\Web\Backend\UserUpdateController;
 use App\Http\Controllers\Web\Backend\SocialMediaController;
+use App\Http\Controllers\Web\Backend\CMSController;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -22,6 +24,7 @@ Route::post('change-password', [UserUpdateController::class, 'userPasswordUpdate
 // Setting
 Route::post('setting-update', [SettingController::class, 'update'])->name('admin.setting.update');
 Route::get('setting', [SettingController::class, 'index'])->name('admin.setting');
+
 
 // Home Page Content Update
 Route::get('home-page-update', [SettingController::class, 'homePageContents'])->name('admin.home.page.edit');
@@ -74,3 +77,11 @@ Route::controller(\App\Http\Controllers\Web\Backend\FaqController::class)->group
 })->middleware('auth,admin');
 
 //cms
+
+Route::get('/settings/banner',[ CMSController::class ,'banner'])->name('banner');
+Route::get('/cms/home-section',[ CMSController::class ,'homeSection'])->name('home.section');
+Route::put('/cms', [CmsController::class, 'update'])->name('cms.update');
+Route::put('/cms/personalized', [CmsController::class, 'personalized'])->name('cms.personalized');
+
+
+
