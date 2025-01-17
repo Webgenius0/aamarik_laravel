@@ -13,7 +13,9 @@ class CMSController extends Controller
     */
     public function banner()
     {
-        return view('backend.layouts.cms.index');
+        $cms = CMS::where('type','banner')->first();
+        $personalize = CMS::where('type','personalized')->first();
+        return view('backend.layouts.cms.index',compact('cms','personalize'));
     }
     //home section
     public function homeSection()
@@ -27,47 +29,47 @@ class CMSController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'sub_title' => 'required|string|max:1000',
-            
+
             'button_name' => 'required|string|max:255',
             'button_url' => 'required|url|max:255',
             'favicon' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:2048',
         ]);
-    
+
         try {
-           
-            $cms = Cms::where('type', 'banner')->first();  
-    
-      
+
+            $cms = Cms::where('type', 'banner')->first();
+
+
             $data = [
                 'title' => $request->title,
-                'sub_title' => $request->sub_title,             
+                'sub_title' => $request->sub_title,
                 'button_name' => $request->button_name,
                 'button_url' => $request->button_url,
-                'type' => 'banner', 
-            ];               
+                'type' => 'banner',
+            ];
             if ($request->hasFile('avatar')) {
-                
+
                 if ($cms && $cms->avatar) {
                     File::delete(public_path($cms->avatar));
                 }
-                
+
                 $data['avatar'] = Helper::fileUpload($request->file('avatar'), 'cms', 'avatar');
             }
             if ($cms) {
-                
+
                $cms->update($data);
                 $message = 'Banner settings updated successfully!';
-            } 
-    
+            }
+
             return redirect()->route('banner')->with('t-success', $message);
-    
+
         } catch (\Throwable $th) {
-        
+
            // \Log::error('Settings update failed: '.$th->getMessage());
             return redirect()->route('banner')->with('t-error', 'Something went wrong. Please try again.');
         }
     }
-    
+
     //personalized helth care
     public function personalized(Request $request)
     {
@@ -75,16 +77,16 @@ class CMSController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:1000',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:2048',
-           
+
         ]);
 
         try {
-            $cms = Cms::where('type', 'personalized')->first();  
+            $cms = Cms::where('type', 'personalized')->first();
             $data = [
                 'title' => $request->title,
                 'description' => $request->description,
-                'type' => 'personalized', 
-            ];               
+                'type' => 'personalized',
+            ];
             if ($request->hasFile('avatar')) {
                 if ($cms && $cms->avatar) {
                     File::delete(public_path($cms->avatar));
@@ -96,11 +98,11 @@ class CMSController extends Controller
                 $message = 'Personalized settings updated successfully!';
             }
             return redirect()->route('banner')->with('t-success', $message);
-          
+
             //return response()->json(['success' => true, 'message' => 'FAQ created successfully']);
         } catch (\Throwable $th) {
             return redirect()->route('banner')->with('t-error', 'Something went wrong. Please try again.');
         }
     }
-    
+
 }

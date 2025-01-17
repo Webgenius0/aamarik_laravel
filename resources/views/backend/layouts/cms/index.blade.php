@@ -14,8 +14,8 @@
 @section('content')
 
 @php
-$cms = App\Models\Cms::where('type','banner')->first();
-$personalize = App\Models\Cms::where('type','personalized')->first();
+//$cms = App\Models\Cms::where('type','banner')->first();
+//$personalize = App\Models\Cms::where('type','personalized')->first();
 @endphp
 <div class="content-wrapper">
     <div class="main-content">
@@ -31,7 +31,7 @@ $personalize = App\Models\Cms::where('type','personalized')->first();
                             @method("PUT")
                             <div class="flex-col md:flex-row">
                                 <h1 class="text-center text-lg ">Home Banner</h1>
-                              
+
                                 <label for="applicationTitle"
                                     class=" text-lg font-medium mb-2 md:mb-0 md:w-1/3">Title
                                 </label>
@@ -59,7 +59,7 @@ $personalize = App\Models\Cms::where('type','personalized')->first();
                             </div>
 
 
-                            
+
 
                             <div class="flex-col md:flex-row">
                                 <label for="email" class="text-lg font-medium mb-2 md:mb-0 md:w-1/3">Button</label>
@@ -126,7 +126,7 @@ $personalize = App\Models\Cms::where('type','personalized')->first();
         </div>
         <!--/.body content-->
     </div>
-    
+
 
     <!-- personalized Helth care -->
     <div class="overlay mt-5">
@@ -142,7 +142,7 @@ $personalize = App\Models\Cms::where('type','personalized')->first();
                             @method("PUT")
                             <div class="flex-col md:flex-row">
                                 <h1 class="text-center text-lg ">Personalized HelthCare</h1>
-                              
+
                                 <label for="applicationTitle"
                                     class=" text-lg font-medium mb-2 md:mb-0 md:w-1/3">Title
                                 </label>
