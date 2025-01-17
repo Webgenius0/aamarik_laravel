@@ -37,7 +37,7 @@ class CMSController extends Controller
 
         try {
 
-            $cms = Cms::where('type', 'banner')->first();
+            $cms = CMS::where('type', 'banner')->first();
 
 
             $data = [
@@ -81,7 +81,7 @@ class CMSController extends Controller
         ]);
 
         try {
-            $cms = Cms::where('type', 'personalized')->first();
+            $cms = CMS::where('type', 'personalized')->first();
             $data = [
                 'title' => $request->title,
                 'description' => $request->description,
