@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('medicine_id');
             $table->foreign('medicine_id')->references('id')->on('medicines')->onDelete('cascade');
-            $table->string('avatar');
+            $table->string('avatar')->nullable();
             $table->enum('form', ['tablet', 'liquid', 'capsule', 'inhaler', 'syrup', 'ointment']);
             $table->string('dosage')->nullable()->comment('Dosage per unit (e.g., 500mg for a tablet or 10ml for syrup)');
             $table->string('unit')->nullable()->comment('Unit of measurement (e.g., mg, ml, etc.)');

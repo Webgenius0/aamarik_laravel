@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MedicineDetailsResource;
 use App\Http\Resources\MedicinesResource;
 use App\Models\Medicine;
 use App\Traits\apiresponse;
@@ -33,5 +34,19 @@ class MedicineController extends Controller
             $statusCode = is_numeric($exception->getCode()) ? $exception->getCode() : 500;
             return $this->sendError($exception->getMessage(),[],  $statusCode);
         }
+    }
+
+    /**
+     * Show medicine details
+     */
+    public  function  show($medicineID)
+    {
+        $medicine = Medicine::with(['details','features'])->find($medicineID);
+
+        if (!$medicine) {
+            return $this->sendResponse([],'Medicine not found');
+        }
+//        return response($medicine);
+        return $this->sendResponse(new MedicineDetailsResource($medicine), 'Medicine retrieved successfully');
     }
 }

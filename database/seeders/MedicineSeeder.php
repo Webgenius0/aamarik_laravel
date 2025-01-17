@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Medicine;
 use App\Models\MedicineDetails;
+use App\Models\MedicineFeature;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -23,14 +24,19 @@ class MedicineSeeder extends Seeder
                 'description' => 'Used to relieve pain and reduce fever.',
                 'status' => 'active',
                 'details' => [
-                    'avatar' => 'uploads/defult-image/productImage.png',
+                    'avatar' => null,
                     'form' => 'tablet',
                     'dosage' => '500mg',
                     'unit' => 'mg',
                     'price' => 10.99,
                     'quantity' => 100,
                     'stock_quantity' => 50,
-                ]
+                ],
+                'features' => [
+                    'Relieves pain quickly',
+                    'Reduces fever effectively',
+                    'Suitable for all ages',
+                ],
             ],
             [
                 'title' => 'Ibuprofen',
@@ -39,14 +45,19 @@ class MedicineSeeder extends Seeder
                 'description' => 'Used to reduce fever, pain, and inflammation.',
                 'status' => 'active',
                 'details' => [
-                    'avatar' => 'uploads/defult-image/productImage.png',
+                    'avatar' => null,
                     'form' => 'capsule',
                     'dosage' => '250mg',
                     'unit' => 'mg',
                     'price' => 12.50,
                     'quantity' => 50,
                     'stock_quantity' => 30,
-                ]
+                ],
+                'features' => [
+                    'Reduces inflammation',
+                    'Effective for muscle pain',
+                    'Fast-acting relief',
+                ],
             ],
             [
                 'title' => 'Aspirin',
@@ -55,14 +66,19 @@ class MedicineSeeder extends Seeder
                 'description' => 'Used to reduce pain, fever, and inflammation.',
                 'status' => 'active',
                 'details' => [
-                    'avatar' => 'uploads/defult-image/productImage.png',
+                    'avatar' => null,
                     'form' => 'tablet',
                     'dosage' => '100mg',
                     'unit' => 'mg',
                     'price' => 5.99,
                     'quantity' => 200,
                     'stock_quantity' => 150,
-                ]
+                ],
+                'features' => [
+                    'Prevents blood clots',
+                    'Effective for headaches',
+                    'Relieves minor pain',
+                ],
             ],
             [
                 'title' => 'Amoxicillin',
@@ -71,7 +87,7 @@ class MedicineSeeder extends Seeder
                 'description' => 'Used to treat a variety of bacterial infections.',
                 'status' => 'inactive',
                 'details' => [
-                    'avatar' => 'uploads/defult-image/productImage.png',
+                    'avatar' => null,
                     'form' => 'capsule',
                     'dosage' => '250mg',
                     'unit' => 'mg',
@@ -87,12 +103,12 @@ class MedicineSeeder extends Seeder
                 'description' => 'Used to treat various types of bacterial infections.',
                 'status' => 'active',
                 'details' => [
-                    'avatar' => 'uploads/defult-image/productImage.png',
+                    'avatar' => null,
                     'form' => 'tablet',
                     'dosage' => '500mg',
                     'unit' => 'mg',
                     'price' => 14.50,
-                    'quantity' => 200,
+                    'quantity' => 60,
                     'stock_quantity' => 130,
                 ]
             ],
@@ -109,12 +125,24 @@ class MedicineSeeder extends Seeder
                 'status' => $medicine['status'],
             ]);
 
+
+
             // Insert related medicine details
             $medicineDetails = $medicine['details'];
             $medicineDetails['medicine_id'] = $medicineRecord->id; // Link to the created medicine
 
             // Create the medicine details record
             MedicineDetails::create($medicineDetails);
+
+            // Insert related medicine features
+            if (!empty($medicine['features'])) {
+                foreach ($medicine['features'] as $feature) {
+                    MedicineFeature::create([
+                        'medicine_id' => $medicineRecord->id,
+                        'feature' => $feature,
+                    ]);
+                }
+            }
         }
     }
 }

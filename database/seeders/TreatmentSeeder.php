@@ -3,11 +3,14 @@
 namespace Database\Seeders;
 
 use App\Models\AboutTreatment;
+use App\Models\Assessment;
 use App\Models\DetailsItems;
+use App\Models\Medicine;
 use App\Models\Treatment;
 use App\Models\TreatmentCategory;
 use App\Models\TreatmentDetails;
 use App\Models\TreatmentFaq;
+use App\Models\TreatmentMedicines;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -21,126 +24,73 @@ class TreatmentSeeder extends Seeder
         $treatments = [
             [
                 'name' => 'Hair Loss',
-                'avatar' => 'uploads/defult-image/treatment1.png',
+                'avatar' => null ,
                 'categories' => [
-                    ['icon' => 'uploads/defult-image/treatment1.png', 'title' => 'Hair Transplant'],
-                    ['icon' => 'uploads/defult-image/treatment2.png', 'title' => 'Scalp Treatment'],
-                    ['icon' => 'uploads/defult-image/treatment3.png', 'title' => 'Scalp Treatment'],
+                    ['icon' => null, 'title' => 'Hair Transplant'],
+                    ['icon' => null, 'title' => 'Scalp Treatment'],
+                    ['icon' => null, 'title' => 'Scalp Treatment'],
                 ],
                 'details' => [
-                    ['title' => 'PRP Therapy', 'avatar' => 'prp.jpg'],
+                    ['title' => 'Hair Loss Prevention Treatment', 'avatar' => null],
                 ],
                 'detail_items' => [
-                    ['title' => 'Hair Growth Techniques'],
-                    ['title' => 'Dandruff Control'],
+                    ['title' => 'Clinically proven treatments for effective hair regrowth'],
+                    ['title' => 'Discreet, next-day delivery to your door'],
+                    ['title' => 'Answer a few quick questions to find the best hair loss solution for your needs'],
                 ],
                 'about' => [
-                    'title' => 'Understanding Hair Loss',
-                    'avatar' => 'hair_about.jpg',
-                    'short_description' => 'Hair loss can be treated with advanced techniques like PRP and hair transplant.',
+                    'title' => 'About Hair Loss',
+                    'avatar' => null,
+                    'short_description' => 'Our medical team is UK-based and registered with the General Medical Council and General Pharmaceutical Council.',
                 ],
                 'faqs' => [
-                    ['question' => 'Is hair transplant permanent?', 'answer' => 'Yes, it is a long-term solution.'],
+                    ['question' => 'What is hair loss?', 'answer' => 'Hair loss, or alopecia, is the partial or complete loss of hair, often caused by genetics, aging, hormonal changes, stress, or medical conditions.'],
                     ['question' => 'Does PRP therapy hurt?', 'answer' => 'No, it is a minimally invasive procedure.'],
                 ],
-                'medicines' => ['Minoxidil', 'Finasteride'],
                 'assessments' => [
                     [
-                        'question' => 'Do you experience hair thinning?',
-                        'option' => 'Yes',
-                        'note' => 'Check patient scalp condition.',
+                        'question' => 'What is your biological sex?',
+                        'option1'   => 'Male',
+                        'option2'   => 'Female',
+                        'option3'   => 'Others',
+                        'option4'   => null,
+                        'note'     => null,
+                        'answer'   => null,
                     ],
-                ],
-            ],
-            [
-                'name' => 'Weight Loss',
-                'avatar' => 'uploads/defult-image/treatment2.png',
-                'categories' => [
-                    ['icon' => 'icon_weight1.png', 'title' => 'Diet Plans'],
-                    ['icon' => 'icon_weight2.png', 'title' => 'Exercise Programs'],
-                ],
-                'details' => [
-                    ['title' => 'Keto Diet', 'avatar' => 'keto.jpg'],
-                    ['title' => 'Cardio Workouts', 'avatar' => 'cardio.jpg'],
-                ],
-                'detail_items' => [
-                    ['title' => 'Daily Meal Planner'],
-                    ['title' => 'Strength Training'],
-                ],
-                'about' => [
-                    'title' => 'Overview of Weight Loss',
-                    'avatar' => 'weight_about.jpg',
-                    'short_description' => 'Weight loss programs focus on healthy eating and exercise.',
-                ],
-                'faqs' => [
-                    ['question' => 'Are crash diets safe?', 'answer' => 'No, they can harm your metabolism.'],
-                ],
-                'medicines' => ['Orlistat', 'Phentermine'],
-                'assessments' => [
                     [
-                        'question' => 'Do you have a daily exercise routine?',
-                        'option' => 'No',
-                        'note' => 'Suggest low-impact activities for beginners.',
+                        'question' => 'Do you believe you have the ability to make healthcare decisions for yourself?',
+                        'option1'   => 'Yes',
+                        'option2'   => 'No',
+                        'option3'   => null,
+                        'option4'   => null,
+                        'note'     => "Give us additional information please",
+                        'answer'   => null,
                     ],
-                ],
-            ],
-            [
-                'name' => 'Erectile Dysfunction',
-                'avatar' => 'uploads/defult-image/treatment3.png',
-                'categories' => [
-                    ['icon' => 'icon_ed1.png', 'title' => 'Psychological Therapy'],
-                    ['icon' => 'icon_ed2.png', 'title' => 'Medication'],
-                ],
-                'details' => [
-                    ['title' => 'Hormonal Therapy', 'avatar' => 'hormonal.jpg'],
-                ],
-                'detail_items' => [
-                    ['title' => 'Lifestyle Changes'],
-                ],
-                'about' => [
-                    'title' => 'Understanding Erectile Dysfunction',
-                    'avatar' => 'ed_about.jpg',
-                    'short_description' => 'ED can be treated with counseling and medication.',
-                ],
-                'faqs' => [
-                    ['question' => 'Can ED be cured permanently?', 'answer' => 'It depends on the cause. Consult a specialist.'],
-                ],
-                'medicines' => ['Sildenafil', 'Tadalafil'],
-                'assessments' => [
                     [
-                        'question' => 'Do you experience difficulty maintaining an erection?',
-                        'option' => 'Yes',
-                        'note' => 'Check for underlying health conditions.',
+                        'question' => 'Are you taking any medications currently? This includes both prescription-only and over-the-counter medications, as well as homoeopathic remedies.',
+                        'option1'   => 'Yes',
+                        'option2'   => 'No',
+                        'option3'   => null,
+                        'option4'   => null,
+                        'note'     => null,
+                        'answer'   => null,
                     ],
-                ],
-            ],
-            [
-                'name' => 'Sexual Health',
-                'avatar' => 'uploads/defult-image/treatment4.png',
-                'categories' => [
-                    ['icon' => 'icon_sh1.png', 'title' => 'Reproductive Health'],
-                    ['icon' => 'icon_sh2.png', 'title' => 'Sexual Wellness'],
-                ],
-                'details' => [
-                    ['title' => 'STI Prevention', 'avatar' => 'sti.jpg'],
-                ],
-                'detail_items' => [
-                    ['title' => 'Safe Practices'],
-                ],
-                'about' => [
-                    'title' => 'Improving Sexual Health',
-                    'avatar' => 'sh_about.jpg',
-                    'short_description' => 'Sexual health encompasses physical, emotional, and social well-being.',
-                ],
-                'faqs' => [
-                    ['question' => 'What is safe sex?', 'answer' => 'Safe sex involves practices that protect against STIs and unplanned pregnancies.'],
-                ],
-                'medicines' => ['Antibiotics', 'Antiviral Medications'],
-                'assessments' => [
                     [
-                        'question' => 'Do you experience frequent infections?',
-                        'option' => 'Yes',
-                        'note' => 'Discuss safe practices and regular check-ups.',
+                        'question' => 'How much do you weight?',
+                        'option1'   => null,
+                        'option2'   => null,
+                        'option3'   => null,
+                        'option4'   => null,
+                        'note'     => "Kilograms",
+                        'answer'   => null,
+                    ],[
+                        'question' => 'What is your Blood Pressure?',
+                        'option1' => 'Low (below 90/60)',
+                        'option2' => 'Normal (between 90/60 ad 140/90)',
+                        'option3' => 'Others',
+                        'option4'   => null,
+                        'note' => "High (above 140/90)",
+                        'answer'   => null,
                     ],
                 ],
             ],
@@ -187,9 +137,9 @@ class TreatmentSeeder extends Seeder
             }
 
             // Medicines
-            $medicines = Medicine::inRandomOrder()->take(4)->get();
+            $medicines = Medicine::where('status','active')->inRandomOrder()->take(4)->get();
             foreach ($medicines as $medicine) {
-                TreatmentMedicine::create([
+                TreatmentMedicines::create([
                     'treatment_id' => $treatment->id,
                     'medicine_id' => $medicine->id,
                 ]);

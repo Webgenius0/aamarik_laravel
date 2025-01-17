@@ -20,7 +20,7 @@ class PersonalizedResource extends JsonResource
             "id"          => $this->id,
             "title"       => $this->title,
             "description" => $this->description,
-            "avatar"      => $this->avatar,
+            "avatar"      => $this->avatar ?? 'uploads/defult-image/personalized.png',
             "type"        => $this->type,
         ];
     }

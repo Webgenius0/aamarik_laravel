@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('treatment_id');
             $table->string('question');
-            $table->string('option')->nullable();
-            $table->string('option')->nullable();
-            $table->string('option')->nullable();
-            $table->string('option')->nullable();
+            $table->string('option1')->nullable();
+            $table->string('option2')->nullable();
+            $table->string('option3')->nullable();
+            $table->string('option4')->nullable();
             $table->string('answer')->nullable();
             $table->string('note')->nullable();
             $table->timestamps();

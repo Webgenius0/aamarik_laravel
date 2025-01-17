@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class DoctoresResource extends JsonResource
+class TreatmentResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,10 +16,9 @@ class DoctoresResource extends JsonResource
     {
 //        return parent::toArray($request);
         return [
-            'name' => $this->name,
-            'depertment' => $this->depertment,
-            'avatar' => $this->avatar ?? 'uploads/defult-image/Team_1.png',
-            'role' => $this->role,
+            'id'    => $this->id ,
+            'name'  => $this->name,
+            'avatar'=> $this->avatar ?? null,
         ];
     }
 }

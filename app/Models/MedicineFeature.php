@@ -5,12 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Assessment extends Model
+class MedicineFeature extends Model
 {
     use HasFactory;
-
-    protected  $guarded = [];
-
+    protected $guarded = [];
     /**
      * Get the attributes that should be cast.
      *
@@ -19,9 +17,8 @@ class Assessment extends Model
     protected function casts(): array
     {
         return [
-            'treatment_id'  => 'integer',
-            'question'      => 'string',
-            'answer'        => 'string',
+            'medicine_id'  => 'integer',
+            'feature'      => 'string',
         ];
     }
 }

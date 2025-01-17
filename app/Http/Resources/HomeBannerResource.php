@@ -19,7 +19,7 @@ class HomeBannerResource extends JsonResource
             "id"          => $this->id,
             "title"       => $this->title,
             "sub_title"   => $this->sub_title,
-            "avatar"      => $this->avatar,
+            "avatar"      => $this->avatar ?? 'uploads/defult-image/home_banner.png',
             "button_name" => $this->button_name,
             "button_url"  => $this->button_url,
             "type"        => $this->type,

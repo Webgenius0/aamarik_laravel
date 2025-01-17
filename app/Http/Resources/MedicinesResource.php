@@ -22,6 +22,7 @@ class MedicinesResource extends JsonResource
              'max_star'    => '4',
              'review'      => '10',
              'price'       => $this->details->price,
+             'avatar'      => $this->avatar ?? 'uploads/defult-image/productImage.png'
          ];
     }
 }

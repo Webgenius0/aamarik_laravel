@@ -7,6 +7,7 @@ use App\Http\Controllers\API\Auth\ProfileController;
 use App\Http\Controllers\API\Frontend\DoctoreController;
 use App\Http\Controllers\API\Frontend\FAQController;
 use App\Http\Controllers\API\Frontend\MedicineController;
+use App\Http\Controllers\API\Frontend\TreatmentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\FirebaseTokenController;
@@ -91,6 +92,7 @@ Route::controller(DoctoreController::class)->group(function () {
 //! Route for medicine controller
 Route::controller(MedicineController::class)->group(function () {
     Route::get('/medicines', 'index');
+    Route::get('/medicine/{medicineID}/show', 'show');
 });
 
 //! Route for Firebase Token  Controller
@@ -99,3 +101,13 @@ Route::controller(FirebaseTokenController::class)->group(function () {
     Route::post('/firebase/token/get', 'getToken');
     Route::post('/firebase/token/detele', 'deleteToken');
 }); // End of Firebase Token Controller
+
+
+//! Route for Treatment
+Route::controller(TreatmentController::class)->group(function () {
+    Route::get('/treatments', 'index');
+    Route::get('/treatment/{treatmentID}/servicess', 'treatmentServicess');
+    Route::get('/treatment/{treatmentID}/detail', 'treatmentDetail');
+    Route::get('/treatment/{treatmentID}/about', 'treatmentAbout');
+    Route::get('/treatment/{treatmentID}/medicines', 'treatmentMedicines');
+});

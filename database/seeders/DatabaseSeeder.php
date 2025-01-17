@@ -48,5 +48,8 @@ class DatabaseSeeder extends Seeder
 
         //call the medicineSeeder
         $this->call(MedicineSeeder::class);
+
+        //call the treatmetn
+        $this->call(TreatmentSeeder::class);
     }
 }

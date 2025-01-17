@@ -26,4 +26,8 @@ class Medicine extends Model
     {
         return $this->hasOne(MedicineDetails::class);
     }
+    public function features()
+    {
+        return $this->hasMany(MedicineFeature::class);
+    }
 }

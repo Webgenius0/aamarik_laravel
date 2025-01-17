@@ -24,4 +24,14 @@ class TreatmentMedicines extends Model
             'answer'        => 'string',
         ];
     }
+
+
+    public function treatment()
+    {
+        return $this->belongsTo(Treatment::class);
+    }
+    public function medicine()
+    {
+        return $this->belongsTo(Medicine::class);
+    }
 }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('treatment_id');
             $table->string('title');
-            $table->string('avatar');
+            $table->string('avatar')->nullable();
             $table->text('short_description');
             $table->timestamps();
 
