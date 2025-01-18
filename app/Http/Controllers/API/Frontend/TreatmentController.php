@@ -31,7 +31,7 @@ class TreatmentController extends Controller
             }
             return $this->sendResponse(TreatmentResource::collection($treatments),"Treatments Retrieved  successfully");
         }catch (\Exception $exception){
-            return $this->sendError($exception->getMessage(),[],$exception->getCode());
+            return $this->sendError($exception->getMessage(),[],500);
         }
     }
 
@@ -50,7 +50,7 @@ class TreatmentController extends Controller
 
             return $this->sendResponse(new TreatmentServicesResource($treatment),"Treatments services Retrieved successfully");
         }catch (\Exception $exception){
-            return $this->sendError($exception->getMessage(),[],$exception->getCode());
+            return $this->sendError($exception->getMessage(),[],500);
         }
     }
 
@@ -69,7 +69,7 @@ class TreatmentController extends Controller
 
             return $this->sendResponse(new TreatmentDetailResource($treatment),"Treatments services Retrieved successfully");
         }catch (\Exception $exception){
-            return $this->sendError($exception->getMessage(),[],$exception->getCode());
+            return $this->sendError($exception->getMessage(),[],500);
         }
     }
 
@@ -88,7 +88,7 @@ class TreatmentController extends Controller
 
             return $this->sendResponse(new TreatmentAboutResource($treatment),"Treatment about Retrieved successfully");
         }catch (\Exception $exception){
-            return $this->sendError($exception->getMessage(),[],$exception->getCode());
+            return $this->sendError($exception->getMessage(),[],500);
         }
     }
 
