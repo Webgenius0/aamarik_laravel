@@ -29,6 +29,8 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('12345678'),
         ]);
 
+        $this->call(UserSeeder::class);
+
         Setting::create([
             'title' => 'pharmacy',
             'description' => "Lorem Ipsdam Doller"
@@ -51,5 +53,8 @@ class DatabaseSeeder extends Seeder
 
         //call the treatmetn
         $this->call(TreatmentSeeder::class);
+
+        //call the review
+        $this->call(ReviewSeeder::class);
     }
 }

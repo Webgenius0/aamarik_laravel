@@ -68,4 +68,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(FirebaseTokens::class);
     }
+
+    // Relationship to the Review model
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 }

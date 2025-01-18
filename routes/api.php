@@ -93,6 +93,8 @@ Route::controller(DoctoreController::class)->group(function () {
 Route::controller(MedicineController::class)->group(function () {
     Route::get('/medicines', 'index');
     Route::get('/medicine/{medicineID}/show', 'show');
+    Route::get('/medicine/{medicineID}/review', 'getReview');
+    Route::get('/medicine/{medicineID}/review-avarage', 'getAverageReviews');
 });
 
 //! Route for Firebase Token  Controller
@@ -110,4 +112,7 @@ Route::controller(TreatmentController::class)->group(function () {
     Route::get('/treatment/{treatmentID}/detail', 'treatmentDetail');
     Route::get('/treatment/{treatmentID}/about', 'treatmentAbout');
     Route::get('/treatment/{treatmentID}/medicines', 'treatmentMedicines');
+    Route::get('/treatment/{treatmentID}/consultation', 'treatmentConsultation');
 });
+
+
