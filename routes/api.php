@@ -110,4 +110,5 @@ Route::controller(TreatmentController::class)->group(function () {
     Route::get('/treatment/{treatmentID}/detail', 'treatmentDetail');
     Route::get('/treatment/{treatmentID}/about', 'treatmentAbout');
     Route::get('/treatment/{treatmentID}/medicines', 'treatmentMedicines');
+    Route::get('/treatment/{treatmentID}/consultation', 'treatmentConsultation');
 });

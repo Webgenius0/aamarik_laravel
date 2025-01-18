@@ -41,12 +41,17 @@ class MedicineController extends Controller
      */
     public  function  show($medicineID)
     {
-        $medicine = Medicine::with(['details','features'])->find($medicineID);
+        try {
+            $medicine = Medicine::with(['details','features'])->find($medicineID);
 
-        if (!$medicine) {
-            return $this->sendResponse([],'Medicine not found');
+            if (!$medicine) {
+                return $this->sendResponse([],'Medicine not found');
+            }
+
+            return $this->sendResponse(new MedicineDetailsResource($medicine), 'Medicine retrieved successfully');
+        }catch (\Exception $exception){
+            $statusCode = is_numeric($exception->getCode()) ? $exception->getCode() : 500;
+            return $this->sendError($exception->getMessage(),[],  $statusCode);
         }
-//        return response($medicine);
-        return $this->sendResponse(new MedicineDetailsResource($medicine), 'Medicine retrieved successfully');
     }
 }

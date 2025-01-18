@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TreatmentAboutResource;
+use App\Http\Resources\TreatmentAssessmentResource;
 use App\Http\Resources\TreatmentDetailResource;
 use App\Http\Resources\TreatmentMedicineResource;
 use App\Http\Resources\TreatmentResource;
@@ -112,5 +113,18 @@ class TreatmentController extends Controller
         }
 
         return $this->sendResponse(new TreatmentMedicineResource($treatment),"Treatment medicines Retrieved successfully");
+    }
+
+    /**
+     * List of Treatment Consultation or Assessment for Assessment page
+     */
+    public function treatmentConsultation($treatmentID)
+    {
+        $treatment = Treatment::with(['assessments'])->find($treatmentID);
+        if(!$treatment){
+            return $this->sendResponse([], "Treatment not found");
+        }
+        return $this->sendResponse(new TreatmentAssessmentResource($treatment),"Treatment assessment Retrieved successfully");
+
     }
 }
