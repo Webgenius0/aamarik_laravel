@@ -71,6 +71,7 @@ Route::controller(CMSController::class)->group(function () {
     Route::get('/cms/get-banner-page-data', 'homeBanner');
     Route::get('/cms/get-personalized-page-data', 'personalized');
     Route::get('/get-delivery-info-data', 'getDeliveryInfo');
+    Route::get('/get-consultation-data', 'getConsultation');
 }); // End of CMS Controller
 
 //! Route for CMS controller

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\API\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ConsultationResource;
 use App\Http\Resources\DeliveryInfoResource;
 use App\Http\Resources\HomeBannerResource;
 use App\Http\Resources\PersonalizedResource;
 use App\Models\CMS;
+use App\Models\Consultation;
 use App\Models\DeliveryInfo;
 use App\Traits\apiresponse;
 use Illuminate\Http\Request;
@@ -62,12 +64,34 @@ class CMSController extends Controller
      */
     public  function  getDeliveryInfo()
     {
-        $data = DeliveryInfo::first();
+        try {
+            $data = DeliveryInfo::first();
 
-        if (!$data) {
-            return $this->sendResponse((object)[], "Delivery Info Data Not Found");
+            if (!$data) {
+                return $this->sendResponse((object)[], "Delivery Info Data Not Found");
+            }
+
+            return $this->sendResponse(new DeliveryInfoResource($data), 'Delivery Info Data Retrieved Successfully');
+        }catch (\Throwable $th) {
+            return $this->sendError("Error Retrieving Delivery Info Data", $th->getMessage());
         }
+    }
 
-        return $this->sendResponse(new DeliveryInfoResource($data), 'Delivery Info Data Retrieved Successfully');
+    /**
+     * Get Consultation data for HealthCare Service Details page
+     */
+    public  function  getConsultation()
+    {
+        try {
+            $data = Consultation::first();
+
+            if (!$data) {
+                return $this->sendResponse((object)[], "Consultation Data Not Found");
+            }
+
+            return $this->sendResponse(new ConsultationResource($data), 'Consultation Data Retrieved Successfully');
+        }catch (\Throwable $th){
+            return $this->sendError("Error Retrieving Consultation", $th->getMessage());
+        }
     }
 }
