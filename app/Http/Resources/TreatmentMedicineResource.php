@@ -26,7 +26,7 @@ class TreatmentMedicineResource extends JsonResource
                     'max_star'    => '4', // Assuming this is a fixed value
                     'review'      => '10', // Assuming this is a fixed value
                     'price'       => $medicine->details->price, // Access price from related details
-                    'avatar'      => $medicine->avatar ?? 'uploads/default-image/productImage.png', // Default avatar if not set
+                    'avatar'      => $medicine->avatar ?? 'uploads/defult-image/productImage.png', // Default avatar if not set
                 ];
             }),
         ];
