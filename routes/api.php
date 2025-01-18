@@ -70,6 +70,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 Route::controller(CMSController::class)->group(function () {
     Route::get('/cms/get-banner-page-data', 'homeBanner');
     Route::get('/cms/get-personalized-page-data', 'personalized');
+    Route::get('/get-delivery-info-data', 'getDeliveryInfo');
 }); // End of CMS Controller
 
 //! Route for CMS controller
@@ -108,7 +109,7 @@ Route::controller(FirebaseTokenController::class)->group(function () {
 //! Route for Treatment
 Route::controller(TreatmentController::class)->group(function () {
     Route::get('/treatments', 'index');
-    Route::get('/treatment/{treatmentID}/servicess', 'treatmentServicess');
+    Route::get('/treatment/servicess', 'treatmentServicess');
     Route::get('/treatment/{treatmentID}/detail', 'treatmentDetail');
     Route::get('/treatment/{treatmentID}/about', 'treatmentAbout');
     Route::get('/treatment/{treatmentID}/medicines', 'treatmentMedicines');
