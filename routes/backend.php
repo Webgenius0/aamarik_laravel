@@ -13,6 +13,7 @@ use App\Http\Controllers\Web\Backend\NewsLetterController;
 use App\Http\Controllers\Web\Backend\UserUpdateController;
 use App\Http\Controllers\Web\Backend\SocialMediaController;
 use App\Http\Controllers\Web\Backend\CMSController;
+use App\Http\Controllers\Web\Backend\DoctorController;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -77,11 +78,19 @@ Route::controller(\App\Http\Controllers\Web\Backend\FaqController::class)->group
 })->middleware('auth,admin');
 
 //cms
-
 Route::get('/settings/banner',[ CMSController::class ,'banner'])->name('banner');
 Route::get('/cms/home-section',[ CMSController::class ,'homeSection'])->name('home.section');
 Route::put('/cms', [CmsController::class, 'update'])->name('cms.update');
-Route::put('/cms/personalized', [CmsController::class, 'personalized'])->name('cms.personalized');
 
+
+//section
+Route::put('/cms/personalized', [CmsController::class, 'personalized'])->name('cms.personalized');
+Route::get('/cms/confediential', [CmsController::class, 'homeSection'])->name('cms.confediential');
+Route::put('/cms/update', [CmsController::class, 'updateSection'])->name('section.update');
+
+//doctor section
+Route::get('/cms/doctor-section', [CmsController::class, 'doctorSection'])->name('cms.doctor.section');
+
+Route::get('/doctor', [DoctorController::class, 'index'])->name('doctor.index');
 
 

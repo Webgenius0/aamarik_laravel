@@ -29,6 +29,26 @@
                 </a>
             </li>
 
+            <li class="menu-item">
+                <a href="javascript:void(0)" data-hs-collapse="#doctorlevel" class="menu-link">
+                    <span class="menu-icon">
+                        <i class="uil uil-share-alt"></i>
+                    </span>
+                    <span class="menu-text"> Doctor </span>
+                    <span class="menu-arrow"></span>
+                </a>
+
+                <ul id="doctorlevel" class="sub-menu hidden">
+                    <li class="menu-item">
+                        <a href="{{route('doctor.index')}}" class="menu-link">
+                            <span class="menu-dot"></span>
+                            <span class="menu-text">Create Doctor</span>
+                        </a>
+                    </li>
+                 
+                </ul>
+            </li>
+
             <!-- CMS -->
             <li class="menu-item">
                 <a href="javascript:void(0)" data-hs-collapse="#sidenavLevel1" class="menu-link">
@@ -51,6 +71,13 @@
                         <a href="{{route('home.section')}}" class="menu-link">
                             <span class="menu-dot"></span>
                             <span class="menu-text">Home Section</span>
+                        </a>
+                    </li>
+
+                    <li class="menu-item">
+                        <a href="{{route('cms.doctor.section')}}" class="menu-link">
+                            <span class="menu-dot"></span>
+                            <span class="menu-text">Doctor</span>
                         </a>
                     </li>
                     

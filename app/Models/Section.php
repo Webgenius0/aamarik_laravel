@@ -34,6 +34,6 @@ class Section extends Model
      */
     public function sectionCards()
     {
-        return $this->hasMany(SectionCard::class);
+        return $this->hasMany(SectionCard::class, 'section_id');
     }
 }

@@ -32,4 +32,13 @@ class SectionCard extends Model
             'avatar'     => 'string'
         ];
     }
+
+    /**
+     * Get the section that owns the section card.
+     */
+
+    public function section()
+    {
+        return $this->belongsTo(Section::class, 'section_id');
+    }
 }
