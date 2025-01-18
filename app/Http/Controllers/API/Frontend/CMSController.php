@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\API\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\DeliveryInfoResource;
 use App\Http\Resources\HomeBannerResource;
 use App\Http\Resources\PersonalizedResource;
 use App\Models\CMS;
+use App\Models\DeliveryInfo;
 use App\Traits\apiresponse;
 use Illuminate\Http\Request;
 
@@ -53,5 +55,19 @@ class CMSController extends Controller
             //throw $th;
             return $this->sendError("Error Retrieving personalized Page Data", $th->getMessage());
         }
+    }
+
+    /**
+     * Get delivery information data for Checkout page
+     */
+    public  function  getDeliveryInfo()
+    {
+        $data = DeliveryInfo::first();
+
+        if (!$data) {
+            return $this->sendResponse((object)[], "Delivery Info Data Not Found");
+        }
+
+        return $this->sendResponse(new DeliveryInfoResource($data), 'Delivery Info Data Retrieved Successfully');
     }
 }
