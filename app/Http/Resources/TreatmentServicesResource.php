@@ -21,7 +21,7 @@ class TreatmentServicesResource extends JsonResource
             'services' => $this->categories->map(function ($category) {
                 return [
                     'id'    => $category->id,
-                    'icon'  => $category->icon,
+                    'icon'  => $category->icon ?? "uploads/defult-image/Frame.png",
                     'title' => $category->title,
                 ];
             }),
