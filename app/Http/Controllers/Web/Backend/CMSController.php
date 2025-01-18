@@ -5,7 +5,11 @@ use App\Helper\Helper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\CMS;
+use App\Models\Section;
+use App\Models\SectionCard;
 use Illuminate\Support\Facades\File;
+use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 class CMSController extends Controller
 {
     /**
@@ -17,11 +21,8 @@ class CMSController extends Controller
         $personalize = CMS::where('type','personalized')->first();
         return view('backend.layouts.cms.index',compact('cms','personalize'));
     }
-    //home section
-    public function homeSection()
-    {
-        return view('backend.layouts.cms.home-section');
-    }
+    
+  
     public function update(Request $request)
     {
         // Validate the input data
@@ -105,4 +106,110 @@ class CMSController extends Controller
         }
     }
 
+    //personalized helth care
+
+public function homeSection(Request $request)
+{
+
+$sections = Section::with('sectionCards')->where('type', 'healthcare')->get();
+    
+    return view('backend.layouts.cms.home-section', compact( 'sections'));
+    
+}
+
+
+//update home section
+public function updateSection(Request $request)
+{
+    // Validate the input data
+    $request->validate([
+        'title' => 'array',
+        'title.*' => 'required|string|max:255',
+        'sub_title' => 'array',
+        'sub_title.*' => 'nullable|string|max:255',
+        'avatar' => 'array',
+        'avatar.*' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+    ]);
+
+    // Loop through each title and update each section card
+    foreach ($request->title as $cardId => $title) {
+        $card = SectionCard::findOrFail($cardId);
+        
+        // Update title and subtitle for the card
+        $card->title = $title;
+        $card->sub_title = $request->sub_title[$cardId] ?? null; // Null if no subtitle
+
+      
+        if ($request->hasFile('avatar') && isset($request->file('avatar')[$cardId])) {
+            
+            
+            if ($card->avatar) {
+                $oldAvatarPath = public_path('uploads/' . $card->avatar);  
+                if (file_exists($oldAvatarPath)) {
+                    unlink($oldAvatarPath);  
+                }
+            }
+
+           
+            $avatarFile = $request->file('avatar')[$cardId];
+            $avatarUrl = Helper::arrayfileUpload($avatarFile, 'setting', 'avatar'); 
+
+            if (!$avatarUrl) {
+                return $this->error([], "Failed to upload avatar", 500);
+            }
+
+           
+            $card->avatar = $avatarUrl;
+        }
+
+       
+        $card->save();
+    }
+
+   
+    return redirect()->back()->with('success', 'Cards updated successfully.');
+}
+
+
+//doctor section
+
+public function doctorSection()
+{
+    return view('backend.layouts.cms.doctor-section');
+}
+
+
+//Working process
+public function updateWorkingProcess(Request $request)
+{
+    $request->validate([
+        'title'=>'array',
+        'title*' => 'required|string|max:255',
+        'sub_title' => 'array',
+        'sub_title*' => 'required|string|max:1000',
+        'avatar' => 'array',
+        'avatar*' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:2048',
+    ]);
+    foreach($request->title as $cardId=>$title){
+        $card=SectionCard::findOrFail($cardId);
+        $card->title=$title;
+        $card->sub_title=$request->sub_title[$cardId];
+        if($request->hasFile('avatar') && isset($request->file('avatar')[$cardId])){
+            if($card->avatar){
+                $oldAvatarPath = public_path('uploads/'.$card->avatar);  
+                if(file_exists($oldAvatarPath)){
+                    unlink($oldAvatarPath);  
+                }
+            }
+            $avatarFile=$request->file('avatar')[$cardId];
+            $avatarUrl=Helper::arrayfileUpload($avatarFile,'setting','avatar'); 
+            if(!$avatarUrl){
+                return $this->error([], "Failed to upload avatar", 500);
+            }
+            $card->avatar=$avatarUrl;
+        }
+        $card->save();
+    }
+    return redirect()->back()->with('success', 'Cards updated successfully.');
+}
 }
