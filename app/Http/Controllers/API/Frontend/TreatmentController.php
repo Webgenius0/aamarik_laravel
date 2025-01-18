@@ -38,17 +38,17 @@ class TreatmentController extends Controller
     /**
      * List of treatment services
      */
-    public function treatmentServicess($treatmentID)
+    public function treatmentServicess()
     {
         try {
             //check treatment id valid or not
-            $treatment = Treatment::with('categories')->find($treatmentID);
+            $treatment = Treatment::with('categories')->get();
 
             if(!$treatment){
                 return $this->sendResponse([], "Treatment not found");
             }
 
-            return $this->sendResponse(new TreatmentServicesResource($treatment),"Treatments services Retrieved successfully");
+            return $this->sendResponse(TreatmentServicesResource::collection(($treatment)),"Treatments services Retrieved successfully");
         }catch (\Exception $exception){
             return $this->sendError($exception->getMessage(),[],500);
         }
