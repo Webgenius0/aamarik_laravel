@@ -23,4 +23,17 @@ class Review extends Model
             'review'   => 'string',
         ];
     }
+
+
+    // Relationship to the Medicine model
+    public function medicine()
+    {
+        return $this->belongsTo(Medicine::class);
+    }
+
+    // Relationship to the User model
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

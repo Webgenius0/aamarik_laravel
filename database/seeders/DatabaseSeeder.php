@@ -53,5 +53,8 @@ class DatabaseSeeder extends Seeder
 
         //call the treatmetn
         $this->call(TreatmentSeeder::class);
+
+        //call the review
+        $this->call(ReviewSeeder::class);
     }
 }
