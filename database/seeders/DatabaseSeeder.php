@@ -59,5 +59,7 @@ class DatabaseSeeder extends Seeder
 
         //call the deliver info
         $this->call(DeliveryInfoSeeder::class);
+        //Start Your Quick Consultation
+        $this->call(ConsultationSeeder::class);
     }
 }
