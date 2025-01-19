@@ -1,135 +1,288 @@
 @extends('backend.app')
-{{-- Title --}}
-@section('title', 'Setting')
 
+@section('title', 'FAQ Management| ' . $setting->title ?? 'PrimeCare')
 
 @push('styles')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.min.css" />
-<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.tailwind.min.css">
 <style>
+    .dataTables_wrapper .dataTables_length select {
+        width: 68px;
+        font-size: 14px;
+        border: 0;
+        border-radius: 0px;
+        padding: 5px;
+        background-color: transparent;
+        padding: 10px;
+    }
 
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        background-color: rgb(60 186 222 / var(--tw-bg-opacity));
+        color: white !important;
+        border: none;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+        background-color: rgb(32 183 153 / var(--tw-bg-opacity));
+        color: white !important;
+        border: none;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        margin-left: 11px;
+    }
+
+    td,
+    td p {
+        font-size: 15px;
+    }
+
+    #data-table {
+        border: 0;
+        margin-bottom: 24px;
+    }
+
+    div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm) {
+        background-color: #7066e0 !important;
+    }
+
+    div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-cancel) {
+        background-color: #6e7881 !important;
+    }
+
+    #modalOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 9999;
+        }
+
+        #modal {
+            position: fixed;
+            width: 90%;
+            top: 55%;
+            left: 50%;
+            text-align: center;
+            background-color: #fafafa;
+            box-sizing: border-box;
+            opacity: 0;
+            transform: translate(-50%, -50%);
+            transition: all 300ms ease-in-out;
+        }
+
+        #modalOverlay.modal-open #modal {
+            opacity: 1;
+            top: 50%;
+        }
 </style>
 @endpush
 
 @section('content')
+<main class="p-6">
+    <div class="card bg-white overflow-hidden">
+        <div class="card-header">
+            <div class="flex justify-between align-middle">
+                <h3 class="card-title">Social Media</h3>
+                <div>
+                    <a href="{{ route('doctor.create') }}" class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md">
+                        Add Doctor
+                    </a>
+                </div>
+            </div>
+        </div>
 
-@php
-//$cms = App\Models\Cms::where('type','banner')->first();
-//$personalize = App\Models\Cms::where('type','personalized')->first();
-@endphp
-<div class="content-wrapper">
-    <div class="main-content">
-        <div class="body-content">
-            <div class="decoration blur-2"></div>
-            <div class="decoration blur-3"></div>
-            <div class="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-                <div class="p-4 bg-white rounded-lg shadow-md mt-2">
-                    <div class="space-y-4">
-                        <form action="" class="max-w-6xl w-full mx-auto space-y-4"
-                            method="POST" enctype="multipart/form-data">
-                            @csrf
-                            @method("PUT")
-                            <div class="flex-col md:flex-row">
-                                <h1 class="text-center text-lg ">Create Doctor</h1>
+        <div class="p-4">
+            <div class="overflow-x-auto custom-scroll">
+                <div class="min-w-full inline-block align-middle">
+                    <div class="overflow-hidden">
+                        <table id="data-table" class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        S/L
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Name
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Email
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Department
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Avatar
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <!-- Dynamic content goes here -->
+                            </tbody>
+                        </table>
 
-                                <label for="applicationTitle"
-                                    class=" text-lg font-medium mb-2 md:mb-0 md:w-1/3">User Name
-                                </label>
-                                <div class="w-full">
-                                    <input type="text" name="title" class="form-input w-full" id="applicationTitle"
-                                        value="">
-                                    @error('username')
-                                    <span class="text-red-500 block mt-1 text-sm">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="flex-col md:flex-row">
-                                <label for="email" class="text-lg font-medium mb-2 md:mb-0 md:w-1/3">Email</label>
-                                <div class="w-full">
-                                    <input name="email" type="email" class="form-input w-full" id="email" placeholder="example@gmail.com"
-                                        value="">
-                                    @error('email')
-                                    <span class="text-red-500 block mt-1 text-sm">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                         
-                            {{-- favicon --}}
-                            <div class="flex flex-row space-x-8">
-                                <div class="w-1/2">
-                                    <div class="flex-col md:flex-row">
-                                        <label class="text-lg font-medium mb-2 md:mb-0 md:w-1/3">Image</label>
-                                        <div class="w-full">
-                                            <input name="avatar"
-                                                class="form-input w-full dropify dropify-wrapper1 .dropify-preview dropify-render img"
-                                                data-height="300" type="file"
-                                                {{-- accept=".jpg, .png, image/jpeg, image/png" --}}
-                                                accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg"
-                                                data-default-file="">
-                                            @error('image')
-                                            <span class="text-red-500 block mt-1 text-sm">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                            
-                                            <div class="text-blue-500 text-sm mt-1">
-                                                Recommended to 32x32 px(jpeg,png,jpg,gif,ico,webp,bmp,svg).
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="flex justify-center mt-4">
-                                <button type="button"
-                                    class="btn bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold">Reset</button>
-                                <button type="submit"
-                                    class="btn bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold ml-2">Save</button>
-                            </div>
-                        </form>
                     </div>
                 </div>
             </div>
         </div>
-        <!--/.body content-->
     </div>
+</main>
 
-
-   
-</div>
 @endsection
 
-{{-- Push Script //partials/script.blade.php (scripts stacked) --}}
+
 @push('scripts')
-<!-- Tailwind CSS CDN -->
-<script src="https://unpkg.com/tailwindcss-jit-cdn@2.2.19/dist/tailwind.min.js"></script>
-{{-- Dropify --}}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"></script>
-{{--Flashar--}}
+<script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script defer src="https://cdn.jsdelivr.net/npm/@flasher/flasher@1.2.4/dist/flasher.min.js"></script>
-{{-- Ck Editor --}}
-<script src="{{ asset('Backend/plugins/tinymc/tinymce.min.js') }}"></script>
+
+
 <script>
     $(document).ready(function() {
-        $('.dropify').dropify();
+        const flasher = new Flasher({
+            selector: '[data-flasher]',
+            duration: 3000,
+            options: {
+                position: 'top-center',
+            },
+        });
+    });
+
+    $(document).ready(function() {
+        $('#data-table').DataTable({
+            order: [],
+            lengthMenu: [
+                [25, 50, 100, 200, 500, -1],
+                [25, 50, 100, 200, 500, "All"]
+            ],
+            processing: true,
+            responsive: true,
+            serverSide: true,
+            language: {
+                processing: '<i class="ace-icon d-none fa fa-spinner fa-spin orange bigger-500" style="font-size:60px;margin-top:50px;"></i>'
+            },
+            pagingType: "full_numbers",
+            dom: "<'flex justify-between items-center mb-3'<'w-full sm:w-auto'l><'w-full text-center sm:w-auto'B><'w-full sm:w-auto'f>>tipr",
+            ajax: {
+                url: "{{ route('doctor.index') }}", // Ensure this route is correct
+                type: "GET",
+            },
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'name',
+                    name: 'name'
+                },
+                {
+                    data: 'email',
+                    name: 'email'
+                },
+                {
+                    data: 'department',
+                    name: 'department'
+                },
+                {
+                    data: 'avatar',
+                    name: 'avatar'
+                },
+                {
+                    data: 'status',
+                    name: 'status'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                },
+            ],
+        });
     });
 
 
-    $(document).ready(function() {
-            const flasher = new Flasher({
-                selector: '[data-flasher]',
-                duration: 3000,
-                options: {
-                    position: 'top-center',
-                },
-            });
+    function ShowCreateUpdateModal() {
+            $('#createUpdateForm')[0].reset();
+            $('#faq_id').val('');
+            $('#modalTitle').html('Create New FAQ');
+            $('#modalOverlay').show().addClass('modal-open');
+        }
+
+        $('#close').click(function() {
+            var modal = $('#modalOverlay');
+            modal.removeClass('modal-open');
+            setTimeout(function() {
+                modal.hide();
+            }, 200);
         });
+
+
+        //delete confirmation
+            function showDeleteConfirm(id) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Are you sure you want to delete this record?',
+                text: 'If you delete this, it will be gone forever.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deleteItem(id);
+                }
+            });
+        };
+
+
+            //delete
+        function deleteItem(id) {
+            var url = '{{ route('doctor.delete', ':id') }}';
+            $.ajax({
+                type: "DELETE",
+                url: url.replace(':id', id),
+                headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                success: function(resp) {
+                    console.log(resp);
+                    // Reloade DataTable
+                    $('#data-table').DataTable().ajax.reload();
+                    if (resp.success === true) {
+                        // show toast message
+                        flasher.success(resp.message);
+
+                    } else if (resp.errors) {
+                        flasher.error(resp.errors[0]);
+                    } else {
+                        flasher.error(resp.message);
+                    }
+                }, // success end
+                error: function(error) {
+                    // location.reload();
+                } // Error
+            })
+        }
 </script>
 @endpush

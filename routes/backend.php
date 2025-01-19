@@ -14,6 +14,7 @@ use App\Http\Controllers\Web\Backend\UserUpdateController;
 use App\Http\Controllers\Web\Backend\SocialMediaController;
 use App\Http\Controllers\Web\Backend\CMSController;
 use App\Http\Controllers\Web\Backend\DoctorController;
+use App\Http\Controllers\Web\Backend\MedicineController;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -90,7 +91,21 @@ Route::put('/cms/update', [CmsController::class, 'updateSection'])->name('sectio
 Route::put('/cms/working-process', [CmsController::class, 'updateWorkingProcess'])->name('cms.working.process');
 //doctor section
 Route::get('/cms/doctor-section', [CmsController::class, 'doctorSection'])->name('cms.doctor.section');
-
 Route::get('/doctor', [DoctorController::class, 'index'])->name('doctor.index');
+Route::post('/doctor-add', [DoctorController::class, 'store'])->name('doctor.store');
+Route::get('/doctor-create', [DoctorController::class, 'create'])->name('doctor.create');
+Route::get('/doctor-edit/{id}', [DoctorController::class, 'edit'])->name('doctor.edit');
+Route::delete('/doctor-delete/{id}', [DoctorController::class, 'destroy'])->name('doctor.delete');
 
+//deprtment
+Route::get('/department/show', [DoctorController::class, 'department'])->name('doctors.department');
+Route::post('/department-add', [DoctorController::class, 'departmentStore'])->name('doctor.department.store');
+//department for show Departmentlist 
+
+Route::get('/department', [DoctorController::class, 'getDeparments'])->name('doctor.department');
+
+//Medicine section
+Route::controller(MedicineController::class)->group(function () {
+    Route::get('/medicine', 'createMedicine')->name('medicine.create');
+});
 

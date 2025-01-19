@@ -1,4 +1,12 @@
+
+@push('styles')
+.menu-link.active {
+    background-color: #007bff; 
+    color: white;
+}
+@endpush
 <!-- Sidebar Menu Start -->
+
 <div class="app-menu">
 
     <!-- Brand Logo -->
@@ -23,35 +31,56 @@
             <li class="menu-title">Frontend</li>
 
             <li class="menu-item">
-                <a class='menu-link' href="{{route('faq.index')}}">
+                <a class="menu-link {{Request::RouteIs('faq.index') ? 'bg-blue-500 text-white' : '' }}" href="{{route('faq.index')}}">
                     <span class="menu-icon"><i class="uil uil-compass"></i></span>
                     <span class="menu-text"> FAQ </span>
                 </a>
             </li>
-
+            <!-- Doctor -->
             <li class="menu-item">
-                <a href="javascript:void(0)" data-hs-collapse="#doctorlevel" class="menu-link">
+                <a href="javascript:void(0)" data-hs-collapse="#doctorlevel"  class="menu-link  {{ (Request::RouteIs('doctors.department') || Request::RouteIs('doctor.index')) ? 'active' : '' }}"
+                >
                     <span class="menu-icon">
-                        <i class="uil uil-share-alt"></i>
+                    <i class="fa fa-stethoscope" style="font-size: 24px;"></i>
+
                     </span>
                     <span class="menu-text"> Doctor </span>
                     <span class="menu-arrow"></span>
                 </a>
 
                 <ul id="doctorlevel" class="sub-menu hidden">
-                    <li class="menu-item">
-                        <a href="{{route('doctor.index')}}" class="menu-link">
+                <li class="menu-item">
+                        <a href="{{route('doctors.department')}}" class="menu-link {{Request::RouteIs('doctors.department') ? 'active' : ''}}">
                             <span class="menu-dot"></span>
-                            <span class="menu-text">Create Doctor</span>
+                            <span class="menu-text">Create Department</span>
                         </a>
                     </li>
+
+                    <li class="menu-item">
+                        <a href="{{route('doctor.index')}}" class="menu-link {{Request::RouteIs('doctor.index') ? 'active' : ''}}">
+                            <span class="menu-dot"></span>
+                            <span class="menu-text">Doctor List</span>
+                        </a>
+                    </li>
+                    
                  
                 </ul>
             </li>
+            <!-- End Doctor -->
 
+            <!-- Medicine start -->
+            <li class="menu-item">
+                <a class="menu-link {{Request::RouteIs('faq.index') ? 'bg-blue-500 text-white' : '' }}" href="{{route('medicine.create')}}">
+                    <span class="menu-icon"><i class="fa-solid fa-pills"></i>
+
+                    </span>
+                    <span class="menu-text"> Medicine </span>
+                </a>
+            </li>
+            <!-- End Medicine -->
             <!-- CMS -->
             <li class="menu-item">
-                <a href="javascript:void(0)" data-hs-collapse="#sidenavLevel1" class="menu-link">
+                <a href="javascript:void(0)" data-hs-collapse="#sidenavLevel1" class="menu-link {{Request::RouteIs('banner')||Request::RouteIs('home.section') ? 'active' : ''}}">
                     <span class="menu-icon">
                         <i class="uil uil-share-alt"></i>
                     </span>
@@ -74,12 +103,7 @@
                         </a>
                     </li>
 
-                    <li class="menu-item">
-                        <a href="{{route('cms.doctor.section')}}" class="menu-link">
-                            <span class="menu-dot"></span>
-                            <span class="menu-text">Doctor</span>
-                        </a>
-                    </li>
+                   
                     
                 </ul>
             </li>

@@ -25,8 +25,7 @@ class CMSController extends Controller
   
     public function update(Request $request)
     {
-        // Validate the input data
-        //dd($request->all());
+     
         $request->validate([
             'title' => 'required|string|max:255',
             'sub_title' => 'required|string|max:1000',
@@ -38,8 +37,6 @@ class CMSController extends Controller
         try {
 
             $cms = CMS::where('type', 'banner')->first();
-
-
             $data = [
                 'title' => $request->title,
                 'sub_title' => $request->sub_title,
@@ -63,7 +60,7 @@ class CMSController extends Controller
 
             return redirect()->route('banner')->with('t-success', $message);
 
-        } catch (\Throwable $th) {
+        } catch (Exception $e) {
 
            // \Log::error('Settings update failed: '.$th->getMessage());
             return redirect()->route('banner')->with('t-error', 'Something went wrong. Please try again.');
@@ -79,7 +76,6 @@ class CMSController extends Controller
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:2048',
 
         ]);
-
         try {
             $cms = CMS::where('type', 'personalized')->first();
             $data = [
@@ -122,53 +118,59 @@ $workingProcess = Section::with('sectionCards')->where('type', 'process')->get()
 //update home section
 public function updateSection(Request $request)
 {
-    
-    // Validate the input data
     $request->validate([
+        
         'title' => 'array',
-        'title.*' => 'required|string|max:255',
+        'title.*' => 'nullable|string|max:255',
         'sub_title' => 'array',
-        'sub_title.*' => 'nullable|string|max:255',
+        'sub_title.*' => 'nullable|string|max:1000',  // Allow null values for sub_title
         'avatar' => 'array',
-        'avatar.*' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+        'avatar.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:2048',
     ]);
 
-    // Loop through each title and update each section card
+   
     foreach ($request->title as $cardId => $title) {
-        $card = SectionCard::findOrFail($cardId);
-        
-        // Update title and subtitle for the card
-        $card->title = $title;
-        $card->sub_title = $request->sub_title[$cardId] ?? null; // Null if no subtitle
+        try {
+            
+            $card = SectionCard::findOrFail($cardId);
 
-      
-        if ($request->hasFile('avatar') && isset($request->file('avatar')[$cardId])) {
-            
-            
-            if ($card->avatar) {
-                $oldAvatarPath = public_path( $card->avatar);  
-                if (file_exists($oldAvatarPath)) {
-                    unlink($oldAvatarPath);  
+            // Update title and sub_title
+            $card->title = $title;
+            $card->sub_title = $request->sub_title[$cardId] ?? 'N/A';  // Allow null if no sub_title
+
+            // Handle avatar upload if present
+            if ($request->hasFile('avatar') && isset($request->file('avatar')[$cardId])) {
+               
+                if ($card->avatar) {
+                    $oldAvatarPath = public_path( $card->avatar);
+                    if (file_exists($oldAvatarPath)) {
+                        unlink($oldAvatarPath);
+                    }
                 }
+
+                // Upload the new avatar
+                $avatarFile = $request->file('avatar')[$cardId];
+                $avatarUrl = Helper::arrayfileUpload($avatarFile, 'default-image', 'avatar');
+
+                if (!$avatarUrl) {
+                    return redirect()->back()->with('error', 'Failed to upload avatar');
+                }
+
+                // Save the new avatar URL
+                $card->avatar = $avatarUrl;
             }
 
-           
-            $avatarFile = $request->file('avatar')[$cardId];
-            $avatarUrl = Helper::arrayfileUpload($avatarFile, 'setting', 'avatar'); 
+            // Save the card
+            $card->save();
 
-            if (!$avatarUrl) {
-                return $this->error([], "Failed to upload avatar", 500);
-            }
-
-           
-            $card->avatar = $avatarUrl;
+        } catch (\Exception $e) {
+         dd($e->getMessage());
+            // Handle potential errors
+            return redirect()->back()->with('error', 'An error occurred while updating the cards.');
         }
-
-       
-        $card->save();
     }
 
-   
+    // Return success message after the loop
     return redirect()->back()->with('success', 'Cards updated successfully.');
 }
 
@@ -184,35 +186,59 @@ public function doctorSection()
 //Working process
 public function updateWorkingProcess(Request $request)
 {
-    
+    //dd($request->all());
     $request->validate([
-        'title'=>'array',
-        'title*' => 'required|string|max:255',
+        'title' => 'array',
+        'title.*' => 'nullable|string|max:255',
         'sub_title' => 'array',
-        'sub_title*' => 'required|string|max:1000',
+        'sub_title.*' => 'nullable|string|max:1000',  // Allow null values for sub_title
         'avatar' => 'array',
-        'avatar*' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:2048',
+        'avatar.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:2048',
     ]);
-    foreach($request->title as $cardId=>$title){
-        $card=SectionCard::findOrFail($cardId);
-        $card->title=$title;
-        $card->sub_title=$request->sub_title[$cardId];
-        if($request->hasFile('avatar') && isset($request->file('avatar')[$cardId])){
-            if($card->avatar){
-                $oldAvatarPath = public_path('uploads/'.$card->avatar);  
-                if(file_exists($oldAvatarPath)){
-                    unlink($oldAvatarPath);  
+
+    foreach ($request->title as $cardId => $title) {
+        try {
+            // Find the card by ID
+            $card = SectionCard::findOrFail($cardId);
+
+            // Update title and sub_title
+            $card->title = $title;
+            $card->sub_title = $request->sub_title[$cardId] ?? 'N/A';  // Allow null if no sub_title
+
+            // Handle avatar upload if present
+            if ($request->hasFile('avatar') && isset($request->file('avatar')[$cardId])) {
+               
+                if ($card->avatar) {
+                    $oldAvatarPath = public_path( $card->avatar);
+                    if (file_exists($oldAvatarPath)) {
+                        unlink($oldAvatarPath);
+                    }
                 }
+
+                // Upload the new avatar
+                $avatarFile = $request->file('avatar')[$cardId];
+                $avatarUrl = Helper::arrayfileUpload($avatarFile, 'defult-image', 'avatar');
+
+                if (!$avatarUrl) {
+                    return redirect()->back()->with('error', 'Failed to upload avatar');
+                }
+
+                // Save the new avatar URL
+                $card->avatar = $avatarUrl;
             }
-            $avatarFile=$request->file('avatar')[$cardId];
-            $avatarUrl=Helper::arrayfileUpload($avatarFile,'setting','avatar'); 
-            if(!$avatarUrl){
-                return $this->error([], "Failed to upload avatar", 500);
-            }
-            $card->avatar=$avatarUrl;
+
+            // Save the card
+            $card->save();
+
+        } catch (\Exception $e) {
+         dd($e->getMessage());
+            // Handle potential errors
+            return redirect()->back()->with('error', 'An error occurred while updating the cards.');
         }
-        $card->save();
     }
+
+    // Return success message after the loop
     return redirect()->back()->with('success', 'Cards updated successfully.');
 }
+
 }

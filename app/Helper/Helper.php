@@ -44,19 +44,24 @@ class Helper
         }
     }
 
-    // for helt section
+  
+    
+
     public static function arrayfileUpload($file, $folder, $name)
-{
-    // Ensure the file is not an array or null
-    if (is_array($file) || !$file instanceof \Illuminate\Http\UploadedFile) {
-        throw new \InvalidArgumentException("Expected an uploaded file, but got an array or invalid type.");
+    {
+        // Ensure the file is not an array or null
+        if (is_array($file) || !$file instanceof \Illuminate\Http\UploadedFile) {
+            throw new \InvalidArgumentException("Expected an uploaded file, but got an array or invalid type.");
+        }
+        $uniqueName = Str::slug($name) . '-' . time() . '-' . Str::random(10) . '.' . $file->extension();
+        
+        $file->move(public_path('uploads/' . $folder), $uniqueName);
+    
+       
+        $path = 'uploads/' . $folder . '/' . $uniqueName;
+    
+        return $path;
     }
-
-    $imageName = Str::slug($name) . '.' . $file->extension();
-    $file->move(public_path('uploads/' . $folder), $imageName);
-    $path = 'uploads/' . $folder . '/' . $imageName;
-
-    return $path;
-}
+    
 
 }
