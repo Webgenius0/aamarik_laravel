@@ -30,7 +30,6 @@ class CMSController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'sub_title' => 'required|string|max:1000',
-
             'button_name' => 'required|string|max:255',
             'button_url' => 'required|url|max:255',
             'favicon' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:2048',
@@ -112,8 +111,10 @@ public function homeSection(Request $request)
 {
 
 $sections = Section::with('sectionCards')->where('type', 'healthcare')->get();
+$workingProcess = Section::with('sectionCards')->where('type', 'process')->get();
+//dd($workingProcess);
     
-    return view('backend.layouts.cms.home-section', compact( 'sections'));
+    return view('backend.layouts.cms.home-section', compact( 'sections','workingProcess'));
     
 }
 
@@ -121,6 +122,7 @@ $sections = Section::with('sectionCards')->where('type', 'healthcare')->get();
 //update home section
 public function updateSection(Request $request)
 {
+    
     // Validate the input data
     $request->validate([
         'title' => 'array',
@@ -144,7 +146,7 @@ public function updateSection(Request $request)
             
             
             if ($card->avatar) {
-                $oldAvatarPath = public_path('uploads/' . $card->avatar);  
+                $oldAvatarPath = public_path( $card->avatar);  
                 if (file_exists($oldAvatarPath)) {
                     unlink($oldAvatarPath);  
                 }
@@ -182,6 +184,7 @@ public function doctorSection()
 //Working process
 public function updateWorkingProcess(Request $request)
 {
+    
     $request->validate([
         'title'=>'array',
         'title*' => 'required|string|max:255',

@@ -88,11 +88,11 @@
         <div class="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
   
             <div class="p-4 bg-white rounded-lg shadow-md mt-2">
-                <form method="POST" action="{{ route('section.update') }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('cms.working.process') }}" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
-                    @foreach ($sections as $section)
+                    @foreach ($workingProcess as $section)
                         <div class="section mb-6">
                         <h1 class="text-center text-lg font-semibold text-gray-900"> Our  Working Process</h1>
                             <label for="title-{{ $section->id }}" class="block text-sm font-medium text-gray-700">Title</label>

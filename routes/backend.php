@@ -77,17 +77,17 @@ Route::controller(\App\Http\Controllers\Web\Backend\FaqController::class)->group
     Route::delete('faqs/destroy/{id}','destroy')->name('faq.destroy');
 })->middleware('auth,admin');
 
-//cms
+//cms banner
 Route::get('/settings/banner',[ CMSController::class ,'banner'])->name('banner');
 Route::get('/cms/home-section',[ CMSController::class ,'homeSection'])->name('home.section');
 Route::put('/cms', [CmsController::class, 'update'])->name('cms.update');
-
-
-//section
 Route::put('/cms/personalized', [CmsController::class, 'personalized'])->name('cms.personalized');
+
+//cms section
+
 Route::get('/cms/confediential', [CmsController::class, 'homeSection'])->name('cms.confediential');
 Route::put('/cms/update', [CmsController::class, 'updateSection'])->name('section.update');
-
+Route::put('/cms/working-process', [CmsController::class, 'updateWorkingProcess'])->name('cms.working.process');
 //doctor section
 Route::get('/cms/doctor-section', [CmsController::class, 'doctorSection'])->name('cms.doctor.section');
 
