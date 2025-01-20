@@ -10,6 +10,7 @@ use App\Models\SectionCard;
 use Illuminate\Support\Facades\File;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
+use Exception;
 class CMSController extends Controller
 {
     /**

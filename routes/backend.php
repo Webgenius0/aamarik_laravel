@@ -106,6 +106,10 @@ Route::get('/department', [DoctorController::class, 'getDeparments'])->name('doc
 
 //Medicine section
 Route::controller(MedicineController::class)->group(function () {
-    Route::get('/medicine', 'createMedicine')->name('medicine.create');
+    Route::get('/medicine', 'index')->name('medicine.index');
+    Route::post('/medicine', 'store')->name('medicine.store');
+    Route::get('/medicine/edit/{id}', 'edit')->name('medicine.edit');
+    Route::delete('/medicine/delete/{id}', 'destroy')->name('medicine.destroy');
+    Route::get('/medicine/status/update/{id}', 'updateStatus')->name('medicine.status.update');
 });
 

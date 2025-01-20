@@ -104,7 +104,7 @@
     <div class="card bg-white overflow-hidden">
         <div class="card-header">
             <div class="flex justify-between align-middle">
-                <h3 class="card-title">Social Media</h3>
+                <h3 class="card-title">Medicine List</h3>
                 <div>
                     <button class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md"
                         onclick="ShowCreateUpdateModal()">
@@ -127,15 +127,19 @@
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Question
+                                        Title
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Answer
+                                        Brand
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Type
+                                        Quantity
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                       Stock Quantity
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -178,7 +182,7 @@
                 method="POST" enctype="multipart/form-data" id="createUpdateForm">
                 @csrf
                 <h1 class="flex align-left h1">Create Medicine</h1>
-
+                <input type="hidden" name="id" id="medicene_id">
 
                 {{-- favicon --}}
                 <div class="flex flex-row space-x-8">
@@ -215,7 +219,7 @@
                 <div class="flex flex-col md:flex-row items-center md:space-x-4">
                     <div class="flex flex-col md:w-1/2">
                         <label for="email" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Title</label>
-                        <input name="title" type="text" class="form-input w-full" id="title" placeholder="example@gmail.com" value="">
+                        <input name="title" type="text" class="form-input w-full" id="title" placeholder="example@gmail.com" value="{{old('title')}}">
                         @error('title')
                         <span class="text-red-500 block mt-1 text-sm">
                             <strong>{{ $message }}</strong>
@@ -225,7 +229,7 @@
 
                     <div class="flex flex-col md:w-1/2">
                         <label for="department" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Brand</label>
-                        <input name="brand" type="text" class="form-input w-full" id="brand" placeholder="Brand-name.." value="">
+                        <input name="brand" type="text" class="form-input w-full" id="brand" placeholder="Brand-name.." value="{{old('brand')}}">
 
                         @error('brand')
                         <span class="text-red-500 block mt-1 text-sm">
@@ -238,7 +242,7 @@
                 <div class="flex flex-col md:flex-row items-center md:space-x-4">
                     <div class="flex flex-col md:w-1/2">
                         <label for="email" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Generic Name</label>
-                        <input name="generic_name" type="text" class="form-input w-full" id="generic_name" placeholder="generic name.." value="">
+                        <input name="generic_name" type="text" class="form-input w-full" id="generic_name" placeholder="generic name.." value="{{old('generic_name')}}">
                         @error('generic_name')
                         <span class="text-red-500 block mt-1 text-sm">
                             <strong>{{ $message }}</strong>
@@ -248,7 +252,7 @@
 
                     <div class="flex flex-col md:w-1/2">
                         <label for="description" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Description</label>
-                        <textarea name="description" class="form-input w-full" id="description" placeholder="generic name.."></textarea>
+                        <textarea name="description" class="form-input w-full" id="description" placeholder="generic name.." value="{{old('description')}}"></textarea>
 
                         @error('description')
                         <span class="text-red-500 block mt-1 text-sm">
@@ -262,8 +266,8 @@
 
                 <div class="flex flex-col md:flex-row items-center md:space-x-4">
                     <div class="flex flex-col md:w-1/2">
-                        <label for="email" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Form</label>
-                        <input name="form" type="text" class="form-input w-full" id="form" placeholder="generic name.." value="">
+                        <label  class="text-lg font-medium mb-2 md:mb-0 flex align-left">Form</label>
+                        <input name="form" type="text" class="form-input w-full" id="form" placeholder="generic name.." value="{{old('form')}}">
                         @error('form')
                         <span class="text-red-500 block mt-1 text-sm">
                             <strong>{{ $message }}</strong>
@@ -273,7 +277,7 @@
 
                     <div class="flex flex-col md:w-1/2">
                         <label for="description" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Doges</label>
-                        <input name="doges" type="text" class="form-input w-full" id="doges" placeholder="Brand-name.." value="" accept="">
+                        <input name="doges" type="text" class="form-input w-full" id="doges" placeholder="Brand-name.." value="{{old('dogase')}}" accept="">
 
                         @error('description')
                         <span class="text-red-500 block mt-1 text-sm">
@@ -290,7 +294,7 @@
                 <div class="flex flex-col md:flex-row items-center md:space-x-4">
                     <div class="flex flex-col md:w-1/2">
                         <label for="unit" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Unit</label>
-                        <input name="form" type="text" class="form-input w-full" id="unit" placeholder="Unit...." value="">
+                        <input name="unit" type="text" class="form-input w-full" id="unit" placeholder="Unit...." value="{{old('unit')}}">
                         @error('unit')
                         <span class="text-red-500 block mt-1 text-sm">
                             <strong>{{ $message }}</strong>
@@ -303,7 +307,7 @@
 
                     <div class="flex flex-col md:w-1/2">
                         <label for="description" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Price</label>
-                        <input name="price" type="text" class="form-input w-full" id="price" placeholder="Price....." value="" accept="">
+                        <input name="price" type="text" class="form-input w-full" id="price" placeholder="Price....." value="{{old('price')}}" accept="">
 
                         @error('price')
                         <span class="text-red-500 block mt-1 text-sm">
@@ -318,8 +322,8 @@
                 <div class="flex flex-col md:flex-row items-center md:space-x-4">
                     <div class="flex flex-col md:w-1/2">
                         <label for="unit" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Quantity</label>
-                        <input name="form" type="text" class="form-input w-full" id="quantity" placeholder="Unit...." value="">
-                        @error('unit')
+                        <input name="quantity" type="text" class="form-input w-full" id="quantity" placeholder="Unit...." value="{{old('quantity')}}">
+                        @error('quantity')
                         <span class="text-red-500 block mt-1 text-sm">
                             <strong>{{ $message }}</strong>
                         </span>
@@ -329,9 +333,9 @@
 
                     <div class="flex flex-col md:w-1/2">
                         <label for="description" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Stock Quantity</label>
-                        <input name="sotck_quantity" type="text" class="form-input w-full" id="price" placeholder="stock quantity....." value="" accept="">
+                        <input name="stock_quantity" type="text" class="form-input w-full" id="stock_quantity" placeholder="stock quantity....." value="{{old('stock_quantity')}}" accept="">
 
-                        @error('price')
+                        @error('stock_quantity')
                         <span class="text-red-500 block mt-1 text-sm">
                             <strong>{{ $message }}</strong>
                         </span>
@@ -386,6 +390,9 @@
 <script defer src="https://cdn.jsdelivr.net/npm/@flasher/flasher@1.2.4/dist/flasher.min.js"></script>
 {{-- Ck Editor --}}
 <script src="{{ asset('Backend/plugins/tinymc/tinymce.min.js') }}"></script>
+<script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 
 <script>
@@ -427,7 +434,7 @@
             pagingType: "full_numbers",
             dom: "<'flex justify-between items-center mb-3'<'w-full sm:w-auto'l><'w-full text-center sm:w-auto'B><'w-full sm:w-auto'f>>tipr",
             ajax: {
-                url: "{{ route('faq.index') }}",
+                url: "{{ route('medicine.index') }}",
                 type: "GET",
             },
             columns: [{
@@ -440,16 +447,20 @@
                     }
                 },
                 {
-                    data: 'question',
-                    name: 'question'
+                    data: 'title',
+                    name: 'title'
                 },
                 {
-                    data: 'answer',
-                    name: 'answer'
+                    data: 'brand',
+                    name: 'brand'
                 },
                 {
-                    data: 'type',
-                    name: 'type'
+                    data: 'quantity',
+                    name: 'quantity'
+                },
+                {
+                    data: 'stock_quantity',
+                    name: 'stock_quantity'
                 },
                 {
                     data: 'status',
@@ -471,8 +482,8 @@
     //modal function
     function ShowCreateUpdateModal() {
         $('#createUpdateForm')[0].reset();
-        $('#faq_id').val('');
-        $('#modalTitle').html('Create New FAQ');
+        $('#medicine_id').val('');
+        $('#modalTitle').html('Create New Medicine');
         $('#modalOverlay').show().addClass('modal-open');
     }
 
@@ -487,91 +498,109 @@
 
 
 
-    // Submit Form
     $('#createUpdateForm').on('submit', function(e) {
-        e.preventDefault();
+    e.preventDefault();
 
-        // Determine if we're creating or updating
-        var faqId = $('#faq_id').val(); // Retrieve the FAQ ID from the hidden input
-        var url = faqId ? "{{ route('faq.update', ':id') }}".replace(':id', faqId) : "{{ route('faq.store') }}";
-        var method = faqId ? "PUT" : "POST"; // Use PUT for updates, POST for creation
+    var faqId = $('#medicene_id').val(); // Retrieve the FAQ ID from the hidden input
+    var url = faqId ? "{{ route('faq.update', ':id') }}".replace(':id', faqId) : "{{ route('medicine.store') }}";
+    var method = faqId ? "PUT" : "POST"; // Use PUT for updates, POST for creation
 
+    // Create FormData object
+    var formData = new FormData($('#createUpdateForm')[0]);
 
+    $.ajax({
+        type: method,
+        url: url,
+        data: formData,
+        processData: false, // Don't process the data
+        contentType: false, // Don't set content type
+        success: function(resp) {
+            console.log(resp);
 
-        // Make the AJAX request
-        $.ajax({
-            type: method,
-            url: url,
-            data: $(this).serialize(),
-            success: function(resp) {
-                console.log(resp);
+            // Reload DataTable
+            $('#data-table').DataTable().ajax.reload();
 
-                // Reload DataTable
-                $('#data-table').DataTable().ajax.reload();
+            // Handle response
+            if (resp.success === true) {
+                // Show success message
+                flasher.success(resp.message);
 
-                // Handle response
-                if (resp.success === true) {
-                    // Show success message
-                    flasher.success(resp.message);
-
-                    // Close modal
-                    $('#modalOverlay').removeClass('modal-open');
-                    setTimeout(function() {
-                        $('#modalOverlay').hide();
-                    }, 200);
-                } else if (resp.errors) {
-                    // Show first error message
-                    flasher.error(resp.errors[0]);
-                } else {
-                    // Show warning message
-                    flasher.warning(resp.message);
-                }
-            },
-            error: function(error) {
-                // Show error message
-                flasher.error('An error occurred. Please try again.');
-                console.error(error);
+                // Close modal
+                $('#modalOverlay').removeClass('modal-open');
+                setTimeout(function() {
+                    $('#modalOverlay').hide();
+                }, 200);
+            } else if (resp.errors) {
+                // Show first error message
+                flasher.error(resp.errors[0]);
+            } else {
+                // Show warning message
+                flasher.warning(resp.message);
             }
-        });
-
+        },
+        error: function(error) {
+            // Show error message
+            flasher.error('An error occurred. Please try again.');
+            console.error(error);
+        }
     });
+});
 
 
+//edit medicine
+function editMedicine(id) {
+            let route = '{{ route('medicine.edit', ':id') }}';
+            route = route.replace(':id', id);
+            $.ajax({
+                type: "GET",
+                url: route,
+                success: function(resp) {
+                    console.log(resp.data); // Ensure the response data structure is as expected
 
-    function editFAQ(id) {
-        let route = '';
-        route = route.replace(':id', id);
-        $.ajax({
-            type: "GET",
-            url: route,
-            success: function(resp) {
-                console.log(resp.data); // Ensure the response data structure is as expected
 
+                    if (resp.success === true) {
+                        $('#medicene_id').val(resp.data.id);
+                        $('#title').val(resp.data.title); // Set the question field
+                        $('#brand').val(resp.data.brand); // Set the answer field
+                        $('#quantity').val(resp.data.quantity); // Set the type dropdown
+                        $('#stock_quantity').val(resp.data.stock_quantity);
+                       $('#generic_name').val(resp.data.generic_name);
+                       $('#description').val(resp.data.description);
+                       $('#quantity').val(resp.data.quantity);
+                       $('#price').val(resp.data.price);
+                       
+                       if (resp.data.details) {
+            let detail = resp.data.details;  // Single related detail object
+            $('#quantity').val(detail.quantity);
+            $('#stock_quantity').val(detail.stock_quantity);
+            $('#form').val(detail.form);
+            $('#price').val(detail.price);
+        } else {
+            // If no details, set defaults
+            $('#quantity').val(0);
+            $('#stock_quantity').val(0);
+            $('#form').val('');
+            $('#price').val('');
+            $('#dosage').val(detail.dosage);
+            $('#unit').val(detail.unit);
+            $('#unit').val(detail.unit);
+        }
 
-                if (resp.success === true) {
-                    $('#faq_id').val(resp.data.id);
-                    $('#question').val(resp.data.question); // Set the question field
-                    $('#answer').val(resp.data.answer); // Set the answer field
-                    $('#type').val(resp.data.type); // Set the type dropdown
-
-                    $('#modalTitle').html('Update FAQ');
-                    $('#modalOverlay').show().addClass('modal-open');
-                } else if (resp.errors) {
-                    flasher.error(resp.errors[0]);
-                } else {
-                    flasher.warning(resp.message);
+                        $('#modalTitle').html('Update FAQ');
+                        $('#modalOverlay').show().addClass('modal-open');
+                    } else if (resp.errors) {
+                        flasher.error(resp.errors[0]);
+                    } else {
+                        flasher.warning(resp.message);
+                    }
+                },
+                error: function(error) {
+                    flasher.error('Error while fetching data.');
                 }
-            },
-            error: function(error) {
-                flasher.error('Error while fetching data.');
-            }
-        });
-        // $('#modalTitle').html('Update FAQ');
-        // $('#modalOverlay').show().addClass('modal-open');
-    }
-
-
-
+            });
+            // $('#modalTitle').html('Update FAQ');
+            // $('#modalOverlay').show().addClass('modal-open');
+        }
 
 
 
@@ -598,7 +627,7 @@
 
     // Delete Button
     function deleteItem(id) {
-        var url = '';
+        var url = '{{route('medicine.destroy', ':id')}}';
         $.ajax({
             type: "DELETE",
             url: url.replace(':id', id),
@@ -643,7 +672,7 @@
 
     // Status Change
     function statusChange(id) {
-        var url = '';
+        var url = '{{ route('medicine.status.update', ':id') }}';
         $.ajax({
             type: "GET",
             url: url.replace(':id', id),
@@ -666,5 +695,41 @@
             }
         })
     }
+
+    // //store medicine
+
+    // $(document).ready(function() {
+    //     $('#createUpdateForm').on('submit', function(e) {
+    //         e.preventDefault();
+    //         $.ajax({
+    //             url: "{{route('medicine.store')}}",
+    //             type: "POST",
+    //             headers: {
+    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //             },
+    //             processData: false,
+    //             contentType: false,
+    //             data: new FormData(this),
+    //             success: function(resp) {
+    //                 console.log(resp);
+    //                 if (resp.success === true) {
+    //                     $('#modalOverlay').removeClass('modal-open');
+    //                     setTimeout(function() {
+    //                         $('#modalOverlay').hide();
+    //                     }, 200);
+    //                     $('#data-table').DataTable().ajax.reload();
+    //                     flasher.success(resp.message);
+    //                 } else if (resp.errors) {
+    //                     flasher.error(resp.errors[0]);
+    //                 } else {
+    //                     flasher.warning(resp.message);
+    //                 }
+    //             },
+    //             error: function(error) {
+    //                 flasher.error(error);
+    //             }
+    //         });
+    //     });
+    // });
 </script>
 @endpush
