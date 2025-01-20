@@ -397,12 +397,6 @@
         }
 
 
-
-
-
-
-
-
         // delete Confirm
         function showDeleteConfirm(id) {
             event.preventDefault();

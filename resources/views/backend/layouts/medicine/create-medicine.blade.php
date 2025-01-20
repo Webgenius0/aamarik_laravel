@@ -502,7 +502,7 @@
     e.preventDefault();
 
     var faqId = $('#medicene_id').val(); // Retrieve the FAQ ID from the hidden input
-    var url = faqId ? "{{ route('faq.update', ':id') }}".replace(':id', faqId) : "{{ route('medicine.store') }}";
+    var url = faqId ? "{{ route('medicine.update', ':id') }}".replace(':id', faqId) : "{{ route('medicine.store') }}";
     var method = faqId ? "PUT" : "POST"; // Use PUT for updates, POST for creation
 
     // Create FormData object
@@ -570,21 +570,21 @@ function editMedicine(id) {
                        $('#price').val(resp.data.price);
                        
                        if (resp.data.details) {
-            let detail = resp.data.details;  // Single related detail object
-            $('#quantity').val(detail.quantity);
-            $('#stock_quantity').val(detail.stock_quantity);
-            $('#form').val(detail.form);
-            $('#price').val(detail.price);
-        } else {
-            // If no details, set defaults
-            $('#quantity').val(0);
-            $('#stock_quantity').val(0);
-            $('#form').val('');
-            $('#price').val('');
-            $('#dosage').val(detail.dosage);
-            $('#unit').val(detail.unit);
-            $('#unit').val(detail.unit);
-        }
+                                let detail = resp.data.details;  // Single related detail object
+                                $('#quantity').val(detail.quantity);
+                                $('#stock_quantity').val(detail.stock_quantity);
+                                $('#form').val(detail.form);
+                                $('#price').val(detail.price);
+                            } else {
+                                // If no details, set defaults
+                                $('#quantity').val(0);
+                                $('#stock_quantity').val(0);
+                                $('#form').val('');
+                                $('#price').val('');
+                                $('#dosage').val(detail.dosage);
+                                $('#unit').val(detail.unit);
+                                $('#unit').val(detail.unit);
+                            }
 
                         $('#modalTitle').html('Update FAQ');
                         $('#modalOverlay').show().addClass('modal-open');

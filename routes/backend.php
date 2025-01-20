@@ -109,6 +109,7 @@ Route::controller(MedicineController::class)->group(function () {
     Route::get('/medicine', 'index')->name('medicine.index');
     Route::post('/medicine', 'store')->name('medicine.store');
     Route::get('/medicine/edit/{id}', 'edit')->name('medicine.edit');
+    Route::put('/medicine/update/{id}', 'update')->name('medicine.update');
     Route::delete('/medicine/delete/{id}', 'destroy')->name('medicine.destroy');
     Route::get('/medicine/status/update/{id}', 'updateStatus')->name('medicine.status.update');
 });
