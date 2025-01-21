@@ -21,7 +21,7 @@ class DoctorSeeder extends Seeder
             [
                 'name' => 'Willimas Jonshon',
                 'email' => 'willimasjonshon@doctor.com',
-                'department' => $departments->random()->name,
+                'department' => $departments->random()->department_name,
                 'avatar' => 'uploads/defult-image/Team_1.png',
                 'password' => Hash::make('12345678'),
                 'role' => 'doctor',
@@ -30,7 +30,7 @@ class DoctorSeeder extends Seeder
             [
                 'name' => 'Tomas Murphy',
                 'email' => 'tomasmurphy@doctor.com',
-                'department' => $departments->random()->name,
+                'department' => $departments->random()->department_name,
                 'avatar' => 'uploads/defult-image/Team_2.png',
                 'password' => Hash::make('12345678'),
                 'role' => 'doctor',
@@ -39,7 +39,7 @@ class DoctorSeeder extends Seeder
             [
                 'name' => 'Robert Fox',
                 'email' => 'robertfox@doctor.com',
-                'department' => $departments->random()->name,
+                'department' => $departments->random()->department_name,
                 'avatar' => 'uploads/defult-image/Team_3.png',
                 'password' => Hash::make('12345678'),
                 'role' => 'doctor',
@@ -48,7 +48,7 @@ class DoctorSeeder extends Seeder
             [
                 'name' => 'Amalia nichole',
                 'email' => 'amalianichole@doctor.com',
-                'department' => $departments->random()->name,
+                'department' => $departments->random()->department_name,
                 'avatar' => 'uploads/defult-image/Team_4.png',
                 'password' => Hash::make('12345678'),
                 'role' => 'doctor',
