@@ -219,7 +219,7 @@
                 <div class="flex flex-col md:flex-row items-center md:space-x-4">
                     <div class="flex flex-col md:w-1/2">
                         <label for="email" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Title</label>
-                        <input name="title" type="text" class="form-input w-full" id="title" placeholder="example@gmail.com" value="{{old('title')}}">
+                        <input name="title" type="text" class="form-input w-full" id="title" placeholder="example@gmail.com" value="{{ old('title') }}">
                         @error('title')
                         <span class="text-red-500 block mt-1 text-sm">
                             <strong>{{ $message }}</strong>
@@ -501,22 +501,29 @@
     $('#createUpdateForm').on('submit', function(e) {
     e.preventDefault();
 
-    var faqId = $('#medicene_id').val(); // Retrieve the FAQ ID from the hidden input
+    var faqId = $('#medicene_id').val(); // Retrieve the Medicine ID from the hidden input
+    //console.log(faqId+'faqId');
     var url = faqId ? "{{ route('medicine.update', ':id') }}".replace(':id', faqId) : "{{ route('medicine.store') }}";
     var method = faqId ? "PUT" : "POST"; // Use PUT for updates, POST for creation
 
     // Create FormData object
     var formData = new FormData($('#createUpdateForm')[0]);
 
+
+//    console.log(formData);
     $.ajax({
         type: method,
         url: url,
         data: formData,
         processData: false, // Don't process the data
         contentType: false, // Don't set content type
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')  // Ensure this is set in your HTML <head> section
+        },
         success: function(resp) {
             console.log(resp);
 
+            
             // Reload DataTable
             $('#data-table').DataTable().ajax.reload();
 
@@ -547,60 +554,99 @@
 });
 
 
-//edit medicine
 function editMedicine(id) {
-            let route = '{{ route('medicine.edit', ':id') }}';
-            route = route.replace(':id', id);
-            $.ajax({
-                type: "GET",
-                url: route,
-                success: function(resp) {
-                    console.log(resp.data); // Ensure the response data structure is as expected
-
-
-                    if (resp.success === true) {
-                        $('#medicene_id').val(resp.data.id);
-                        $('#title').val(resp.data.title); // Set the question field
-                        $('#brand').val(resp.data.brand); // Set the answer field
-                        $('#quantity').val(resp.data.quantity); // Set the type dropdown
-                        $('#stock_quantity').val(resp.data.stock_quantity);
-                       $('#generic_name').val(resp.data.generic_name);
-                       $('#description').val(resp.data.description);
-                       $('#quantity').val(resp.data.quantity);
-                       $('#price').val(resp.data.price);
-                       
-                       if (resp.data.details) {
-                                let detail = resp.data.details;  // Single related detail object
-                                $('#quantity').val(detail.quantity);
-                                $('#stock_quantity').val(detail.stock_quantity);
-                                $('#form').val(detail.form);
-                                $('#price').val(detail.price);
-                            } else {
-                                // If no details, set defaults
-                                $('#quantity').val(0);
-                                $('#stock_quantity').val(0);
-                                $('#form').val('');
-                                $('#price').val('');
-                                $('#dosage').val(detail.dosage);
-                                $('#unit').val(detail.unit);
-                                $('#unit').val(detail.unit);
-                            }
-
-                        $('#modalTitle').html('Update FAQ');
-                        $('#modalOverlay').show().addClass('modal-open');
-                    } else if (resp.errors) {
-                        flasher.error(resp.errors[0]);
-                    } else {
-                        flasher.warning(resp.message);
-                    }
-                },
-                error: function(error) {
-                    flasher.error('Error while fetching data.');
+    let route = '{{ route('medicine.edit', ':id') }}';
+    route = route.replace(':id', id);
+    $.ajax({
+        type: "GET",
+        url: route,
+        success: function(resp) {
+            if (resp.success === true) {
+                $('#medicene_id').val(resp.data.id);
+                $('#title').val(resp.data.title); // Ensure these fields are populated
+                $('#brand').val(resp.data.brand);
+                $('#generic_name').val(resp.data.generic_name);
+                $('#description').val(resp.data.description);
+                $('#form').val(resp.data.form);
+                $('#doges').val(resp.data.doges);
+                $('#unit').val(resp.data.unit);
+                $('#price').val(resp.data.price);
+                $('#quantity').val(resp.data.quantity);
+                $('#stock_quantity').val(resp.data.stock_quantity);
+                
+                // Ensure the avatar field is set properly
+                if (resp.data.details && resp.data.details.avatar) {
+                    // Set avatar display or preview
+                    $('#avatar').val(resp.data.details.avatar);
                 }
-            });
-            // $('#modalTitle').html('Update FAQ');
-            // $('#modalOverlay').show().addClass('modal-open');
+
+                // Open the modal
+                $('#modalTitle').html('Update Medicine');
+                $('#modalOverlay').show().addClass('modal-open');
+            } else {
+                flasher.warning(resp.message);
+            }
+        },
+        error: function(error) {
+            flasher.error('Error while fetching data.');
         }
+    });
+}
+
+//edit medicine
+// function editMedicine(id) {
+//             let route = '{{ route('medicine.edit', ':id') }}';
+//             route = route.replace(':id', id);
+//             $.ajax({
+//                 type: "GET",
+//                 url: route,
+//                 success: function(resp) {
+//                     if (resp.success === true) {
+//                         $('#medicene_id').val(resp.data.id);
+//                         $('#title').val(resp.data.title);  
+//                         $('#brand').val(resp.data.brand);  
+//                         $('#quantity').val(resp.data.quantity);  
+//                         $('#stock_quantity').val(resp.data.stock_quantity);
+//                        $('#generic_name').val(resp.data.generic_name);
+//                        $('#description').val(resp.data.description);
+//                        $('#quantity').val(resp.data.quantity);
+//                        $('#price').val(resp.data.price);
+                       
+//                        if (resp.data.details) {
+//                                 let detail = resp.data.details;  // Single related detail object
+//                                 $('#quantity').val(detail.quantity);
+//                                 $('#stock_quantity').val(detail.stock_quantity);
+//                                 $('#form').val(detail.form);
+//                                 $('#price').val(detail.price);
+//                                 $('#dosage').val(detail.dosage);
+//                                 $('#unit').val(detail.unit);
+//                                 $('#avatar').val(detail.avatar);
+//                             } else {
+//                                 // If no details, set defaults
+//                                 $('#quantity').val(0);
+//                                 $('#stock_quantity').val(0);
+//                                 $('#form').val('');
+//                                 $('#price').val('');
+//                                 $('#dosage').val(detail.dosage);
+//                                 $('#unit').val(detail.unit);                             
+//                                 $('#avatar').val(detail.avatar);
+//                             }
+
+//                         $('#modalTitle').html('Update Medicine');
+//                         $('#modalOverlay').show().addClass('modal-open');
+//                     } else if (resp.errors) {
+//                         flasher.error(resp.errors[0]);
+//                     } else {
+//                         flasher.warning(resp.message);
+//                     }
+//                 },
+//                 error: function(error) {
+//                     flasher.error('Error while fetching data.');
+//                 }
+//             });
+//             // $('#modalTitle').html('Update FAQ');
+//             // $('#modalOverlay').show().addClass('modal-open');
+//         }
 
 
 

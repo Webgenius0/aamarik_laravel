@@ -165,7 +165,7 @@ public function updateSection(Request $request)
             $card->save();
 
         } catch (\Exception $e) {
-         dd($e->getMessage());
+        // dd($e->getMessage());
             // Handle potential errors
             return redirect()->back()->with('error', 'An error occurred while updating the cards.');
         }

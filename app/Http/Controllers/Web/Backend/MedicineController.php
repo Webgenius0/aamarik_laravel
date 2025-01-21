@@ -12,6 +12,7 @@ use App\Models\MedicineDetails;
 use App\Helper\Helper;
 Use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -41,6 +42,8 @@ class MedicineController extends Controller
                 ->addColumn('status', function ($data) {
                     return '<input type="checkbox" class="form-switch" onclick="ShowStatusChangeAlert(' . $data->id . ')" ' . ($data->status == "active" ? 'checked' : '') . '>';
                 })
+
+                
                 ->addColumn('action', function ($data) {
                     return '<div class="inline-flex gap-1">
                         <a href="javascript:void(0);" onclick="editMedicine(' . $data->id . ')" class="btn bg-success text-white rounded">
@@ -51,7 +54,7 @@ class MedicineController extends Controller
                         </a>
                     </div>';
                 })
-                ->rawColumns(['title','brand','quantity','stock_quantity','status', 'action'])
+                ->rawColumns(['title','brand','quantity','stock_quantity','status', 'action','avatar'])
                 ->make(true);
         }
         return view('backend.layouts.medicine.create-medicine');
@@ -61,7 +64,7 @@ class MedicineController extends Controller
 //dd($request->all());
         $request->validate([
             'title' => 'required|string|max:255',
-            'brand' => 'nullable|string|max:255',
+            'brand' => 'required|string|max:255',
             'generic_name' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,webp,bmp,svg',
@@ -140,6 +143,7 @@ class MedicineController extends Controller
     public function update(Request $request, $id)
     {
         // Validate the incoming request data
+        Log::info($request->all());
         $request->validate([
             'title' => 'nullable|string|max:255',
             'brand' => 'nullable|string|max:255',
