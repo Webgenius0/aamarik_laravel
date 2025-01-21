@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Department;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -14,11 +15,13 @@ class DoctorSeeder extends Seeder
      */
     public function run(): void
     {
+        $departments = Department::where('status', 'active')->get();
+
         DB::table('users')->insert([
             [
                 'name' => 'Willimas Jonshon',
                 'email' => 'willimasjonshon@doctor.com',
-                'depertment' => 'Customer service',
+                'department' => $departments->random()->name,
                 'avatar' => 'uploads/defult-image/Team_1.png',
                 'password' => Hash::make('12345678'),
                 'role' => 'doctor',
@@ -27,7 +30,7 @@ class DoctorSeeder extends Seeder
             [
                 'name' => 'Tomas Murphy',
                 'email' => 'tomasmurphy@doctor.com',
-                'depertment' => 'Customer service',
+                'department' => $departments->random()->name,
                 'avatar' => 'uploads/defult-image/Team_2.png',
                 'password' => Hash::make('12345678'),
                 'role' => 'doctor',
@@ -36,7 +39,7 @@ class DoctorSeeder extends Seeder
             [
                 'name' => 'Robert Fox',
                 'email' => 'robertfox@doctor.com',
-                'depertment' => 'Contract Tracer',
+                'department' => $departments->random()->name,
                 'avatar' => 'uploads/defult-image/Team_3.png',
                 'password' => Hash::make('12345678'),
                 'role' => 'doctor',
@@ -45,7 +48,7 @@ class DoctorSeeder extends Seeder
             [
                 'name' => 'Amalia nichole',
                 'email' => 'amalianichole@doctor.com',
-                'depertment' => 'Nurse Aide',
+                'department' => $departments->random()->name,
                 'avatar' => 'uploads/defult-image/Team_4.png',
                 'password' => Hash::make('12345678'),
                 'role' => 'doctor',

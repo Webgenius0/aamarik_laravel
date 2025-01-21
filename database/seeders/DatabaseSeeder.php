@@ -28,6 +28,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'user@user.com',
             'password' => Hash::make('12345678'),
         ]);
+        //create department
+        $this->call(DepartmentSeeder::class);
 
         $this->call(UserSeeder::class);
 
