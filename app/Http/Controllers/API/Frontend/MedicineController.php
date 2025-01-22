@@ -79,26 +79,33 @@ class MedicineController extends Controller
                 ->groupBy('rating')
                 ->orderBy('rating', 'desc')
                 ->get()
-                ->mapWithKeys(function ($item) use ($totalReviews) {
+                ->map(function ($item) use ($totalReviews) {
+                    // Generate a random unique name for each rating (You can customize this logic further)
+                    $name = 'rating_' . uniqid();
+
                     return [
-                        $item->rating => $totalReviews > 0
+                        'name' => $name, // Randomly generated name for each rating
+                        'rating' => $item->rating, // Rating value
+                        'percentage' => $totalReviews > 0
                             ? round(($item->count / $totalReviews) * 100, 1)
-                            : 0
+                            : 0, // Percentage of total reviews
                     ];
                 });
 
             $data = [
                 'average_rating' => round($averageRating, 1), // Rounded to one decimal place
                 'total_reviews' => $totalReviews,
-                'ratings' => $ratingPercentages,
+                'ratings' => $ratingPercentages // Correctly formatted as an array
             ];
 
             return $this->sendResponse($data, 'Average reviews retrieved successfully');
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             $statusCode = is_numeric($exception->getCode()) ? $exception->getCode() : 500;
             return $this->sendError($exception->getMessage(), [], $statusCode);
         }
     }
+
+
 
 
     public function getReview(Request $request, $medicineID)
