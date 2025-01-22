@@ -95,8 +95,8 @@ Route::controller(DoctoreController::class)->group(function () {
 Route::controller(MedicineController::class)->group(function () {
     Route::get('/medicines', 'index');
     Route::get('/medicine/{medicineID}/show', 'show');
-    Route::get('/medicine/{medicineID}/review', 'getReview');
-    Route::get('/medicine/{medicineID}/review-avarage', 'getAverageReviews');
+    Route::get('/medicine/review', 'getReview');
+    Route::get('/medicine/review-avarage', 'getAverageReviews');
 });
 
 //! Route for Firebase Token  Controller

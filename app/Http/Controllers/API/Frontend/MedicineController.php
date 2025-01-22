@@ -34,8 +34,7 @@ class MedicineController extends Controller
 
             return $this->sendResponse(MedicinesResource::collection($medicines), 'Medicines retrieved successfully');
         } catch (\Exception $exception) {
-            $statusCode = is_numeric($exception->getCode()) ? $exception->getCode() : 500;
-            return $this->sendError($exception->getMessage(), [], $statusCode);
+            return $this->sendError($exception->getMessage(), [], 500);
         }
     }
 
@@ -53,62 +52,60 @@ class MedicineController extends Controller
 
             return $this->sendResponse(new MedicineDetailsResource($medicine), 'Medicine retrieved successfully');
         } catch (\Exception $exception) {
-            $statusCode = is_numeric($exception->getCode()) ? $exception->getCode() : 500;
-            return $this->sendError($exception->getMessage(), [], $statusCode);
+            return $this->sendError($exception->getMessage(), [], 500);
         }
     }
 
     /**
      * Medicine Review with filtering and Average Review
      */
-
-    public function getAverageReviews($medicineID)
+    public function getAverageReviews()
     {
         try {
-            // Fetch reviews specific to the given medicine ID
-            $reviews = Review::where('medicine_id', $medicineID);
+            // Use the query builder to perform operations directly on the database
+            $totalReviews = Review::count();
+            $averageRating = $totalReviews > 0 ? Review::avg('rating') : 0;
 
-            // Total number of reviews for the medicine
-            $totalReviews = $reviews->count();
+            // Prepopulate ratings from 5 to 1
+            $ratingPercentages = collect(range(5, 1))->map(function ($rating) {
+                return [
+                    'name' => 'rating_' . uniqid(),
+                    'rating' => $rating,
+                    'percentage' => 0,
+                ];
+            });
 
-            // Average rating calculation (if there are reviews)
-            $averageRating = $totalReviews > 0 ? $reviews->avg('rating') : 0;
-
-            // Calculate rating percentages grouped by rating value
-            $ratingPercentages = $reviews->selectRaw('rating, COUNT(*) as count')
+            // Query to group reviews by rating and count them
+            $actualRatings = Review::selectRaw('rating, COUNT(*) as count')
                 ->groupBy('rating')
                 ->orderBy('rating', 'desc')
-                ->get()
-                ->map(function ($item) use ($totalReviews) {
-                    // Generate a random unique name for each rating (You can customize this logic further)
-                    $name = 'rating_' . uniqid();
+                ->get();
 
-                    return [
-                        'name' => $name, // Randomly generated name for each rating
-                        'rating' => $item->rating, // Rating value
-                        'percentage' => $totalReviews > 0
-                            ? round(($item->count / $totalReviews) * 100, 1)
-                            : 0, // Percentage of total reviews
-                    ];
-                });
+            // Map the actual ratings to the prepopulated ratings array
+            $ratingPercentages = $ratingPercentages->map(function ($rating) use ($actualRatings, $totalReviews) {
+                $match = $actualRatings->firstWhere('rating', $rating['rating']);
+                if ($match) {
+                    $rating['percentage'] = $totalReviews > 0 ? round(($match->count / $totalReviews) * 100, 1) : 0;
+                }
+                return $rating;
+            });
 
+            // Prepare the response data
             $data = [
-                'average_rating' => round($averageRating, 1), // Rounded to one decimal place
+                'average_rating' => round($averageRating, 1),
                 'total_reviews' => $totalReviews,
-                'ratings' => $ratingPercentages // Correctly formatted as an array
+                'ratings' => $ratingPercentages->values(),
             ];
 
             return $this->sendResponse($data, 'Average reviews retrieved successfully');
         } catch (\Exception $exception) {
-            $statusCode = is_numeric($exception->getCode()) ? $exception->getCode() : 500;
-            return $this->sendError($exception->getMessage(), [], $statusCode);
+            return $this->sendError($exception->getMessage(), [], 500);
         }
     }
 
 
 
-
-    public function getReview(Request $request, $medicineID)
+    public function getReview(Request $request)
     {
         $rating = $request->query('rating'); // Filter by rating
         $sort = $request->query('sort', 'new'); // Sort order (default: new)
@@ -117,25 +114,24 @@ class MedicineController extends Controller
 
         try {
             // Find the medicine and eager load its reviews
-            $medicine = Medicine::find($medicineID);
+            $medicine = Medicine::all();
             if (!$medicine) {
                 return $this->sendResponse([], 'Medicine not found');
             }
 
 
-            $filtering = $this->filteringQuery($medicineID, $rating, $sort, $perPage, $page);
+            $filtering = $this->filteringQuery($rating, $sort, $perPage, $page);
 
             return $this->getResponse($filtering);
         }catch (\Exception $exception){
-            $statusCode = is_numeric($exception->getCode()) ? $exception->getCode() : 500;
-            return $this->sendError($exception->getMessage(), [], $statusCode);
+            return $this->sendError($exception->getMessage(), [], 500);
         }
     }
 
-    private function filteringQuery($medicineID, $rating, $sort, $perPage, $page)
+    private function filteringQuery($rating, $sort, $perPage, $page)
     {
-        // Build the query for reviews
-       return Review::where('medicine_id', $medicineID)
+        // Build the query for all reviews
+        return Review::query()
             ->when($rating, function ($query, $rating) {
                 return $query->where('rating', $rating); // Filter by rating if provided
             })
@@ -163,7 +159,7 @@ class MedicineController extends Controller
                 return $query->orderBy('created_at', 'desc'); // Default to newest reviews
             })
             ->with('user') // Fetch related user information
-            ->paginate($perPage); // Paginate the results
+            ->paginate($perPage, ['*'], 'page', $page); // Paginate the results
     }
 
     private function getResponse($filtering)
