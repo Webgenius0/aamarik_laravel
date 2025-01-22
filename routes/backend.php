@@ -15,6 +15,7 @@ use App\Http\Controllers\Web\Backend\SocialMediaController;
 use App\Http\Controllers\Web\Backend\CMSController;
 use App\Http\Controllers\Web\Backend\DoctorController;
 use App\Http\Controllers\Web\Backend\MedicineController;
+use App\Http\Controllers\Web\Backend\TreatMentController;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -112,5 +113,14 @@ Route::controller(MedicineController::class)->group(function () {
     Route::put('/medicine/update/{id}', 'update')->name('medicine.update');
     Route::delete('/medicine/delete/{id}', 'destroy')->name('medicine.destroy');
     Route::get('/medicine/status/update/{id}', 'updateStatus')->name('medicine.status.update');
+});
+//treatment section
+Route::controller(TreatMentController::class)->group(function () {
+    Route::get('/treatment', 'index')->name('treatment.index');
+    Route::post('/treatment', 'store')->name('treatment.store');
+    Route::get('/treatment/edit/{id}', 'edit')->name('treatment.edit');
+    Route::put('/treatment/update/{id}', 'update')->name('treatment.update');
+    Route::delete('/treatment/delete/{id}', 'destroy')->name('treatment.destroy');
+    Route::get('/treatment/status/update/{id}', 'updateStatus')->name('treatment.status.update');
 });
 

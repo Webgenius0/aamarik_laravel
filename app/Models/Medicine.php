@@ -18,6 +18,10 @@ class Medicine extends Model
     ];
 
     protected $casts = [
+        'title' => 'string',
+        'brand' => 'string',
+        'generic_name' => 'string',
+        'description' => 'string',
         'status' => 'string',
     ];
 

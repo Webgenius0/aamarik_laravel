@@ -126,7 +126,7 @@ public function create()
     //doctor edit
     public function edit($id)
     {
-        $doctor = User::find($id);
+        $doctor = User::findOrFail($id);
         if (!$doctor) {
             return response()->json(['success' => false, 'message' => 'Doctor Not found']);
         }

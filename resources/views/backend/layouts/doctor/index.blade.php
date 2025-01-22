@@ -77,6 +77,10 @@
             opacity: 1;
             top: 50%;
         }
+
+
+
+
 </style>
 @endpush
 
@@ -142,6 +146,56 @@
         </div>
     </div>
 </main>
+
+
+
+<!-- Edit Doctor Form -->
+<!-- Edit Doctor Modal -->
+<div id="modalOverlay" style="display:none;">
+    <div id="modal" class="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+    <div class="flex py-2 w-full justify-between border-b">
+
+<button id="close"
+    class="m-4 absolute top-0 right-1 hover:bg-gray-200 rounded-full p-1 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-black"
+    type="button">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+</button>
+</div>
+        <form id="update-doctor-form" method="POST">
+            @csrf
+            @method('PUT')
+            <input type="text" hidden id="">
+            <div class="mb-4">
+                <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                <input type="text" id="name" name="name" class="form-input mt-1 block w-full">
+            </div>
+            <div class="mb-4">
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" id="email" name="email" class="form-input mt-1 block w-full">
+            </div>
+            <div class="mb-4">
+                <label for="department" class="block text-sm font-medium text-gray-700">Department</label>
+                <input type="text" id="department" name="department" class="form-input mt-1 block w-full">
+            </div>
+            <div class="mb-4">
+                <label for="avatar" class="block text-sm font-medium text-gray-700">Avatar</label>
+                <input type="file" id="avatar" name="avatar" class="form-input mt-1 block w-full">
+            </div>
+            <div class="mb-4">
+                <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                <select id="status" name="status" class="form-input mt-1 block w-full">
+                    <option value="1">Active</option>
+                    <option value="0">Inactive</option>
+                </select>
+            </div>
+            <button type="submit" class="btn bg-success text-white py-2 px-5 rounded-md">Update</button>
+        </form>
+    </div>
+</div>
+
 
 @endsection
 
@@ -284,5 +338,76 @@
                 } // Error
             })
         }
+
+
+
+           // This function will be called when the Edit button is clicked
+// Function to show the edit modal
+function editDoctor(id) {
+    let url = '{{ route("doctor.edit", ":id") }}';
+    url = url.replace(':id', id);
+
+    $.ajax({
+        url: url, // Adjust this route based on your setup
+        method: 'GET',
+        success: function(response) {
+            if (response.success) {
+                const doctor = response.data;
+
+                // Populate the form with the fetched data
+                $('#name').val(doctor.name);
+                $('#email').val(doctor.email);
+                $('#department').val(doctor.department);
+                $('#status').val(doctor.status);
+
+                // Set the form action to update the doctor
+                $('#update-doctor-form').attr('action', '/doctor/' + doctor.id);
+
+                // Show the modal
+                $('#modalOverlay').addClass('modal-open');
+            } else {
+                alert(response.message); // Handle error
+            }
+        },
+        error: function(xhr, status, error) {
+            alert('An error occurred. Please try again later.');
+        }
+    });
+}
+
+// Close the modal when the "Close" button is clicked
+$('#closeModal').click(function() {
+    $('#modalOverlay').removeClass('modal-open');
+});
+
+// Close the modal after form submission
+$('#update-doctor-form').submit(function(event) {
+    event.preventDefault();
+    
+    var formData = new FormData(this);
+    var url = $(this).attr('action');
+    
+    $.ajax({
+        url: url,
+        method: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            if (response.success) {
+                $('#modalOverlay').removeClass('modal-open');
+                $('#data-table').DataTable().ajax.reload(); // Reload the data table
+                flasher.success(response.message); // Show success message
+            } else {
+                flasher.error(response.errors[0] || response.message); // Show error message
+            }
+        },
+        error: function(xhr, status, error) {
+            flasher.error('An error occurred while updating the doctor.');
+        }
+    });
+});
+
+        
 </script>
 @endpush
