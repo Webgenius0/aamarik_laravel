@@ -50,9 +50,13 @@ class TreatmentAssessmentResource extends JsonResource
                     $options[] = ['id' => 4, 'value' => $assessment->option4];
                 }
 
+                // Generate a unique random name
+                $randomName = 'name_' . uniqid();
+
                 return [
                     'id' => $assessment->id,
                     'question' => $assessment->question,
+                    'name' => $randomName ,
                     'options' => $options,
                     'answer' => $assessment->answer,
                     'note' => $assessment->note,
