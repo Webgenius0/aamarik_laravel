@@ -5,6 +5,8 @@
 @push('styles')
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.tailwind.min.css">
+<!-- Dropify CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropify/0.2.2/css/dropify.min.css">
 <style>
     .dataTables_wrapper .dataTables_length select {
         width: 68px;
@@ -51,35 +53,32 @@
     }
 
     #modalOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.4);
-            z-index: 9999;
-        }
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.4);
+        z-index: 9999;
+    }
 
-        #modal {
-            position: fixed;
-            width: 90%;
-            top: 55%;
-            left: 50%;
-            text-align: center;
-            background-color: #fafafa;
-            box-sizing: border-box;
-            opacity: 0;
-            transform: translate(-50%, -50%);
-            transition: all 300ms ease-in-out;
-        }
+    #modal {
+        position: fixed;
+        width: 90%;
+        top: 55%;
+        left: 50%;
+        text-align: center;
+        background-color: #fafafa;
+        box-sizing: border-box;
+        opacity: 0;
+        transform: translate(-50%, -50%);
+        transition: all 300ms ease-in-out;
+    }
 
-        #modalOverlay.modal-open #modal {
-            opacity: 1;
-            top: 50%;
-        }
-
-
-
+    #modalOverlay.modal-open #modal {
+        opacity: 1;
+        top: 50%;
+    }
 
 </style>
 @endpush
@@ -89,7 +88,7 @@
     <div class="card bg-white overflow-hidden">
         <div class="card-header">
             <div class="flex justify-between align-middle">
-                <h3 class="card-title">Social Media</h3>
+                <h3 class="card-title">Doctors</h3>
                 <div>
                     <a href="{{ route('doctor.create') }}" class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md">
                         Add Doctor
@@ -126,10 +125,6 @@
                                         Avatar
                                     </th>
                                     <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Status
-                                    </th>
-                                    <th scope="col"
                                         class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Action
                                     </th>
@@ -139,7 +134,6 @@
                                 <!-- Dynamic content goes here -->
                             </tbody>
                         </table>
-
                     </div>
                 </div>
             </div>
@@ -147,65 +141,63 @@
     </div>
 </main>
 
-
-
-<!-- Edit Doctor Form -->
-<!-- Edit Doctor Modal -->
+<!-- Edit Doctor Form Modal -->
 <div id="modalOverlay" style="display:none;">
     <div id="modal" class="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
-    <div class="flex py-2 w-full justify-between border-b">
+        <div class="flex py-2 w-full justify-between border-b">
+            <button id="close" class="m-4 absolute top-0 right-1 hover:bg-gray-200 rounded-full p-1 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-black" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <form id="update-doctor-form" method="POST" enctype="multipart/form-data">
+    @csrf
+    @method('PUT')
+    <input type="hidden" id="doctor_id" name="doctor_id">
 
-<button id="close"
-    class="m-4 absolute top-0 right-1 hover:bg-gray-200 rounded-full p-1 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-black"
-    type="button">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
-        stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-    </svg>
-</button>
-</div>
-        <form id="update-doctor-form" method="POST">
-            @csrf
-            @method('PUT')
-            <input type="text" hidden id="">
-            <div class="mb-4">
-                <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                <input type="text" id="name" name="name" class="form-input mt-1 block w-full">
-            </div>
-            <div class="mb-4">
-                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                <input type="email" id="email" name="email" class="form-input mt-1 block w-full">
-            </div>
-            <div class="mb-4">
-                <label for="department" class="block text-sm font-medium text-gray-700">Department</label>
-                <input type="text" id="department" name="department" class="form-input mt-1 block w-full">
-            </div>
-            <div class="mb-4">
-                <label for="avatar" class="block text-sm font-medium text-gray-700">Avatar</label>
-                <input type="file" id="avatar" name="avatar" class="form-input mt-1 block w-full">
-            </div>
-            <div class="mb-4">
-                <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                <select id="status" name="status" class="form-input mt-1 block w-full">
-                    <option value="1">Active</option>
-                    <option value="0">Inactive</option>
-                </select>
-            </div>
-            <button type="submit" class="btn bg-success text-white py-2 px-5 rounded-md">Update</button>
-        </form>
+    <!-- Name -->
+    <div class="mb-4">
+        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+        <input type="text" id="name" name="name" class="form-input mt-1 block w-full">
+    </div>
+
+    <!-- Email -->
+    <div class="mb-4">
+        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+        <input type="email" id="email" name="email" class="form-input mt-1 block w-full">
+    </div>
+
+    <!-- Department -->
+    <div class="mb-4">
+        <label for="department" class="block text-sm font-medium text-gray-700">Department</label>
+        <select id="department" name="department" class="form-input mt-1 block w-full">
+            <option value="" disabled selected>Select Department</option>
+            <!-- Options will be populated by AJAX -->
+        </select>
+    </div>
+
+    <!-- Avatar -->
+    <div class="mb-4">
+        <label for="avatar" class="block text-sm font-medium text-gray-700">Avatar</label>
+        <input type="file" id="avatar" name="avatar" class="dropify form-input mt-1 block w-full">
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn bg-success text-white py-2 px-5 rounded-md">Update</button>
+</form>
+
     </div>
 </div>
 
-
 @endsection
-
 
 @push('scripts')
 <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script defer src="https://cdn.jsdelivr.net/npm/@flasher/flasher@1.2.4/dist/flasher.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"></script>
+<!-- Dropify JS -->
 
 
 <script>
@@ -261,10 +253,6 @@
                     name: 'avatar'
                 },
                 {
-                    data: 'status',
-                    name: 'status'
-                },
-                {
                     data: 'action',
                     name: 'action',
                     orderable: false,
@@ -274,140 +262,122 @@
         });
     });
 
-
-    function ShowCreateUpdateModal() {
-            $('#createUpdateForm')[0].reset();
-            $('#faq_id').val('');
-            $('#modalTitle').html('Create New FAQ');
-            $('#modalOverlay').show().addClass('modal-open');
-        }
-
-        $('#close').click(function() {
-            var modal = $('#modalOverlay');
-            modal.removeClass('modal-open');
-            setTimeout(function() {
-                modal.hide();
-            }, 200);
+    $(document).ready(function() {
+        const flasher = new Flasher({
+            selector: '[data-flasher]',
+            duration: 3000,
+            options: {
+                position: 'top-right',
+            },
         });
+    });
 
+    $(document).ready(function() {
+        $('.dropify').dropify();
+    });
+    // Edit Doctor Function
+    function editDoctor(id) {
+        let url = '{{ route("doctor.edit", ":id") }}';
+        url = url.replace(':id', id);
 
-        //delete confirmation
-            function showDeleteConfirm(id) {
-            event.preventDefault();
-            Swal.fire({
-                title: 'Are you sure you want to delete this record?',
-                text: 'If you delete this, it will be gone forever.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    deleteItem(id);
+        $.ajax({
+            url: url,
+            method: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    const doctor = response.data;
+
+                    // Populate the form with fetched data
+                    $('#name').val(doctor.name);
+                    $('#email').val(doctor.email);
+                    $('#department').val(doctor.department);
+                    $('#doctor_id').val(doctor.id);
+
+                    // Show the modal
+                    $('#modalOverlay').show().addClass('modal-open');
+                } else {
+                    alert(response.message);
                 }
-            });
-        };
+            },
+            error: function(xhr, status, error) {
+                alert('An error occurred. Please try again later.');
+            }
+        });
+    }
 
+    
+    $('#close').click(function() {
+        $('#modalOverlay').removeClass('modal-open');
+        setTimeout(function() {
+            $('#modalOverlay').hide();
+        }, 200);
+    });
 
-            //delete
-        function deleteItem(id) {
-            var url = '{{ route('doctor.delete', ':id') }}';
-            $.ajax({
-                type: "DELETE",
-                url: url.replace(':id', id),
-                headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                success: function(resp) {
-                    console.log(resp);
-                    // Reloade DataTable
-                    $('#data-table').DataTable().ajax.reload();
-                    if (resp.success === true) {
-                        // show toast message
-                        flasher.success(resp.message);
-
-                    } else if (resp.errors) {
-                        flasher.error(resp.errors[0]);
-                    } else {
-                        flasher.error(resp.message);
-                    }
-                }, // success end
-                error: function(error) {
-                    // location.reload();
-                } // Error
-            })
-        }
-
-
-
-           // This function will be called when the Edit button is clicked
-// Function to show the edit modal
-function editDoctor(id) {
-    let url = '{{ route("doctor.edit", ":id") }}';
-    url = url.replace(':id', id);
-
+  
+    $(document).ready(function() {
+    
     $.ajax({
-        url: url, // Adjust this route based on your setup
+        url: "{{ route('doctor.department') }}",  // Update this route to your actual API route
         method: 'GET',
         success: function(response) {
-            if (response.success) {
-                const doctor = response.data;
+        if (response && response.length > 0) {
+            const departmentSelect = $('#department');          
+            departmentSelect.empty();
+                       
+            departmentSelect.append(new Option('Select Department', '', false, false));
 
-                // Populate the form with the fetched data
-                $('#name').val(doctor.name);
-                $('#email').val(doctor.email);
-                $('#department').val(doctor.department);
-                $('#status').val(doctor.status);
+            // Populate department dropdown with department names
+            response.forEach(function(department) {
+                const option = new Option(department.department_name, department.department_name);
+                departmentSelect.append(option);
+            });
 
-                // Set the form action to update the doctor
-                $('#update-doctor-form').attr('action', '/doctor/' + doctor.id);
+            // If editing a doctor, pre-select the department based on department_name
+            const doctorDepartmentName = $('#doctor_department_name').val();  // Assuming doctor_department_name is passed in the form
 
-                // Show the modal
-                $('#modalOverlay').addClass('modal-open');
-            } else {
-                alert(response.message); // Handle error
+            if (doctorDepartmentName) {
+                // Select the department by department_name
+                departmentSelect.val(doctorDepartmentName).trigger('change');
             }
-        },
-        error: function(xhr, status, error) {
-            alert('An error occurred. Please try again later.');
         }
+    },
+    error: function(xhr, status, error) {
+        console.error('Failed to fetch departments:', error);
+    }
     });
-}
 
-// Close the modal when the "Close" button is clicked
-$('#closeModal').click(function() {
-    $('#modalOverlay').removeClass('modal-open');
+   
+
+    // Form Submission
+    $('#update-doctor-form').submit(function(event) {
+        event.preventDefault();  // Prevent default form submission
+
+        var formData = new FormData(this);
+        var url = '{{ route("doctor.update", ":id") }}'.replace(':id', $('#doctor_id').val());  // Set the URL with doctor ID
+
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                if (response.success) {
+                    // Close modal or perform any necessary action
+                    flasher.success(response.message || 'Doctor updated successfully');
+                    location.reload();
+                } else {
+                    flasher.error('Error updating doctor');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error submitting form:', error);
+                alert('An error occurred while updating the doctor.');
+            }
+        });
+    });
 });
 
-// Close the modal after form submission
-$('#update-doctor-form').submit(function(event) {
-    event.preventDefault();
-    
-    var formData = new FormData(this);
-    var url = $(this).attr('action');
-    
-    $.ajax({
-        url: url,
-        method: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function(response) {
-            if (response.success) {
-                $('#modalOverlay').removeClass('modal-open');
-                $('#data-table').DataTable().ajax.reload(); // Reload the data table
-                flasher.success(response.message); // Show success message
-            } else {
-                flasher.error(response.errors[0] || response.message); // Show error message
-            }
-        },
-        error: function(xhr, status, error) {
-            flasher.error('An error occurred while updating the doctor.');
-        }
-    });
-});
-
-        
+ 
 </script>
 @endpush

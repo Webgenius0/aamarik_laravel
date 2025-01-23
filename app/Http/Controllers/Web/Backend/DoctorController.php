@@ -144,4 +144,64 @@ public function create()
 
         return response()->json(['success' => true, 'message' => 'Doctor deleted successfully']);
     }
+
+    public function update(Request $request, $id)
+{
+    $request->validate([
+        'name' => 'required',
+        'email' => 'required|email',
+        'department' => 'required|exists:departments,department_name', // Validating department name
+    ]);
+
+    // Find the doctor and update their details
+    $doctor = User::findOrFail($id);
+    $doctor->name = $request->name;
+    $doctor->email = $request->email;
+
+    // Find the department by its name (since we're using department_name instead of department_id)
+    $department = Department::where('department_name', $request->department)->first();
+    
+    if ($department) {
+        $doctor->department = $department->department_name; 
+    }
+
+    // If the request has a new avatar
+    if ($request->hasFile('avatar')) {
+        // First, unlink the old avatar file if it exists
+        if ($doctor->avatar && file_exists(public_path($doctor->avatar))) {
+            unlink(public_path($doctor->avatar));
+        }
+
+        // Handle the new avatar upload with a unique name
+        $avatar = $request->file('avatar');
+
+        // Generate a unique name for the avatar
+        $uniqueName = time() . '_' . uniqid() . '.' . $avatar->getClientOriginalExtension();
+
+        // Define the path where the avatar will be stored
+        $path = public_path('uploads/users/avatar');
+
+        // Make sure the directory exists
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true); // Create the directory if it doesn't exist
+        }
+
+        // Move the uploaded file to the storage path with the unique name
+        $avatar->move($path, $uniqueName);
+
+        // Save the path to the database (relative path)
+        $doctor->avatar = 'uploads/users/avatar/' . $uniqueName;
+    }
+
+    // Save the doctor's information
+    $doctor->save();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Doctor updated successfully.',
+    ]);
+}
+
+
+    
 }

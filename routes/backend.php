@@ -96,6 +96,7 @@ Route::get('/doctor', [DoctorController::class, 'index'])->name('doctor.index');
 Route::post('/doctor-add', [DoctorController::class, 'store'])->name('doctor.store');
 Route::get('/doctor-create', [DoctorController::class, 'create'])->name('doctor.create');
 Route::get('/doctor-edit/{id}', [DoctorController::class, 'edit'])->name('doctor.edit');
+Route::put('/doctor-update/{id}', [DoctorController::class, 'update'])->name('doctor.update');
 Route::delete('/doctor-delete/{id}', [DoctorController::class, 'destroy'])->name('doctor.delete');
 
 //deprtment
