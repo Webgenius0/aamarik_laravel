@@ -7,6 +7,7 @@ use App\Http\Controllers\API\Auth\ProfileController;
 use App\Http\Controllers\API\Frontend\DoctoreController;
 use App\Http\Controllers\API\Frontend\FAQController;
 use App\Http\Controllers\API\Frontend\MedicineController;
+use App\Http\Controllers\API\Frontend\OrderManagement;
 use App\Http\Controllers\API\Frontend\TreatmentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserController;
@@ -59,7 +60,10 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('/change-password', 'changePassword');
     }); // End of User Auth Profile Controller
 
-
+    //! Route for order management
+    Route::controller(OrderManagement::class)->group(function () {
+       Route::post('/order-checkout', 'orderCheckout');
+    });
 
 
 });

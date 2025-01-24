@@ -10,13 +10,21 @@ use Kreait\Firebase\Messaging\Notification as FirebaseNotification;
 
 class Helper
 {
-    // Upload Image
-    public static function fileUpload($file, $folder, $name)
+
+//! File or Image Upload
+    public static function fileUpload($file, string $folder, string $name): ?string
     {
+        if (!$file->isValid()) {
+            return null;
+        }
+
         $imageName = Str::slug($name) . '.' . $file->extension();
-        $file->move(public_path('uploads/' . $folder), $imageName);
-        $path = 'uploads/' . $folder . '/' . $imageName;
-        return $path;
+        $path      = public_path('uploads/' . $folder);
+        if (!file_exists($path)) {
+            mkdir($path, 0755, true);
+        }
+        $file->move($path, $imageName);
+        return 'uploads/' . $folder . '/' . $imageName;
     }
 
 
@@ -44,8 +52,8 @@ class Helper
         }
     }
 
-  
-    
+
+
 
     public static function arrayfileUpload($file, $folder, $name)
     {
@@ -54,14 +62,14 @@ class Helper
             throw new \InvalidArgumentException("Expected an uploaded file, but got an array or invalid type.");
         }
         $uniqueName = Str::slug($name) . '-' . time() . '-' . Str::random(10) . '.' . $file->extension();
-        
+
         $file->move(public_path('uploads/' . $folder), $uniqueName);
-    
-       
+
+
         $path = 'uploads/' . $folder . '/' . $uniqueName;
-    
+
         return $path;
     }
-    
+
 
 }
