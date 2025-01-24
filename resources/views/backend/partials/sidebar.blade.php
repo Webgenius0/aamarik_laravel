@@ -67,7 +67,7 @@
                 </ul>
             </li>
             <!-- End Doctor -->
-
+          
             <!-- Medicine start -->
             <li class="menu-item">
                 <a class="menu-link {{Request::RouteIs('medicine.index') ? 'bg-blue-500 text-white' : '' }}" href="{{route('medicine.index')}}">
@@ -78,6 +78,18 @@
                 </a>
             </li>
             <!-- End Medicine -->
+             <!-- Treatment start -->
+             <li class="menu-item">
+                <a class="menu-link {{Request::RouteIs('treatment.index') ? 'bg-blue-500 text-white' : '' }}" href="{{route('treatment.index')}}">
+                    <span class="menu-icon"><i class="fa-solid fa-hospital"></i>
+
+
+
+                    </span>
+                    <span class="menu-text"> Treatment </span>
+                </a>
+            </li>
+             <!-- End Treatment -->
             <!-- CMS -->
             <li class="menu-item">
                 <a href="javascript:void(0)" data-hs-collapse="#sidenavLevel1" class="menu-link {{Request::RouteIs('banner')||Request::RouteIs('home.section') ? 'active' : ''}}">

@@ -61,7 +61,7 @@ class MedicineController extends Controller
     }
 
     public function Store(Request $request){
-//dd($request->all());
+
         $request->validate([
             'title' => 'required|string|max:255',
             'brand' => 'required|string|max:255',
@@ -129,9 +129,10 @@ class MedicineController extends Controller
     public function edit($id)
     {
         $medicine = Medicine::with('details')->find($id);
+        $features = MedicineFeature::where('medicine_id', $id)->pluck('feature')->toArray();
        
         if ($medicine) {
-            return response()->json(['success' => true, 'data'=>$medicine]); // Make sure the FAQ object is returned properly
+            return response()->json(['success' => true, 'data'=>$medicine,'features'=>$features]); // Make sure the FAQ object is returned properly
         }
 
 
@@ -142,8 +143,10 @@ class MedicineController extends Controller
 
     public function update(Request $request, $id)
     {
+        //dd("update");
         // Validate the incoming request data
         Log::info($request->all());
+        //dd($request->all());
         $request->validate([
             'title' => 'nullable|string|max:255',
             'brand' => 'nullable|string|max:255',

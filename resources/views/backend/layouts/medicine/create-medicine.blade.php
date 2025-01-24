@@ -178,11 +178,11 @@
             </button>
         </div>
         <div class="px-8 py-4">
-            <form class="max-w-6xl w-full mx-auto space-y-4"
-                method="POST" enctype="multipart/form-data" id="createUpdateForm">
-                @csrf
+            <form id="createUpdateForm" class="max-w-6xl w-full mx-auto space-y-4"
+                enctype="multipart/form-data" >
+              
                 <h1 class="flex align-left h1">Create Medicine</h1>
-                <input type="hidden" name="id" id="medicene_id">
+                <input type="hidden" name="id" id="medicine_id">
 
                 {{-- favicon --}}
                 <div class="flex flex-row space-x-8">
@@ -197,7 +197,7 @@
                                     data-height="300" type="file"
                                     {{-- accept=".jpg, .png, image/jpeg, image/png" --}}
                                     accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg"
-                                    data-default-file="">
+                                   id="avatar" >
                                 @error('avatar')
                                 <span class="text-red-500 block mt-1 text-sm">
                                     <strong>{{ $message }}</strong>
@@ -497,75 +497,65 @@
 
 
 
+// Submit Form
+$('#createUpdateForm').on('submit', function(e) {
+            e.preventDefault();       
+            var faqId = $('#medicine_id').val();            
+            var url = faqId ? "{{ route('medicine.update', ':id') }}".replace(':id', faqId) : "{{ route('medicine.store') }}";   
+            var method = faqId ? "PUT" : "POST"; 
+            // Make the AJAX request
+            $.ajax({
+                type: method,
+                url: url,
+                data: $(this).serialize(),
+                success: function(resp) {
+                    console.log(resp);
 
-    $('#createUpdateForm').on('submit', function(e) {
-    e.preventDefault();
+                    // Reload DataTable
+                    $('#data-table').DataTable().ajax.reload();
 
-    var faqId = $('#medicene_id').val(); // Retrieve the Medicine ID from the hidden input
-    //console.log(faqId+'faqId');
-    var url = faqId ? "{{ route('medicine.update', ':id') }}".replace(':id', faqId) : "{{ route('medicine.store') }}";
-    var method = faqId ? "PUT" : "POST"; // Use PUT for updates, POST for creation
+                    // Handle response
+                    if (resp.success === true) {
+                        // Show success message
+                        flasher.success(resp.message);
 
-    // Create FormData object
-    var formData = new FormData($('#createUpdateForm')[0]);
+                        // Close modal
+                        $('#modalOverlay').removeClass('modal-open');
+                        setTimeout(function() {
+                            $('#modalOverlay').hide();
+                        }, 200);
+                    } else if (resp.errors) {
+                        // Show first error message
+                        flasher.error(resp.errors[0]);
+                    } else {
+                        // Show warning message
+                        flasher.warning(resp.message);
+                    }
+                },
+                error: function(error) {
+                    // Show error message
+                    flasher.error('An error occurred. Please try again.');
+                    console.error(error);
+                }
+            });
 
+        });
+    
 
-//    console.log(formData);
-    $.ajax({
-        type: method,
-        url: url,
-        data: formData,
-        processData: false, // Don't process the data
-        contentType: false, // Don't set content type
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')  // Ensure this is set in your HTML <head> section
-        },
-        success: function(resp) {
-            console.log(resp);
-
-            
-            // Reload DataTable
-            $('#data-table').DataTable().ajax.reload();
-
-            // Handle response
-            if (resp.success === true) {
-                // Show success message
-                flasher.success(resp.message);
-
-                // Close modal
-                $('#modalOverlay').removeClass('modal-open');
-                setTimeout(function() {
-                    $('#modalOverlay').hide();
-                }, 200);
-            } else if (resp.errors) {
-                // Show first error message
-                flasher.error(resp.errors[0]);
-            } else {
-                // Show warning message
-                flasher.warning(resp.message);
-            }
-        },
-        error: function(error) {
-            // Show error message
-            flasher.error('An error occurred. Please try again.');
-            console.error(error);
-        }
-    });
-});
 
 
 function editMedicine(id) {
-    let route = '{{ route('medicine.edit', ':id') }}';
+    let route = "{{ route('medicine.edit', ':id') }}";
     route = route.replace(':id', id);
     $.ajax({
         type: "GET",
         url: route,
         success: function(resp) {
             if (resp.success === true) {
-                $('#medicene_id').val(resp.data.id);
+                $('#medicine_id').val(resp.data.id);
                 $('#title').val(resp.data.title); // Ensure these fields are populated
                 $('#brand').val(resp.data.brand);
-                $('#generic_name').val(resp.data.generic_name);
+               
                 $('#description').val(resp.data.description);
                 $('#form').val(resp.data.form);
                 $('#doges').val(resp.data.doges);
@@ -575,9 +565,38 @@ function editMedicine(id) {
                 $('#stock_quantity').val(resp.data.stock_quantity);
                 
                 // Ensure the avatar field is set properly
-                if (resp.data.details && resp.data.details.avatar) {
-                    // Set avatar display or preview
-                    $('#avatar').val(resp.data.details.avatar);
+                if (resp.data.details) {
+                                let detail = resp.data.details;  // Single related detail object
+                                $('#quantity').val(detail.quantity);
+                                $('#stock_quantity').val(detail.stock_quantity);
+                                $('#form').val(detail.form);
+                                $('#price').val(detail.price);
+                                $('#generic_name').val(resp.data.generic_name);
+                                $('#dosage').val(detail.dosage);
+                                $('#unit').val(detail.unit);
+                                
+                            } else {
+                                // If no details, set defaults
+                                $('#quantity').val(0);
+                                $('#stock_quantity').val(0);
+                                $('#form').val('');
+                                $('#price').val('');
+                                $('#dosage').val(detail.dosage);
+                                $('#unit').val(detail.unit);                             
+                                $('#avatar').val(detail.avatar);
+                            }
+
+                            if (resp.features && resp.features.length > 0) {
+                    const featureInputContainer = $('#inputContainer');
+                    featureInputContainer.empty(); // Clear existing features
+                    resp.features.forEach(function(feature, index) {
+                        featureInputContainer.append(`
+                            <div class="flex items-center mb-2">
+                                <input type="text" name="feature[]" class="form-input w-full" value="${feature}" placeholder="Add feature">
+                                <button type="button" class="ml-2 text-xl font-semibold removeBtn">-</button>
+                            </div>
+                        `);
+                    });
                 }
 
                 // Open the modal
@@ -593,6 +612,51 @@ function editMedicine(id) {
     });
 }
 
+
+
+    // Add new input field when "+" is clicked
+    document.getElementById('incrementBtn').addEventListener('click', function() {
+        var container = document.getElementById('inputContainer');
+        
+        // Create a new input field container
+        var newInputContainer = document.createElement('div');
+        newInputContainer.classList.add('flex', 'items-center', 'mb-2');
+        
+        // Create a new input field
+        var newInput = document.createElement('input');
+        newInput.type = 'text';
+        newInput.name = 'feature[]';  // Allow multiple values to be submitted as an array
+        newInput.classList.add('form-input', 'w-full');
+        newInput.placeholder = 'Add feature';
+        
+        // Create a new remove button
+        var removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.classList.add('ml-2', 'text-xl', 'font-semibold', 'removeBtn');
+        removeButton.innerText = '-';  // Set text to "-"
+        
+        // Add event listener to remove input field when "-" is clicked
+        removeButton.addEventListener('click', function() {
+            newInputContainer.remove();
+        });
+
+        // Append the new input field and remove button to the container
+        newInputContainer.appendChild(newInput);
+        newInputContainer.appendChild(removeButton);
+        
+        // Append the new input container to the main container
+        container.appendChild(newInputContainer);
+    });
+
+    // Show/hide remove button dynamically based on the presence of input fields
+    document.getElementById('inputContainer').addEventListener('click', function(event) {
+        if (event.target.tagName.toLowerCase() === 'input') {
+            var removeBtns = document.querySelectorAll('.removeBtn');
+            removeBtns.forEach(function(btn) {
+                btn.classList.remove('hidden'); // Show the remove button
+            });
+        }
+    });
 //edit medicine
 // function editMedicine(id) {
 //             let route = '{{ route('medicine.edit', ':id') }}';
