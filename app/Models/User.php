@@ -18,7 +18,7 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var array<int, string>
      */
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -43,6 +43,7 @@ class User extends Authenticatable implements JWTSubject
             'date_of_birth'     => 'date',
             'reset_code'        => 'string',
             'reset_code_expires_at' => 'datetime',
+            'stripe_customer_id'    => 'string',
         ];
     }
 

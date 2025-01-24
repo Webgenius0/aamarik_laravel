@@ -60,5 +60,8 @@ class DatabaseSeeder extends Seeder
         $this->call(DeliveryInfoSeeder::class);
         //Start Your Quick Consultation
         $this->call(ConsultationSeeder::class);
+
+        //call coupon seeder
+        $this->call(CouponSeeder::class);
     }
 }

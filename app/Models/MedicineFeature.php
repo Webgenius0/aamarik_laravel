@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class MedicineFeature extends Model
 {
     use HasFactory;
-    protected $guarded = [];
+    protected $guarded = ['id'];
     /**
      * Get the attributes that should be cast.
      *

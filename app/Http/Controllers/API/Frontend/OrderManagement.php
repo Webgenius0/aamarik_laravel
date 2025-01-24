@@ -8,6 +8,8 @@ use App\Http\Requests\OrderCheckoutRequest;
 use App\Models\Assessment;
 use App\Models\AssessmentResult;
 use App\Models\BilingAddress;
+use App\Models\Coupon;
+use App\Models\Medicine;
 use App\Models\Order;
 use App\Models\order_item;
 use App\Traits\apiresponse;
@@ -16,22 +18,37 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Stripe\Customer;
+use Stripe\PaymentIntent;
+use Stripe\Stripe;
 use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 class OrderManagement extends Controller
 {
     use apiresponse;
+
+    public function __construct()
+    {
+        Stripe::setApiKey(config('services.stripe.secret'));
+    }
+
     /**
      * Create order
      */
     public  function  orderCheckout(Request $request)
     {
         // Validate incoming request
-        $validation = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'treatment_id' => 'required|integer',
             'royal_maill_tracked_price' => 'nullable|numeric',
+            'code' => 'nullable|string|exists:coupons,code', // coupons code
             'subscription' => 'required|boolean',
             'prescription' => 'nullable|nullable|file|mimes:jpg,jpeg,png,pdf|max:10240',
+
+            //amount
+            'sub_total' => 'nullable|numeric',
+            'discount'  => 'nullable|numeric',
+            'total'     => 'nullable|numeric',
 
             // Medicines array
             'medicines' => 'required|array',
@@ -58,8 +75,8 @@ class OrderManagement extends Controller
             'gp_address' => 'nullable|string|max:255',
         ]);
         // If validation fails, return error message
-        if ($validation->fails()) {
-            return $this->sendError('Create order validation error',$validation->errors()->toArray(), 422); // Change the HTTP code if needed
+        if ($validator->fails()) {
+            return $this->sendError('Validation failed. Please check the provided details and try again.',$validator->errors()->toArray(), 422); // Change the HTTP code if needed
         }
 
 
@@ -67,75 +84,76 @@ class OrderManagement extends Controller
       DB::beginTransaction();
 
         try {
-            // Calculate the total price for the medicines
+            // Retrieve validated data
+            $validatedData = $validator->validated();
+
+            //get current user
+            $user = auth()->user();
+            // Check if Stripe customer exists in the database
+            // Retrieve the existing customer on Stripe
+            $customer = Customer::retrieve($user->stripe_customer_id);
+            if (empty($customer)) {
+                return  $this->sendError('No payment method found .Please add a payment method', [],404);
+            }
+
+            //find coupon and check is invalid or expire
+            $coupon = Coupon::where('code', $validatedData['coupon_code'])->first();
+            // Check if the coupon is valid
+            if ($coupon && !$coupon->isValid()) {
+                return $this->sendError('The coupon is invalid or expired.', [],410);
+            }
+
+
+
+            // Calculate the total price for the medicines and update stock quantity
             $totalPrice = 0;
-            foreach ($request->medicines as $medicine) {
+            foreach ( $validatedData['medicines'] as $medicine) {
+                // Decrement medicine stock_quantity
+                $medicineRecord = Medicine::find($medicine['medicine_id']);
+                if ($medicineRecord) {
+                    // Ensure stock is sufficient before decrementing
+                    if ($medicineRecord->stock_quantity < $medicine['quantity']) {
+                        throw new \Exception("Insufficient stock for medicine ID: " . $medicine['medicine_id']);
+                    }
+
+                    // Update stock quantity
+                    $medicineRecord->decrement('stock_quantity', $medicine['quantity']);
+                } else {
+                    throw new \Exception("Medicine " . $medicineRecord->title . " not found.");
+                }
+
                 $totalPrice += $medicine['total_price'];
             }
 
+            //sub total price
+            $sub_total  = $totalPrice + ($validatedData['royal_maill_tracked_price'] ?? 0);
+
+
+            // Apply the discount
+            $discountedAmount = $coupon->applyDiscount($sub_total);
+
             // Create the order
-            $order = Order::create([
-                'user_id'      => auth()->id(), // Assuming user is authenticated
-                'treatment_id' => $request->treatment_id,
-                'tracked'      => $request->royal_maill_tracked_price ? true : false,
-                'royal_mail_tracked_price' => $request->royal_maill_tracked_price,
-                'total_price'  =>  $totalPrice + $request->royal_maill_tracked_price,
-                'subscription' => false,
-                'prescription' => $this->uploadPrescription($request), // Handle prescription upload
-                'status' => 'pending', // Initial order status
-            ]);
+            $order = $this->storeOrderData($validatedData,$sub_total,$discountedAmount );
 
             // Save billing address
-           BilingAddress::create([
-               'order_id' => $order->id,
-               'name' => $request->name,
-               'email' => $request->email,
-               'address' => $request->address,
-               'contact' => $request->contact,
-               'city' => $request->city,
-               'postcode' => $request->postcode,
-               'gp_number' => $request->gp_number,
-               'gp_address' => $request->gp_address,
-           ]);
+            $this->storeBillingInfo($validatedData,$order);
 
             // Save medicines (order items)
-            foreach ( $validation['medicines'] as $medicineData) {
-                $orderItem = new order_item([
-                    'order_id'    => $order->id,
-                    'medicine_id' => $medicineData['medicine_id'],
-                    'quantity'    => $medicineData['quantity'],
-                    'unit_price'  => $medicineData['unit_price'],
-                    'total_price' => $medicineData['total_price'],
-                ]);
-                $order->orderItems()->save($orderItem);
-            }
+            $this->storeOrderItems($validatedData,$order);
 
             // Save assessments and check for correct answers
-            foreach ( $validation['assessments'] as $assessmentData) {
-                $assessment = Assessment::find($assessmentData['assessment_id']);
-                $selectedOption = $assessmentData['selected_option'];
+           $this->storeAssessmentsResult($validatedData,$order);
 
-                // Check if the selected option matches the correct answer
-                $isCorrect = $assessment->answer === $selectedOption;
-                $result = $isCorrect ? 'correct' : 'incorrect';
+           //create payment intent
+            $this->createPaymentIntent($validatedData,$order);
 
-                // Save the assessment result
-                AssessmentResult::create([
-                    'order_id'        => $order->id,
-                    'treatment_id'    => $request->treatment_id,
-                    'assessment_id'   => $assessmentData['assessment_id'],
-                    'selected_option' => $assessment->answer == null ? 'correct' : $selectedOption,
-                    'result'          => $result,
-                    'notes'           => $assessmentData['notes'] ?? null,
-                ]);
-            }
             // Commit transaction
             DB::commit();
 
-            return  $this->sendResponse([],'Order placed successfully!',200);
+            return  $this->sendResponse([],'Your order has been successfully placed and is currently being processed.',200);
         }catch (\Exception $exception){
             DB::rollBack();
-            return $this->sendError('Failed ',$exception->getMessage(),422);
+            return $this->sendError('Something went wrong while processing your order. Please try again later.',$exception->getMessage(),422);
         }
 
 
@@ -157,4 +175,131 @@ class OrderManagement extends Controller
         }
         return null;
     }
+
+    /**
+     * Calculate total amount
+     */
+    private function storeOrderData($validatedData,$sub_total,$discountedAmount)
+    {
+
+       return Order::create([
+            'uuid'         => (string) Str::uuid(),
+            'user_id'      => auth()->id(),
+            'treatment_id' => $validatedData['treatment_id'],
+            'coupon_id'    => $coupon->id ?? null,
+            'tracked'      => !empty($validatedData['royal_maill_tracked_price']),
+            'royal_mail_tracked_price' => $validatedData['royal_maill_tracked_price'],
+            'sub_total'    => $sub_total, //sub total
+            'discount'     => $discountedAmount ?? null,
+            'total_price'  => $sub_total - $discountedAmount,
+            'subscription' => $validatedData['subscription'],
+            'prescription' => $this->uploadPrescription($validatedData),
+            'status'       => 'failed',
+        ]);
+    }
+
+    /**
+     * Store billing info
+     */
+    private function storeBillingInfo($validatedData,$order)
+    {
+         BilingAddress::create([
+            'order_id'   => $order->id,
+            'name'       => $validatedData['name'],
+            'email'      => $validatedData['email'],
+            'address'    => $validatedData['address'],
+            'contact'    => $validatedData['contact'],
+            'city'       => $validatedData['city'],
+            'postcode'   => $validatedData['postcode'],
+            'gp_number'  => $validatedData['gp_number'],
+            'gp_address' => $validatedData['gp_address'],
+        ]);
+    }
+
+    /**
+     * store order items
+     */
+    private function storeOrderItems($validatedData,$order)
+    {
+        foreach ($validatedData['medicines'] as $medicineData) {
+            $orderItem = new order_item([
+                'order_id'    => $order->id,
+                'medicine_id' => $medicineData['medicine_id'],
+                'quantity'    => $medicineData['quantity'],
+                'unit_price'  => $medicineData['unit_price'],
+                'total_price' => $medicineData['total_price'],
+            ]);
+            $order->orderItems()->save($orderItem);
+        }
+    }
+
+    /**
+     * Store assessment result
+     */
+    private function storeAssessmentsResult($validatedData,$order)
+    {
+        foreach ($validatedData['assessments'] as $assessmentData) {
+            $assessment = Assessment::find($assessmentData['assessment_id']);
+            $selectedOption = $assessmentData['selected_option'];
+
+            // Check if the selected option matches the correct answer
+            $isCorrect = $assessment->answer === $selectedOption;
+            $result = $isCorrect ? 'correct' : 'incorrect';
+
+            // Save the assessment result
+            AssessmentResult::create([
+                'order_id'        => $order->id,
+                'treatment_id'    => $validatedData['treatment_id'],
+                'assessment_id'   => $assessmentData['assessment_id'],
+                'selected_option' => $selectedOption,
+                'result'          => $assessment->answer == null ? 'correct' : $result,
+                'notes'           => $assessmentData['notes'] ?? null,
+            ]);
+        }
+    }
+
+    /**
+     * create payment intent
+     */
+    private function createPaymentIntent($validatedData,$order)
+    {
+        //find order with order id
+        $orderData = Order::find($order->id);
+
+        //meta data
+        $metadata = [
+            'order_uuid' => $orderData->uuid,
+            'user_id'    => auth()->id(),
+        ];
+
+        // Create a payment intent with the calculated amount and metadata
+        $paymentIntent = PaymentIntent::create([
+            'amount' =>  $orderData->total_price * 100, // Stripe accepts amounts in cents
+            'currency' => 'usd',
+            'metadata' => $metadata,
+            'payment_method' => $validatedData['payment_method_id'],
+            'confirm' => true,
+        ]);
+
+        // Update the order with payment intent details
+        $orderData->update([
+            'stripe_payment_id' => $paymentIntent->id,
+        ]);
+
+        //create subscription if subscripiton is true
+        if($validatedData['subscription']){
+            $this->createSubscription($validatedData,$order,$paymentIntent);
+        }
+    }
+
+
+
+    /**
+     * create subscription if Request -> subscription is true
+     */
+    private function createSubscription($validatedData,$order,$paymentIntent)
+    {
+
+    }
+
 }

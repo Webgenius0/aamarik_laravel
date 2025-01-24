@@ -13,16 +13,27 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('treatment_id')->nullable();
+            $table->unsignedBigInteger('coupon_id')->nullable();
             $table->boolean('tracked')->default(false);
             $table->decimal('royal_mail_tracked_price',8,2)->default(0);
+            $table->decimal('sub_total', 8, 2)->default(0);
+            $table->decimal('discount', 8, 2)->default(0);
             $table->decimal('total_price', 8, 2)->default(0);
+            $table->decimal('pay_amount', 8, 2)->default(0);
+            $table->decimal('due_amount', 8, 2)->default(0);
+            $table->string('stripe_payment_id')->unique()->nullable();
             $table->boolean('subscription')->default(false);
             $table->string('prescription')->nullable();
             $table->text('note')->nullable();
             $table->enum('status', ['pending','accepted','failed', 'processing', 'shipped', 'delivered', 'cancelled'])->default('pending');
             $table->timestamps();
+
+            $table->foreign('coupon_id')->references('id')->on('coupons')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('treatment_id')->references('id')->on('treatments')->onDelete('cascade');
         });
     }
 

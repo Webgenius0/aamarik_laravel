@@ -9,7 +9,7 @@ class Assessment extends Model
 {
     use HasFactory;
 
-    protected  $guarded = [];
+    protected  $guarded = ['id'];
 
     /**
      * Get the attributes that should be cast.

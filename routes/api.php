@@ -4,6 +4,8 @@ use App\Http\Controllers\API\Auth\AuthenticationController;
 use App\Http\Controllers\API\Auth\ForgetPasswordController;
 use App\Http\Controllers\API\Auth\LoginController;
 use App\Http\Controllers\API\Auth\ProfileController;
+use App\Http\Controllers\API\Backend\StripePaymentMethodController;
+use App\Http\Controllers\API\Frontend\CouponController;
 use App\Http\Controllers\API\Frontend\DoctoreController;
 use App\Http\Controllers\API\Frontend\FAQController;
 use App\Http\Controllers\API\Frontend\MedicineController;
@@ -66,6 +68,16 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     });
 
 
+    //! Route for coupon controller
+    Route::post('/apply-coupon',[CouponController::class, 'applyCoupon']);
+
+
+    //! Route for stripe payment method
+  Route::controller(StripePaymentMethodController::class)->group(function () {
+        Route::post('/add/stripe/customer/payment-method', 'addMethodToCustomer');
+        Route::get('/get/stripe/customer/payment-method', 'getCustomerPaymentMethods');
+        Route::delete('/remove/stripe/customer/payment-method/{paymentMethodID}', 'removeCustomerPaymentMethod');
+  });
 });
 
 

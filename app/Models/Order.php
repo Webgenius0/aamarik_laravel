@@ -10,11 +10,17 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
+        'uuid',
         'user_id',
         'treatment_id',
         'tracked',
         'royal_mail_tracked_price',
+        'sub_total',
+        'discount',
         'total_price',
+        'pay_amount',
+        'due_amount',
+        'stripe_payment_id',
         'subscription',
         'prescription',
         'note',
@@ -26,11 +32,18 @@ class Order extends Model
     public function casts():array
     {
         return [
+            'uuid'         => 'string',
             'user_id'      => 'integer',
             'treatment_id' => 'integer',
+            'coupon_id'    => 'integer',
             'tracked'      => 'boolean',
             'royal_mail_tracked_price' => 'decimal:2',
-            'total_price'  => 'decimal:2',
+            'sub_total'    => 'decimal:2',  //total amount
+            'discount'     => 'decimal:2', //discount amount
+            'total_price'  => 'decimal:2', //after discount
+            'pay_amount'   => 'decimal:2',
+            'due_amount'   => 'decimal:2',
+            'stripe_payment_id' => 'string',
             'subscription' => 'boolean',
             'prescription' => 'string',
             'note'         => 'string',
@@ -74,5 +87,12 @@ class Order extends Model
     public function billingAddress()
     {
         return $this->hasOne(BilingAddress::class);
+    }
+
+
+    // Define the relationship with the Coupon model
+    public function coupon()
+    {
+        return $this->belongsTo(Coupon::class);
     }
 }
