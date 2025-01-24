@@ -24,4 +24,12 @@ class Assessment extends Model
             'answer'        => 'string',
         ];
     }
+
+    /**
+     * Relationship: An assessment can have many assessment results.
+     */
+    public function assessmentResults()
+    {
+        return $this->hasMany(AssessmentResult::class);
+    }
 }

@@ -31,9 +31,4 @@ class Medicine extends Model
         return $this->hasMany(MedicineFeature::class);
     }
 
-    // Relationship to the Review model
-    public function reviews()
-    {
-        return $this->hasMany(Review::class);
-    }
 }

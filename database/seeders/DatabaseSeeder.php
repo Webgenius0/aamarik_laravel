@@ -56,9 +56,6 @@ class DatabaseSeeder extends Seeder
         //call the treatmetn
         $this->call(TreatmentSeeder::class);
 
-        //call the review
-        $this->call(ReviewSeeder::class);
-
         //call the deliver info
         $this->call(DeliveryInfoSeeder::class);
         //Start Your Quick Consultation
