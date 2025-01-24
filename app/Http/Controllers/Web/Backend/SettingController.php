@@ -216,9 +216,15 @@ class SettingController extends Controller
             if ($envContent !== null) {
                 File::put(base_path('.env'), $envContent);
             }
-            return redirect()->back()->with('t-success', 'Mail Setting Update successfully.');
+            return response()->json([
+                'success' => true,
+                'message' => 'Mail Setting Updated Successfully'
+            ]);
         } catch (\Throwable $th) {
-            return redirect(route('dashboard'))->with('t-error', 'Mail Setting Update Failed');
+            return response()->json([
+                'success' => false,
+                'message' => 'Mail Setting Update Failed'
+            ]);
         }
     }
 
@@ -238,6 +244,7 @@ class SettingController extends Controller
      */
     public function stripeSettingUpdate(Request $request)
     {
+        //dd($request);
         $messages = [
             'stripe_public_key.required' => 'The mailer is required.',
             'stripe_public_key.string' => 'The mailer must be a string.',

@@ -9,7 +9,7 @@ class TreatmentMedicines extends Model
 {
     use HasFactory;
 
-    protected  $fillable = ['treatment_id','question','answer'];
+    protected  $fillable = ['treatment_id','question','answer','medicine_id'];
 
     /**
      * Get the attributes that should be cast.

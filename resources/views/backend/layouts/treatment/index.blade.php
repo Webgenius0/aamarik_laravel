@@ -108,58 +108,44 @@
         </div>
         <div class="flex flex-col md:w-full">
             <label for="name" class="text-lg font-medium mb-2">Title</label>
-            <input name="name" type="text" class="form-input w-full" id="name" placeholder="Enter name.." value="{{ old('name') }}">
-            @error('name') <span class="text-red-500 block mt-1 text-sm"><strong>{{ $message }}</strong></span> @enderror
+            <input name="name" type="text" class="form-input w-full" id="name" placeholder="Enter name..">
         </div>
 
         <div class="flex flex-col md:w-full">
             <label for="avatar" class="text-lg font-medium mb-2">Avatar</label>
             <input name="avatar" type="file" class="form-input w-full dropify" id="avatar" accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg">
-            @error('avatar') <span class="text-red-500 block mt-1 text-sm"><strong>{{ $message }}</strong></span> @enderror
             <div class="text-blue-500 text-sm mt-1">Recommended to 32x32 px (jpeg, png, jpg, gif, ico, bmp, svg).</div>
         </div>
     </div>
 
     <!-- Step 2: Treatment Category -->
-
-
     <div class="step step-2 hidden" id="treament_category">
-        <!-- Container to hold all dynamic treatment categories -->
         <div id="array-steps-container">
-            <!-- Initial Card that will be cloned when adding a new card -->
+            <!-- Initial Card -->
             <div class="card m-5 p-5 treatment-category-card">
                 <div class="flex items-center justify-center">
                     <h1 class="h1">Treatment Category</h1>
                 </div>
                 <div class="flex flex-wrap md:flex-nowrap">
-                    <!-- Icon Field -->
                     <div class="flex flex-col md:w-1/2 mr-4">
-                        <label for="icon" class="text-lg font-medium mb-2">Icon</label>
-                        <input name="icon" type="file" class="form-input w-full dropify h-[2.5rem]" id="icon" accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg">
-                        <div class="text-blue-500 text-sm mt-1">Recommended to 32x32 px (jpeg, png, jpg, gif, ico, bmp, svg).</div>
+                        <label for="categories[][icon]" class="text-lg font-medium mb-2">Icon</label>
+                        <input name="categories[][icon]" type="file" class="form-input w-full dropify h-[2.5rem]" accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg">
                     </div>
 
-                    <!-- Title Field -->
                     <div class="flex flex-col md:w-1/2">
-                        <label for="title" class="text-lg font-medium mb-2">Title</label>
-                        <input name="title" type="text" class="form-input w-full h-[2.5rem]" id="title" placeholder="Title" value="{{ old('title') }}">
+                        <label for="categories[][title]" class="text-lg font-medium mb-2">Title</label>
+                        <input name="categories[][title]" type="text" class="form-input w-full h-[2.5rem]" placeholder="Title">
                     </div>
-
                 </div>
-
-                <!-- Remove Button, initially hidden -->
                 <div class="flex justify-end mt-4">
                     <button type="button" class="btn bg-red-500 text-white py-1 px-3 rounded-lg font-semibold remove-treament-category-btn hidden">Remove</button>
                 </div>
             </div>
         </div>
-
-        <!-- Add Button -->
         <div class="flex justify-end mt-4">
             <button type="button" id="addtreament_category" class="btn bg-green-500 text-white py-2 px-4 rounded-lg font-semibold">Add New Card</button>
         </div>
     </div>
-
 
     <!-- Step 3: Category Details -->
     <div class="step step-3 hidden">
@@ -168,174 +154,139 @@
         </div>
         <div class="card m-5 p-5">
             <div class="flex flex-wrap md:flex-nowrap">
-                <!-- Icon Field -->
                 <div class="flex flex-col md:w-1/2 mr-4">
-                    <label for="icon" class="text-lg font-medium mb-2">Icon</label>
-                    <input name="icon" type="file" class="form-input w-full dropify" id="icon" accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg">
-                    @error('icon') <span class="text-red-500 block mt-1 text-sm"><strong>{{ $message }}</strong></span> @enderror
-                    <div class="text-blue-500 text-sm mt-1">Recommended to 32x32 px (jpeg, png, jpg, gif, ico, bmp, svg).</div>
-                </div>
-                <!-- Title Field -->
-                <div class="flex flex-col md:w-1/2">
-                    <label for="description" class="text-lg font-medium mb-2">Title</label>
-                    <textarea name="title" class="form-input w-full" id="title" placeholder="title">{{ old('description') }}</textarea>
-                    @error('title') <span class="text-red-500 block mt-1 text-sm"><strong>{{ $message }}</strong></span> @enderror
-                </div>
-            </div>
-            <!-- Array title field  -->
-            <div id="array-title-container" class="flex flex-wrap items-center">
-                <!-- Title Field -->
-                <div class="flex flex-col md:w-full mr-4" id="aray_title">
-                    <label for="description" class="text-lg font-medium mb-2">Title</label>
-                    <textarea name="title" class="form-input w-full" id="title" placeholder="title">{{ old('description') }}</textarea>
-                    @error('title')
-                    <span class="text-red-500 block mt-1 text-sm"><strong>{{ $message }}</strong></span>
-                    @enderror
+                    <label for="details[0][avatar]" class="text-lg font-medium mb-2">Avatar</label>
+                    <input name="details[0][avatar]" type="file" class="form-input w-full dropify" accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg">
                 </div>
 
-                <!-- Add and Remove Buttons (same row as title input) -->
+                <div class="flex flex-col md:w-1/2">
+                    <label for="details[0][title]" class="text-lg font-medium mb-2">Title</label>
+                    <textarea name="details[0][title]" class="form-input w-full" placeholder="Title"></textarea>
+                </div>
+            </div>
+
+            <div id="array-title-container" class="flex flex-wrap items-center">
+                <div class="flex flex-col md:w-full mr-4" id="aray_title">
+                    <label for="detail_items[][title]" class="text-lg font-medium mb-2">Title</label>
+                    <textarea name="detail_items[][title]" class="form-input w-full" placeholder="Title"></textarea>
+                </div>
+
                 <div class="flex items-center space-x-4 mt-4">
                     <button type="button" id="add-title-field" class="btn bg-green-500 text-white py-2 px-4 rounded-lg font-semibold">+</button>
                     <button type="button" id="remove-title-field" class="btn bg-red-500 text-white py-2 px-4 rounded-lg font-semibold hidden">-</button>
                 </div>
             </div>
-
-
         </div>
-        <!-- About section -->
 
         <div class="flex items-center justify-center">
             <h1 class="h1">About Section</h1>
         </div>
         <div class="card m-5 p-5">
-
-            <div class="flex flex-col md:w-full mr-4">
-                <label for="icon" class="text-lg font-medium mb-2">Avatar</label>
-                <input name="avatar" type="file" class="form-input w-full dropify" id="icon" accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg">
-                @error('avatar') <span class="text-red-500 block mt-1 text-sm"><strong>{{ $message }}</strong></span> @enderror
-                <div class="text-blue-500 text-sm mt-1">Recommended to 32x32 px (jpeg, png, jpg, gif, ico, bmp, svg).</div>
-            </div>
-            <div class="flex flex-wrap md:flex-nowrap">
-
-
-                <!-- Title Field -->
-                <div class="flex flex-col md:w-1/2">
-                    <label for="title" class="text-lg font-medium mb-2">Title</label>
-                    <input name="title" class="form-input w-full" id="title" placeholder="title">{{ old('description') }}</input>
-                    @error('title') <span class="text-red-500 block mt-1 text-sm"><strong>{{ $message }}</strong></span> @enderror
-                </div>
-
-                <div class="flex flex-col md:w-1/2 ml-4">
-                    <label for="description" class="text-lg font-medium mb-2">Description</label>
-                    <textarea name="description" class="form-input w-full" id="description" placeholder="title">{{ old('description') }}</textarea>
-                    @error('title') <span class="text-red-500 block mt-1 text-sm"><strong>{{ $message }}</strong></span> @enderror
-                </div>
-            </div>
+    <div class="flex flex-col md:w-full">
+        <label for="about[0][avatar]" class="text-lg font-medium mb-2">Avatar</label>
+        <input name="about[0][avatar]" type="file" class="form-input w-full dropify" accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg">
+    </div>
+    <div class="flex flex-wrap md:flex-nowrap">
+        <div class="flex flex-col md:w-1/2">
+            <label for="about[0][title]" class="text-lg font-medium mb-2">Title</label>
+            <input name="about[0][title]" class="form-input w-full" placeholder="Title">
         </div>
-        <!-- Array Question Answer  -->
-        <div id="array-question-answer">
+        <div class="flex flex-col md:w-1/2 ml-4">
+            <label for="about[0][short_description]" class="text-lg font-medium mb-2">Description</label>
+            <textarea name="about[0][short_description ]" class="form-input w-full" placeholder="Description"></textarea>
+        </div>
+    </div>
+</div>
 
-            <div class="card m-5 p-5">
-                <div class="flex flex-wrap md:flex-nowrap">
-                    <!-- Question Field -->
-                    <div class="flex flex-col md:w-1/2">
-                        <label for="question" class="text-lg font-medium mb-2">Question</label>
-                        <input name="question" class="form-input w-full" id="question" placeholder="question">
-                        <!-- Error handling (if necessary) -->
-                        @error('title')
-                        <span class="text-red-500 block mt-1 text-sm"><strong>{{ $message }}</strong></span>
-                        @enderror
-                    </div>
-                    <!-- Answer Field -->
-                    <div class="flex flex-col md:w-1/2 ml-4">
-                        <label for="answer" class="text-lg font-medium mb-2">Answer</label>
-                        <textarea name="answer" class="form-input w-full" id="answer" placeholder="answer"></textarea>
-                        @error('title')
-                        <span class="text-red-500 block mt-1 text-sm"><strong>{{ $message }}</strong></span>
-                        @enderror
-                    </div>
-                </div>
-                <!-- Remove Button, initially hidden -->
-                <div class="flex justify-end mt-4">
-                    <button type="button" class="btn bg-red-500 text-white py-1 px-3 rounded-lg font-semibold remove-array-question-btn hidden">Remove</button>
-                </div>
+
+<div id="array-question-answer">
+    <div class="card m-5 p-5">
+        <div class="flex flex-wrap md:flex-nowrap">
+            <div class="flex flex-col md:w-1/2">
+                <label for="faqs[0][question]" class="text-lg font-medium mb-2">Question</label>
+                <input name="faqs[0][question]" class="form-input w-full" placeholder="Question">
+            </div>
+
+            <div class="flex flex-col md:w-1/2 ml-4">
+                <label for="faqs[0][answer]" class="text-lg font-medium mb-2">Answer</label>
+                <textarea name="faqs[0][answer]" class="form-input w-full" placeholder="Answer"></textarea>
             </div>
         </div>
 
-        <!-- Add Button -->
         <div class="flex justify-end mt-4">
-            <button type="button" id="add-array-question" class="btn bg-green-500 text-white py-2 px-4 rounded-lg font-semibold">Add New Card</button>
+            <button type="button" class="btn bg-red-500 text-white py-1 px-3 rounded-lg font-semibold remove-array-question-btn hidden">Remove</button>
         </div>
     </div>
+</div>
 
-    <!-- Step 4: Assestment -->
 
+
+
+<div class="flex justify-end mt-4">
+    <button type="button" id="add-array-question" class="btn bg-green-500 text-white py-2 px-4 rounded-lg font-semibold">Add New Card</button>
+</div>
+
+    </div>
+
+    <!-- Step 4: Assessment -->
     <div class="step step-4 hidden">
-        <div class="card m-5 p-5">
-            <div class="flex items-center justify-center">
-                <h1 class="h1">Assessment</h1>
-            </div>
+    <div class="card m-5 p-5">
+        <div class="flex items-center justify-center">
+            <h1 class="h1">Assessment</h1>
+        </div>
 
-            <!-- Container for dynamically added cards -->
-            <div id="cards-container">
-                <!-- Initial card, without the "Remove" button visible -->
-                <div class="dynamic-card">
-                    <div class="flex flex-col md:w-full">
-                        <label for="question" class="text-lg font-medium mb-2">Question</label>
-                        <input name="question" class="form-input w-full" id="question" placeholder="Question">
-                        @error('question') <span class="text-red-500 block mt-1 text-sm"><strong>{{ $message }}</strong></span> @enderror
+        <!-- Container for dynamic question cards -->
+        <div id="cards-container">
+            <div class="dynamic-card">
+                <!-- Question Input -->
+                <div class="flex flex-col md:w-full">
+                    <label for="assessments[0][question]" class="text-lg font-medium mb-2">Question</label>
+                    <input name="assessments[0][question]" class="form-input w-full" placeholder="Question">
+                </div>
+
+                <!-- Option Inputs -->
+                <div class="flex flex-wrap md:flex-nowrap">
+                    <div class="flex flex-col md:w-1/2">
+                        <label for="assessments[0][option1]" class="text-lg font-medium mb-2">Option 1</label>
+                        <input name="assessments[0][option1]" class="form-input w-full" placeholder="Option 1">
                     </div>
-
-                    <div class="flex flex-wrap md:flex-nowrap">
-                        <div class="flex flex-col md:w-1/2">
-                            <label for="option1" class="text-lg font-medium mb-2">Option 1</label>
-                            <input name="option1" class="form-input w-full" id="option1" placeholder="Option 1">
-                        </div>
-
-                        <div class="flex flex-col md:w-1/2 ml-4">
-                            <label for="option2" class="text-lg font-medium mb-2">Option 2</label>
-                            <input name="option2" class="form-input w-full" id="option2" placeholder="Option 2">
-                        </div>
-
-                        <div class="flex flex-col md:w-1/2 ml-4">
-                            <label for="option3" class="text-lg font-medium mb-2">Option 3</label>
-                            <input name="option3" class="form-input w-full" id="option3" placeholder="Option 3">
-                        </div>
+                    <div class="flex flex-col md:w-1/2 ml-4">
+                        <label for="assessments[0][option2]" class="text-lg font-medium mb-2">Option 2</label>
+                        <input name="assessments[0][option2]" class="form-input w-full" placeholder="Option 2">
                     </div>
-
-                    <div class="flex flex-wrap md:flex-nowrap">
-                        <div class="flex flex-col md:w-1/2">
-                            <label for="option4" class="text-lg font-medium mb-2">Option 4</label>
-                            <input name="option4" class="form-input w-full" id="option4" placeholder="Option 4">
-                        </div>
-
-                        <div class="flex flex-col md:w-1/2 ml-4">
-                            <label for="answer" class="text-lg font-medium mb-2">Answer</label>
-                            <input name="answer" class="form-input w-full" id="answer" placeholder="Answer">
-                        </div>
-
-                        <div class="flex flex-col md:w-1/2 ml-4">
-                            <label for="note" class="text-lg font-medium mb-2">Note</label>
-                            <textarea name="note" class="form-input w-full" id="note" placeholder="Note"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Remove Button, initially hidden -->
-                    <div class="flex justify-end mt-4">
-                        <button type="button" class="btn bg-red-500 text-white py-1 px-3 rounded-lg font-semibold remove-btn hidden">Remove</button>
+                    <div class="flex flex-col md:w-1/2 ml-4">
+                        <label for="assessments[0][option3]" class="text-lg font-medium mb-2">Option 3</label>
+                        <input name="assessments[0][option3]" class="form-input w-full" placeholder="Option 3">
                     </div>
                 </div>
-            </div>
 
-            <!-- Add Button -->
-            <div class="flex justify-end mt-4">
-                <button type="button" id="addBtn" class="btn bg-green-500 text-white py-2 px-4 rounded-lg font-semibold">Add New Card</button>
+                <!-- More Option Inputs and Answer -->
+                <div class="flex flex-wrap md:flex-nowrap">
+                    <div class="flex flex-col md:w-1/2">
+                        <label for="assessments[0][option4]" class="text-lg font-medium mb-2">Option 4</label>
+                        <input name="assessments[0][option4]" class="form-input w-full" placeholder="Option 4">
+                    </div>
+                    <div class="flex flex-col md:w-1/2 ml-4">
+                        <label for="assessments[0][answer]" class="text-lg font-medium mb-2">Answer</label>
+                        <input name="assessments[0][answer]" class="form-input w-full" placeholder="Answer">
+                    </div>
+                    <div class="flex flex-col md:w-1/2 ml-4">
+                        <label for="assessments[0][note]" class="text-lg font-medium mb-2">Note</label>
+                        <textarea name="assessments[0][note]" class="form-input w-full" placeholder="Note"></textarea>
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-4">
+                    <button type="button" class="btn bg-red-500 text-white py-1 px-3 rounded-lg font-semibold remove-btn hidden">Remove</button>
+                </div>
             </div>
         </div>
+
+        <div class="flex justify-end mt-4">
+            <button type="button" id="addBtn" class="btn bg-green-500 text-white py-2 px-4 rounded-lg font-semibold">Add New Card</button>
+        </div>
     </div>
-
-
-
+</div>
 
     <!-- Buttons -->
     <div class="flex justify-between mt-4">
@@ -344,6 +295,9 @@
         <button type="submit" id="submitBtn" class="btn bg-green-500 text-white py-2 px-4 rounded-lg font-semibold hidden">Submit</button>
     </div>
 </form>
+
+
+
 
 @endsection
 
@@ -483,29 +437,61 @@
 
 
     //Array Quesstion Answer
+    document.addEventListener("DOMContentLoaded", function() {
+    let faqIndex = 0;  // Start from 0 for the first card
+
+    // Add event listener for adding new FAQ cards
     document.getElementById('add-array-question').addEventListener('click', function() {
-        // Clone the first card inside the container
-        var card = document.querySelector('#array-question-answer .card');
-        var clone = card.cloneNode(true);
+        // Select the first card inside the container (only once)
+        var cardContainer = document.getElementById('array-question-answer');
+        var card = cardContainer.querySelector('.card');  // Make sure it selects the card template
+
+        if (!card) {
+            console.log("Card element not found!");
+            return;  // If no card exists to clone, exit the function
+        }
+
+        var clone = card.cloneNode(true);  // Clone the first card inside the container
 
         // Clear the input values in the cloned card
         var inputs = clone.querySelectorAll('input, textarea');
         inputs.forEach(function(input) {
-            input.value = ''; // Clear the input field
+            input.value = ''; // Clear the input field in the cloned card
         });
 
         // Show the remove button for the new card
         var removeButton = clone.querySelector('.remove-array-question-btn');
-        removeButton.classList.remove('hidden'); // Unhide the remove button
+        removeButton.classList.remove('hidden'); // Unhide the remove button for the cloned card
+
+        // Update the name attributes with unique indexes
+        var questionInput = clone.querySelector('input[name="faqs[][question]"]');
+        var answerInput = clone.querySelector('textarea[name="faqs[][answer]"]');
+        
+        if (questionInput && answerInput) {
+            questionInput.name = `faqs[${faqIndex}][question]`;
+            answerInput.name = `faqs[${faqIndex}][answer]`;
+        } else {
+            console.error('Failed to find input fields to update the name attributes');
+        }
 
         // Append the cloned card to the parent container
-        document.getElementById('array-question-answer').appendChild(clone);
+        cardContainer.appendChild(clone);
 
-        // Optional: You can add functionality to remove the cloned card when the remove button is clicked
+        // Increment the faqIndex for the next card
+        faqIndex++;
+
+        // Optional: Add functionality to remove the cloned card when the remove button is clicked
         removeButton.addEventListener('click', function() {
             clone.remove();
         });
     });
+});
+
+
+
+    //for submission question answer
+
+    
 
     //Araay Title 
 

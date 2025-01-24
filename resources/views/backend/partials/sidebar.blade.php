@@ -149,6 +149,19 @@
                             <span class="menu-text">Social Media Settings</span>
                         </a>
                     </li>
+
+                    <li class="menu-item">
+                        <a href="{{route('mail.setting')}}" class="menu-link">
+                            <span class="menu-dot"></span>
+                            <span class="menu-text">Mail Settings</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{route('stripe.setting')}}" class="menu-link">
+                            <span class="menu-dot"></span>
+                            <span class="menu-text">Stripe Settings</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
             <li class="menu-item">

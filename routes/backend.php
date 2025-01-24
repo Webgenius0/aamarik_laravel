@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\Backend\DuaController;
 use App\Http\Controllers\Web\Backend\VerseController;
 use App\Http\Controllers\Web\Backend\SettingController;
+use App\Http\Controllers\Web\Backend\settings\MailSettingsController;
 use App\Http\Controllers\Web\Backend\DashboardController;
 use App\Http\Controllers\Web\Backend\MessagingController;
 use App\Http\Controllers\Web\Backend\NewsLetterController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\Web\Backend\CMSController;
 use App\Http\Controllers\Web\Backend\DoctorController;
 use App\Http\Controllers\Web\Backend\MedicineController;
 use App\Http\Controllers\Web\Backend\TreatMentController;
+use Illuminate\Support\Facades\Mail;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -27,6 +29,7 @@ Route::post('change-password', [UserUpdateController::class, 'userPasswordUpdate
 // Setting
 Route::post('setting-update', [SettingController::class, 'update'])->name('admin.setting.update');
 Route::get('setting', [SettingController::class, 'index'])->name('admin.setting');
+//Route::get('/mail/setting', [MailSettingsController::class, 'index'])->name('admin.mail.setting');
 
 
 // Home Page Content Update
