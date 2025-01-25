@@ -167,6 +167,8 @@ class StripePaymentMethodController extends Controller
             if (!$customer || empty($customer->id)) {
                 return $this->sendError('Customer not found in Stripe.',(object)[],404);
             }
+
+            dd($customer);
             $paymentMethod = PaymentMethod::retrieve($paymentMethodID);
             if (empty($paymentMethods->data)) {
                 return $this->sendError('Payment method not found.', [], 404);
