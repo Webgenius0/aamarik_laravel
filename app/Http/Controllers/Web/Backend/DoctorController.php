@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Web\Backend;
+
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use App\Models\Department;
@@ -10,13 +11,15 @@ use Illuminate\Support\Str;
 use Exception;
 use App\Helper\Helper;
 use Yajra\DataTables\Facades\DataTables;
+
 class DoctorController extends Controller
-{public function index(Request $request)
+{
+    public function index(Request $request)
     {
         if ($request->ajax()) {
             // Retrieve doctor records
             $data = User::where('role', 'doctor')->get(); // Fixed with parentheses
-    
+
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('name', function ($data) {
@@ -26,13 +29,13 @@ class DoctorController extends Controller
                     return '<input type="checkbox" class="form-switch" onclick="ShowStatusChangeAlert(' . $data->id . ')" ' . ($data->status == "active" ? 'checked' : '') . '>';
                 })
                 ->addColumn('avatar', function ($data) {
-                    $avatarUrl = $data->avatar ? asset($data->avatar) : asset('uploads/defult-image/default-avatar.png');                    
-                    return $data->avatar ? 
-                           '<a href="' . $avatarUrl . '" target="_blank"><img src="' . $avatarUrl . '" alt="Avatar" width="50" height="50"></a>' : 
-                           'No Avatar';
+                    $avatarUrl = $data->avatar ? asset($data->avatar) : asset('uploads/defult-image/default-avatar.png');
+                    return $data->avatar ?
+                        '<a href="' . $avatarUrl . '" target="_blank"><img src="' . $avatarUrl . '" alt="Avatar" width="50" height="50"></a>' :
+                        'No Avatar';
                 })
-                
-                
+
+
                 ->addColumn('action', function ($data) {
                     return '<div class="inline-flex gap-1">
                             <a href="javascript:void(0);" onclick="editDoctor(' . $data->id . ')" class="btn bg-success text-white rounded">
@@ -43,95 +46,153 @@ class DoctorController extends Controller
                             </a>
                         </div>';
                 })
-                ->rawColumns(['name','avatar', 'status', 'action'])
+                ->rawColumns(['name', 'avatar', 'status', 'action'])
                 ->make(true); // Ensures the proper JSON response format
         }
-    
+
         return view('backend.layouts.doctor.index');
     }
-    
-//create-doctor
-public function create()
-{
-    return view('backend.layouts.doctor.create-doctor');
-}
-    //department 
-    public function department()
+    //doctor image show 
+    // public function show($id)
+    // {
+    //     $doctor = User::where('type', 'doctor')->first($id);
+    //     return view('backend.layouts.doctor.index', compact('doctor'));
+    // }
+
+    //create-doctor
+    public function create()
     {
+        return view('backend.layouts.doctor.create-doctor');
+    }
+    //create department
+    public function createDepartment()
+    {
+        return view('backend.layouts.doctor.create-department');
+    }
+
+    //department list show
+    public function department(Request $request)
+    {
+        if ($request->ajax()) {
+            // Retrieve doctor records
+            $data = Department::all(); // Fixed with parentheses
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('name', function ($data) {
+                    return Str::limit($data->department_name, 50, '...');
+                })
+                ->addColumn('status', function ($data) {
+                    return '<input type="checkbox" class="form-switch" onclick="ShowStatusChangeAlert(' . $data->id . ')" ' . ($data->status == "active" ? 'checked' : '') . '>';
+                })
+                
+
+
+                ->addColumn('action', function ($data) {
+                    return '<div class="inline-flex gap-1">
+                            <a href="javascript:void(0);" onclick="editDoctor(' . $data->id . ')" class="btn bg-success text-white rounded">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                            <a href="javascript:void(0);" onclick="showDeleteConfirm(' . $data->id . ')" class="btn bg-danger text-white rounded" title="Delete">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </div>';
+                })
+                ->rawColumns(['name', 'avatar', 'status', 'action'])
+                ->make(true); // Ensures the proper JSON response format
+        }
+
         return view('backend.layouts.doctor.departament');
     }
+    //Edit Department
 
-    //retribe department
+
+    //retribe department-for doctor updateAnd create
     public function getDeparments()
     {
-        $deparment=Department::all();
+        $deparment = Department::all();
         return response()->json($deparment);
     }
+
+
     //department Store
     public function departmentStore(Request $request)
-{
-   
-    $request->validate([
-        'department_name' => 'required',
-    ]);
+    {
 
-    try {
-      
-        $department = new Department();
-        $department->department_name = $request->department_name;
-        $department->status = 'active';
-        $department->save();
+        $request->validate([
+            'department_name' => 'required',
+        ]);
 
-        return response()->json(['success' => true]);
-    } catch (Exception $e) {
+        try {
 
-        return response()->json(['success' => false, 'message' => $e->getMessage()]);
+            $department = new Department();
+            $department->department_name = $request->department_name;
+            $department->status = 'active';
+            $department->save();
+
+            return response()->json(['success' => true]);
+        } catch (Exception $e) {
+
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
     }
-}
 
 
-//doctor store
+    //doctor store
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email',           
+            'email' => 'required|email',
             'department' => 'required|exists:departments,department_name',
         ]);
         try {
 
-        $user=new User();
-        $password='12345678';
-        $user->name=$request->name;
-        $user->email=$request->email;
-        $user->password=Hash::make($password);
-        $user->role='doctor';
-        $user->department=$request->department;
-        if ($request->hasFile('avatar')) {
-            // Use the helper method to handle file upload and store file path
-            $avatarPath = Helper::fileUpload($request->file('avatar'), 'users', 'avatar');
-            $user->avatar = $avatarPath; // Assign the avatar path to the user
-        }
-        $user->save();
-        return response()->json([
-            'success' => true, 
-            'message' => 'Doctor Added Successfully.'
-        ], 200);
-        
+            $user = new User();
+            $password = '12345678';
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = Hash::make($password);
+            $user->role = 'doctor';
+            $user->department = $request->department;
+            if ($request->hasFile('avatar')) {
+                
+                $avatarPath = Helper::fileUpload($request->file('avatar'), 'users', 'avatar');
+                $user->avatar = $avatarPath; 
+            }
+            $user->save();
+            return response()->json([
+                'success' => true,
+                'message' => 'Doctor Added Successfully.'
+            ], 200);
         } catch (Exception $e) {
-           
+
             return response()->json(['success' => false, 'message' => $e->getMessage()], 400);
         }
     }
     //doctor edit
     public function edit($id)
     {
-        $doctor = User::findOrFail($id);
-        if (!$doctor) {
-            return response()->json(['success' => false, 'message' => 'Doctor Not found']);
+
+        $user = User::find($id);
+
+        if ($user) {
+
+            $avatarUrl = $user->avatar ? asset($user->avatar) : asset('uploads/users/avatar/default-avatar.png');
+
+            return response()->json([
+                'success' => true,
+                'data' => $user,
+                'avatar_url' => $avatarUrl
+            ]);
         }
-        return response()->json(['success' => true, 'data' => $doctor]);
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Doctor not found'
+        ]);
     }
+
 
     //doctor delete
     public function destroy($id)
@@ -146,62 +207,59 @@ public function create()
     }
 
     public function update(Request $request, $id)
-{
-    $request->validate([
-        'name' => 'required',
-        'email' => 'required|email',
-        'department' => 'required|exists:departments,department_name', // Validating department name
-    ]);
+    {
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'department' => 'required|exists:departments,department_name', // Validating department name
+        ]);
 
-    // Find the doctor and update their details
-    $doctor = User::findOrFail($id);
-    $doctor->name = $request->name;
-    $doctor->email = $request->email;
+        // Find the doctor and update their details
+        $doctor = User::findOrFail($id);
+        $doctor->name = $request->name;
+        $doctor->email = $request->email;
 
-    // Find the department by its name (since we're using department_name instead of department_id)
-    $department = Department::where('department_name', $request->department)->first();
-    
-    if ($department) {
-        $doctor->department = $department->department_name; 
-    }
+        // Find the department by its name (since we're using department_name instead of department_id)
+        $department = Department::where('department_name', $request->department)->first();
 
-    // If the request has a new avatar
-    if ($request->hasFile('avatar')) {
-        // First, unlink the old avatar file if it exists
-        if ($doctor->avatar && file_exists(public_path($doctor->avatar))) {
-            unlink(public_path($doctor->avatar));
+        if ($department) {
+            $doctor->department = $department->department_name;
         }
 
-        // Handle the new avatar upload with a unique name
-        $avatar = $request->file('avatar');
+        // If the request has a new avatar
+        if ($request->hasFile('avatar')) {
+            // First, unlink the old avatar file if it exists
+            if ($doctor->avatar && file_exists(public_path($doctor->avatar))) {
+                unlink(public_path($doctor->avatar));
+            }
 
-        // Generate a unique name for the avatar
-        $uniqueName = time() . '_' . uniqid() . '.' . $avatar->getClientOriginalExtension();
+            // Handle the new avatar upload with a unique name
+            $avatar = $request->file('avatar');
 
-        // Define the path where the avatar will be stored
-        $path = public_path('uploads/users/avatar');
+            // Generate a unique name for the avatar
+            $uniqueName = time() . '_' . uniqid() . '.' . $avatar->getClientOriginalExtension();
 
-        // Make sure the directory exists
-        if (!file_exists($path)) {
-            mkdir($path, 0777, true); // Create the directory if it doesn't exist
+            // Define the path where the avatar will be stored
+            $path = public_path('uploads/users/avatar');
+
+            // Make sure the directory exists
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true); // Create the directory if it doesn't exist
+            }
+
+            // Move the uploaded file to the storage path with the unique name
+            $avatar->move($path, $uniqueName);
+
+            // Save the path to the database (relative path)
+            $doctor->avatar = 'uploads/users/avatar/' . $uniqueName;
         }
 
-        // Move the uploaded file to the storage path with the unique name
-        $avatar->move($path, $uniqueName);
+        // Save the doctor's information
+        $doctor->save();
 
-        // Save the path to the database (relative path)
-        $doctor->avatar = 'uploads/users/avatar/' . $uniqueName;
+        return response()->json([
+            'success' => true,
+            'message' => 'Doctor updated successfully.',
+        ]);
     }
-
-    // Save the doctor's information
-    $doctor->save();
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Doctor updated successfully.',
-    ]);
-}
-
-
-    
 }

@@ -111,7 +111,14 @@
                     <li class="menu-item">
                         <a href="{{route('home.section')}}" class="menu-link">
                             <span class="menu-dot"></span>
-                            <span class="menu-text">Home Section</span>
+                            <span class="menu-text">Home Banner</span>
+                        </a>
+                    </li>
+
+                    <li class="menu-item">
+                        <a href="{{route('cms.personalized')}}" class="menu-link">
+                            <span class="menu-dot"></span>
+                            <span class="menu-text">Personalized Helthcare</span>
                         </a>
                     </li>
 

@@ -2,7 +2,7 @@
 <header class="app-header flex items-center px-5 gap-4 " style="z-index: 1 !important;">
 
     <!-- Brand Logo -->
-    <a class='logo-box' href='{{route('dashboard')}}'>
+    <a class='logo-box' href="{{route('dashboard')}}">
         <img src="{{asset('backend/assets/images/logo-sm.png')}}" class="h-6" alt="Small logo">
     </a>
 

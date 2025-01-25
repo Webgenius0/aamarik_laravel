@@ -86,6 +86,7 @@ Route::controller(\App\Http\Controllers\Web\Backend\FaqController::class)->group
 Route::get('/settings/banner',[ CMSController::class ,'banner'])->name('banner');
 Route::get('/cms/home-section',[ CMSController::class ,'homeSection'])->name('home.section');
 Route::put('/cms', [CmsController::class, 'update'])->name('cms.update');
+Route::get('/cms/personalized', [CmsController::class, 'showPersonalized'])->name('cms.personalized');
 Route::put('/cms/personalized', [CmsController::class, 'personalized'])->name('cms.personalized');
 
 //cms section
@@ -94,7 +95,7 @@ Route::get('/cms/confediential', [CmsController::class, 'homeSection'])->name('c
 Route::put('/cms/update', [CmsController::class, 'updateSection'])->name('section.update');
 Route::put('/cms/working-process', [CmsController::class, 'updateWorkingProcess'])->name('cms.working.process');
 //doctor section
-Route::get('/cms/doctor-section', [CmsController::class, 'doctorSection'])->name('cms.doctor.section');
+//Route::get('/cms/doctor-section', [CmsController::class, 'doctorSection'])->name('cms.doctor.section');
 Route::get('/doctor', [DoctorController::class, 'index'])->name('doctor.index');
 Route::post('/doctor-add', [DoctorController::class, 'store'])->name('doctor.store');
 Route::get('/doctor-create', [DoctorController::class, 'create'])->name('doctor.create');
@@ -103,8 +104,10 @@ Route::put('/doctor-update/{id}', [DoctorController::class, 'update'])->name('do
 Route::delete('/doctor-delete/{id}', [DoctorController::class, 'destroy'])->name('doctor.delete');
 
 //deprtment
+Route::get('/department', [DoctorController::class, 'createDepartment'])->name('department.create.form');
 Route::get('/department/show', [DoctorController::class, 'department'])->name('doctors.department');
 Route::post('/department-add', [DoctorController::class, 'departmentStore'])->name('doctor.department.store');
+//Route::delete('/department-delete/{id}', [DoctorController::class, 'DestroyCategory'])->name('doctor.destroy.category');
 //department for show Departmentlist 
 
 Route::get('/department', [DoctorController::class, 'getDeparments'])->name('doctor.department');

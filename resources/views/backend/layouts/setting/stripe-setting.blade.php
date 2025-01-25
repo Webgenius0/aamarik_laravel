@@ -24,30 +24,38 @@
                             </div>
 
                             <!-- Stripe Public Key -->
-                             
-                            <div class="flex flex-col md:flex-row items-center md:space-x-6">
-                                <div class="flex flex-col md:w-1/2">
-                                    <label for="stripe_public_key" class="text-lg font-medium mb-2">STRIPE PUBLIC KEY</label>
-                                    <input type="text" name="stripe_public_key" class="form-input w-full" id="stripe_public_key" value="{{ old('stripe_public_key', env('STRIPE_PUBLIC_KEY')) }}" placeholder="Stripe Public Key">
-                                    @error('stripe_public_key')
-                                    <span class="text-red-500 block mt-1 text-sm">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                          
+                            <div class="flex flex-col md:flex-row md:items-center md:space-x-4">
+                                <label for="stripe_public_key" class="text-lg font-medium mb-2 md:w-1/4">STRIPE PUBLIC KEY</label>
+                                <input class="form-control @error('stripe_public_key') is-invalid @enderror md:w-3/4" type="text" name="stripe_public_key" id="stripe_public_key" value="{{ old('stripe_public_key', env('STRIPE_PUBLIC_KEY')) }}" placeholder="Stripe Public Key">
+                                @error('stripe_public_key')
+                                <span class="text-red-500 block mt-1 text-sm">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
 
-                             <!-- Stripe Secret Key -->
-                            
-                                <div class="flex flex-col md:w-1/2">
-                                    <label for="stripe_secrate_key" class="text-lg font-medium mb-2">STRIPE SECRET KEY</label>
-                                    <input type="password" name="stripe_secrate_key" class="form-input w-full" id="stripe_secrate_key" value="{{ old('stripe_secrate_key', env('STRIPE_SECRATE_KEY')) }}" placeholder="Stripe Secret Key">
-                                    @error('stripe_secrate_key')
-                                    <span class="text-red-500 block mt-1 text-sm">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
+                            <!-- Stripe Secret Key -->
+                            <div class="flex flex-col md:flex-row md:items-center md:space-x-4">
+                                <label for="stripe_secrate_key" class="text-lg font-medium mb-2 md:w-1/4">STRIPE SECRET KEY</label>
+                                <input class="form-control @error('stripe_secrate_key') is-invalid @enderror md:w-3/4" id="STRIPE_WEBHOOK_SECRET"
+                                    name="stripe_secrate_key" placeholder="Enter your Stripe Secret" type="text"
+                                    value="{{ env('stripe_secrate_key') }}">
+                                @error('stripe_secrate_key')
+                                <span class="text-red-500 block mt-1 text-sm">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+
+                            <!-- Stripe Webhook Secret -->
+                            <div class="flex flex-col md:flex-row md:items-center md:space-x-4">
+                                <label for="stripe_webhook_secret" class="text-lg font-medium mb-2 md:w-1/4">STRIPE WEBHOOK SECRET</label>
+                                <input class="form-control @error('stripe_webhook_secret') is-invalid @enderror md:w-3/4" id="STRIPE_WEBHOOK_SECRET"
+                                    name="stripe_webhook_secret" placeholder="Enter your Stripe Secret" type="text"
+                                    value="{{ env('stripe_webhook_secret') }}">
+                                @error('stripe_webhook_secret')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <!-- Submit Button -->
@@ -59,18 +67,21 @@
                         </form>
 
                         <!-- Flash Messages -->
+                        <!-- Flash Messages -->
                         @if (session('success'))
-                        <div class="mt-4 text-green-600 bg-green-100 p-4 rounded">
+                        <div class="fixed top-0 right-0 mt-4 mr-4 text-green-600 bg-green-100 p-4 rounded-lg shadow-lg w-1/3">
                             <strong>{{ session('success') }}</strong>
                         </div>
                         @endif
 
                         @if (session('error'))
-                        <div class="mt-4 text-red-600 bg-red-100 p-4 rounded">
+                        <div class="fixed top-0 right-0 mt-4 mr-4 text-red-600 bg-red-100 p-4 rounded-lg shadow-lg w-1/3">
                             <strong>{{ session('error') }}</strong>
                         </div>
                         @endif
+
                     </div>
+
                 </div>
             </div>
         </div>
@@ -79,6 +90,17 @@
 @endsection
 
 @push('scripts')
+<script>
+    $(document).ready(function() {
+        const flasher = new Flasher({
+            selector: '[data-flasher]',
+            duration: 3000,
+            options: {
+                position: 'top-center',
+            },
+        });
+    });
+</script>
 <!-- Tailwind CSS CDN -->
 <script src="https://unpkg.com/tailwindcss-jit-cdn@2.2.19/dist/tailwind.min.js"></script>
 {{-- Dropify --}}

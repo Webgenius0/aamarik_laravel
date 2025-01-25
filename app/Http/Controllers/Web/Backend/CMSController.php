@@ -23,6 +23,12 @@ class CMSController extends Controller
         return view('backend.layouts.cms.index',compact('cms','personalize'));
     }
     
+    public function showPersonalized()
+    {
+        $personalize = CMS::where('type','personalized')->first();
+        return view('backend.layouts.cms.personalized',compact('personalize3'));
+
+    }
   
     public function update(Request $request)
     {

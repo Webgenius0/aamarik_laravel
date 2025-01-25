@@ -6,7 +6,8 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.tailwind.min.css">
 <!-- Dropify CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropify/0.2.2/css/dropify.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.min.css" />
+
 <style>
     .dataTables_wrapper .dataTables_length select {
         width: 68px;
@@ -90,7 +91,7 @@
             <div class="flex justify-between align-middle">
                 <h3 class="card-title">Doctors</h3>
                 <div>
-                    <a href="{{ route('doctor.create') }}" class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md">
+                    <a href="" class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md">
                         Add Doctor
                     </a>
                 </div>
@@ -180,7 +181,7 @@
     <!-- Avatar -->
     <div class="mb-4">
         <label for="avatar" class="block text-sm font-medium text-gray-700">Avatar</label>
-        <input type="file" id="avatar" name="avatar" class="dropify form-input mt-1 block w-full">
+        <input type="file" id="avatar" name="avatar" class="dropify form-input mt-1 block w-full" class="form-input w-full dropify dropify-wrapper1 .dropify-preview dropify-render img" >
     </div>
 
     <!-- Submit Button -->
@@ -196,11 +197,16 @@
 <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/@flasher/flasher@1.2.4/dist/flasher.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"></script>
 <!-- Dropify JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"></script>
+
 
 
 <script>
+$(document).ready(function() {
+        $('.dropify').dropify();
+    });
+
     $(document).ready(function() {
         const flasher = new Flasher({
             selector: '[data-flasher]',
@@ -272,38 +278,46 @@
         });
     });
 
-    $(document).ready(function() {
-        $('.dropify').dropify();
-    });
+   
     // Edit Doctor Function
     function editDoctor(id) {
-        let url = '{{ route("doctor.edit", ":id") }}';
-        url = url.replace(':id', id);
+    let url = '{{ route("doctor.edit", ":id") }}';
+    url = url.replace(':id', id);
 
-        $.ajax({
-            url: url,
-            method: 'GET',
-            success: function(response) {
-                if (response.success) {
-                    const doctor = response.data;
+    $.ajax({
+        url: url,
+        method: 'GET',
+        success: function(response) {
+            if (response.success) {
+                const doctor = response.data;
 
-                    // Populate the form with fetched data
-                    $('#name').val(doctor.name);
-                    $('#email').val(doctor.email);
-                    $('#department').val(doctor.department);
-                    $('#doctor_id').val(doctor.id);
+                // Populate the form with fetched data
+                $('#name').val(doctor.name);
+                $('#email').val(doctor.email);
+                $('#department').val(doctor.department);
+                $('#doctor_id').val(doctor.id);
 
-                    // Show the modal
-                    $('#modalOverlay').show().addClass('modal-open');
-                } else {
-                    alert(response.message);
+                
+                const avatarPath = response.avatar_url ? response.avatar_url : '';  
+                if (avatarPath) {
+                    
+                    const avatarUrl =  avatarPath;                   
+                    $('#avatar').attr('data-default-file', avatarUrl);                 
+                    $('#avatar').dropify('destroy').dropify();  
                 }
-            },
-            error: function(xhr, status, error) {
-                alert('An error occurred. Please try again later.');
+
+                // Show the modal
+                $('#modalOverlay').show().addClass('modal-open');
+            } else {
+                alert(response.message);
             }
-        });
-    }
+        },
+        error: function(xhr, status, error) {
+            alert('An error occurred. Please try again later.');
+        }
+    });
+}
+
 
     
     $('#close').click(function() {
@@ -378,6 +392,56 @@
     });
 });
 
+
+
+ // delete Confirm
+ function showDeleteConfirm(id) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Are you sure you want to delete this record?',
+                text: 'If you delete this, it will be gone forever.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deleteItem(id);
+                }
+            });
+        };
+
+
+        // Delete Button
+        function deleteItem(id) {
+            var url = '{{ route('doctor.delete', ':id') }}';
+            $.ajax({
+                type: "DELETE",
+                url: url.replace(':id', id),
+                headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+
+                success: function(resp) {
+                    console.log(resp);
+                    // Reloade DataTable
+                    $('#data-table').DataTable().ajax.reload();
+                    if (resp.success === true) {
+                        // show toast message
+                        flasher.success(resp.message);
+
+                    } else if (resp.errors) {
+                        flasher.error(resp.errors[0]);
+                    } else {
+                        flasher.error(resp.message);
+                    }
+                }, // success end
+                error: function(error) {
+                    // location.reload();
+                } // Error
+            })
+        }
  
 </script>
 @endpush

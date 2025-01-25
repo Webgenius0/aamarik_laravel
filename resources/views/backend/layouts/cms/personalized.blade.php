@@ -18,26 +18,28 @@
 //$personalize = App\Models\Cms::where('type','personalized')->first();
 @endphp
 <div class="content-wrapper">
-    <div class="main-content">
-        <div class="body-content">
+  
+    <!-- personalized Helth care -->
+    <div class="overlay mt-5">
+         <div class="body-content">
             <div class="decoration blur-2"></div>
             <div class="decoration blur-3"></div>
             <div class="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
                 <div class="p-4 bg-white rounded-lg shadow-md mt-2">
                     <div class="space-y-4">
-                        <form action="{{ route('cms.update') }}" class="max-w-6xl w-full mx-auto space-y-4"
+                        <form action="{{ route('cms.personalized') }}" class="max-w-6xl w-full mx-auto space-y-4"
                             method="POST" enctype="multipart/form-data">
                             @csrf
                             @method("PUT")
                             <div class="flex-col md:flex-row">
-                                <h1 class="text-center text-lg ">Home Banner</h1>
+                                <h1 class="text-center text-lg ">Personalized HelthCare</h1>
 
                                 <label for="applicationTitle"
                                     class=" text-lg font-medium mb-2 md:mb-0 md:w-1/3">Title
                                 </label>
                                 <div class="w-full">
                                     <input type="text" name="title" class="form-input w-full" id="applicationTitle"
-                                        value="{{ $cms ? $cms->title : 'N/A' }}">
+                                        value="{{ $personalize ? $personalize->title : 'N/A' }}">
                                     @error('title')
                                     <span class="text-red-500 block mt-1 text-sm">
                                         <strong>{{ $message }}</strong>
@@ -47,9 +49,9 @@
                             </div>
 
                             <div class="flex-col md:flex-row">
-                                <label for="address" class="text-lg font-medium mb-2 md:mb-0 md:w-1/3">sub Title</label>
+                                <label for="address" class="text-lg font-medium mb-2 md:mb-0 md:w-1/3">Description</label>
                                 <div class="w-full">
-                                    <textarea name="sub_title" class="form-textarea w-full" id="sub_title" rows="3">{{ $cms ? $cms->sub_title : 'Example 10 Street' }}</textarea>
+                                    <textarea name="description" class="form-textarea w-full" id="desctiption" rows="3">{{ $personalize ? $personalize->description : 'Example 10 Street' }}</textarea>
                                     @error('sub_title')
                                     <span class="text-red-500 block mt-1 text-sm">
                                         <strong>{{ $message }}</strong>
@@ -58,35 +60,7 @@
                                 </div>
                             </div>
 
-
-
-
-                            <div class="flex-col md:flex-row">
-                                <label for="email" class="text-lg font-medium mb-2 md:mb-0 md:w-1/3">Button</label>
-                                <div class="w-full">
-                                    <input name="button_name" type="text" class="form-input w-full" id="button_name"
-                                        value="{{ $cms ? $cms->button_name : 'example@aminn.com' }}">
-                                    @error('button_name')
-                                    <span class="text-red-500 block mt-1 text-sm">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="flex-col md:flex-row">
-                                <label for="email" class="text-lg font-medium mb-2 md:mb-0 md:w-1/3">Button Url</label>
-                                <div class="w-full">
-                                    <input name="button_url" type="button_url" class="form-input w-full" id="email"
-                                        value="{{ $cms ? $cms->button_url : 'example@aminn.com' }}">
-                                    @error('email')
-                                    <span class="text-red-500 block mt-1 text-sm">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-                            {{-- favicon --}}
+                            {{-- avatar --}}
                             <div class="flex flex-row space-x-8">
                                 <div class="w-full">
                                     <div class="flex-col md:flex-row">
@@ -97,13 +71,14 @@
                                                 data-height="300" type="file"
                                                 {{-- accept=".jpg, .png, image/jpeg, image/png" --}}
                                                 accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg"
-                                                data-default-file="{{ asset($cms->avatar) }}">
+                                                data-default-file="{{ asset($personalize->avatar) }}">
                                             @error('avatar')
                                             <span class="text-red-500 block mt-1 text-sm">
                                                 <strong>{{ $message }}</strong>
                                             </span>
                                             @enderror
-                                           
+                                            
+                                            
                                             <div class="text-blue-500 text-sm mt-1">
                                                 Recommended to 32x32 px(jpeg,png,jpg,gif,ico,webp,bmp,svg).
                                             </div>
@@ -124,11 +99,7 @@
                 </div>
             </div>
         </div>
-        <!--/.body content-->
     </div>
-
-
-   
 </div>
 @endsection
 

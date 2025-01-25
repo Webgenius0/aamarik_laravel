@@ -250,11 +250,13 @@ class SettingController extends Controller
             'stripe_public_key.string' => 'The mailer must be a string.',
             'stripe_secrate_key.required' => 'The mail host is required.',
             'stripe_secrate_key.string' => 'The mail host must be a string.',
+            'stripe_webhook_secret.string' => 'The mail encryption must be a string.',
         ];
 
         $request->validate([
             'stripe_public_key' => 'required|string',
             'stripe_secrate_key' => 'required|string',
+            'stripe_webhook_secret' => 'required|string',
         ], $messages);
 
         try {
@@ -263,15 +265,19 @@ class SettingController extends Controller
             $envContent = preg_replace([
                 '/STRIPE_PUBLIC_KEY=(.*)\s/',
                 '/STRIPE_SECRATE_KEY=(.*)\s/',
+                '/STRIPE_WEBHOOK_SECRET=(.*)\s/',
             ], [
                 'STRIPE_PUBLIC_KEY=' . $request->stripe_public_key . $lineBreak,
                 'STRIPE_SECRATE_KEY=' . $request->stripe_secrate_key . $lineBreak,
+                'STRIPE_WEBHOOK_SECRET=' . $request->stripe_webhook_secret . $lineBreak,
             ], $envContent);
 
             if ($envContent !== null) {
                 File::put(base_path('.env'), $envContent);
             }
-            return redirect()->back()->with('t-success', 'Stripe Setting Update successfully.');
+            session()->flash('success', 'Stripe settings updated successfully.');
+            return redirect()->back();
+           // return redirect()->back()->with('t-success', 'Stripe Setting Update successfully.');
         } catch (\Throwable $th) {
             return redirect(route('dashboard'))->with('t-error', 'Stripe Setting Update Failed');
         }
