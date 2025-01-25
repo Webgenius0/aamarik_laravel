@@ -134,7 +134,7 @@ class StripePaymentMethodController extends Controller
             }
 
             // Get the first payment method
-            $paymentMethod = $paymentMethods->data[0];
+            $paymentMethod = $paymentMethods;
             // Return the first payment method
             return $this->sendResponse( StripeCardResource::collection($paymentMethod), 'Payment methods retrieved successfully.');
         } catch (\Stripe\Exception\ApiErrorException $e) {
