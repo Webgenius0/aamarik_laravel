@@ -21,6 +21,7 @@ use Illuminate\Support\Str;
 use Stripe\Customer;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
+use Stripe\Subscription;
 use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 class OrderManagement extends Controller
@@ -95,6 +96,8 @@ class OrderManagement extends Controller
             if (empty($customer)) {
                 return  $this->sendError('No payment method found .Please add a payment method', [],404);
             }
+
+
 
             //find coupon and check is invalid or expire
             $coupon = Coupon::where('code', $validatedData['coupon_code'])->first();
@@ -299,7 +302,97 @@ class OrderManagement extends Controller
      */
     private function createSubscription($validatedData,$order,$paymentIntent)
     {
+        //get current user
+        $user = auth()->user();
+        // Check if Stripe customer exists in the database
+        // Retrieve the existing customer on Stripe
+        $customer = Customer::retrieve($user->stripe_customer_id);
+        if (empty($customer)) {
+            return $this->sendError('Please add a payment method',[]);
+        }
 
+        $decodedResponse = json_decode($this->checkCustomerHasPaymentMethod()->getContent(), true);
+        // dd($decodedResponse);
+
+        if (!$decodedResponse['status']) {
+            return $decodedResponse;
+        }
+
+
+
+        // Retrieve all active products
+        $productRetrive = \Stripe\Product::all([
+            'active' => true, // Filter active products
+        ]);
+
+
+        // Filter products based on metadata
+        $filteredProducts = array_filter($productRetrive->data, function ($product) {
+            return isset($product->metadata['name']) && $product->metadata['shop_id'] == 1;
+        });
+
+
+        // Now check if there are any filtered products
+        if (!empty($filteredProducts)) {
+            // Access the first filtered product (if any)
+            $product = array_values($filteredProducts)[0]; // This will get the first element
+        } else {
+            // Create a new product if no matching product is found
+            $product = \Stripe\Product::create([
+                'name' => "pharmacy id 1",
+                'metadata' => [
+                    'shop_id' => 1, // show id
+                ],
+            ]);
+        }
+
+        // Create Subscription
+        $subscription = Subscription::create([
+            'customer' => $user->stripe_customer_id,
+            'items' => [[
+                'price_data' => [
+                    'currency' => 'usd',
+                    'product' => $product->id,
+                    'order_id' => $order->uuid,
+                    'unit_amount' =>  $order->sub_total,
+                    'recurring' => ['interval' => 'month'],
+                ],
+            ]],
+            'expand' => ['latest_invoice.payment_intent'],
+        ]);
+
+
+        return $this->sendResponse([], 'Donation created successfully');
+    }
+
+
+    /**
+     * Check customers has payment method
+     */
+    private function checkCustomerHasPaymentMethod()
+    {
+        $user = auth()->user();
+        if (!$user?->stripe_customer_id) {
+            return  $this->sendError('Please add your cart.');
+        }
+
+        $customer = Customer::retrieve($user->stripe_customer_id);
+        if (empty($customer)) {
+            return  $this->sendError('Please add your cart.',[]);
+        }
+
+        if (!empty($customer->invoice_settings?->default_payment_method)) {
+            $stripe = new \Stripe\StripeClient(config('services.stripe.secret'));
+            $paymentMethod = $stripe->customers->retrievePaymentMethod($customer->id, $customer->invoice_settings?->default_payment_method, []);
+            if (!$paymentMethod) {
+                return  $this->sendError('Please add your cart.',[]);
+            } else {
+                return $this->sendResponse($paymentMethod, 'Customer has payment method');
+
+            }
+        }
+
+        return  $this->sendError('Please add your cart.',[]);
     }
 
 }
