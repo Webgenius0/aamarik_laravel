@@ -133,9 +133,11 @@ class StripePaymentMethodController extends Controller
                 return $this->sendError('No payment methods found.',(object)[],404);
             }
 
+            // Convert Stripe\Collection data into a Laravel Collection
+            $paymentMethodsCollection = collect($paymentMethods->data);
 
             // Return the first payment method
-            return $this->sendResponse(StripeCardResource::collection($paymentMethods), 'Payment methods retrieved successfully.');
+            return $this->sendResponse(StripeCardResource::collection($paymentMethodsCollection), 'Payment methods retrieved successfully.');
         } catch (\Stripe\Exception\ApiErrorException $e) {
             // Handle specific Stripe API errors
             return $this->sendError('Stripe API error: ' . $e->getMessage(), [], 500);
