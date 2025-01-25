@@ -133,10 +133,9 @@ class StripePaymentMethodController extends Controller
                 return $this->sendError('No payment methods found.',(object)[],404);
             }
 
-            // Get the first payment method
-            $paymentMethod = $paymentMethods;
+
             // Return the first payment method
-            return $this->sendResponse( StripeCardResource::collection($paymentMethod), 'Payment methods retrieved successfully.');
+            return $this->sendResponse(StripeCardResource::collection($paymentMethods), 'Payment methods retrieved successfully.');
         } catch (\Stripe\Exception\ApiErrorException $e) {
             // Handle specific Stripe API errors
             return $this->sendError('Stripe API error: ' . $e->getMessage(), [], 500);
