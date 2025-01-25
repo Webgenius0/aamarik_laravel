@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Validator;
 
 class SettingController extends Controller
 {
-    
+
     public function index()
     {
         return view('backend.layouts.setting.setting');
@@ -27,9 +27,9 @@ class SettingController extends Controller
         return view('backend.layouts.setting.dynamic-page');
     }
 
-    
 
-   
+
+
     public function update(Request $request)
     {
         $request->validate([
@@ -43,10 +43,10 @@ class SettingController extends Controller
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:5120',
             'favicon' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:5120',
         ]);
-    
+
         try {
             $setting = Setting::latest('id')->first() ?: new Setting();
-    
+
             $setting->title = $request->title;
             $setting->address = $request->address;
             $setting->description = $request->description;
@@ -54,7 +54,7 @@ class SettingController extends Controller
             $setting->phone = $request->phone;
             $setting->office_time = $request->office_time;
             $setting->footer_text = $request->footer_text;
-    
+
             // Upload Logo
             if ($request->hasFile('logo')) {
                 if ($setting->logo) {
@@ -62,7 +62,7 @@ class SettingController extends Controller
                 }
                 $setting->logo = Helper::fileUpload($request->file('logo'), 'setting', 'logo');
             }
-    
+
             // Upload Favicon
             if ($request->hasFile('favicon')) {
                 if ($setting->favicon) {
@@ -70,17 +70,17 @@ class SettingController extends Controller
                 }
                 $setting->favicon = Helper::fileUpload($request->file('favicon'), 'setting', 'favicon');
             }
-    
+
             $setting->save();
-    
+
             return redirect()->route('admin.setting')->with('t-success', 'Update successfully.');
         } catch (\Exception $e) {
             // \Log::error('Settings update failed: '.$e->getMessage());
             return redirect()->route('admin.setting')->with('t-error', 'Something went wrong. Please try again.');
         }
-        
+
     }
-    
+
 
     /**
      *
@@ -244,32 +244,23 @@ class SettingController extends Controller
      */
     public function stripeSettingUpdate(Request $request)
     {
-        //dd($request);
-        $messages = [
-            'stripe_public_key.required' => 'The mailer is required.',
-            'stripe_public_key.string' => 'The mailer must be a string.',
-            'stripe_secrate_key.required' => 'The mail host is required.',
-            'stripe_secrate_key.string' => 'The mail host must be a string.',
-            'stripe_webhook_secret.string' => 'The mail encryption must be a string.',
-        ];
-
         $request->validate([
-            'stripe_public_key' => 'required|string',
-            'stripe_secrate_key' => 'required|string',
-            'stripe_webhook_secret' => 'required|string',
-        ], $messages);
+            'STRIPE_KEY' => 'nullable|string',
+            'STRIPE_SECRET' => 'nullable|string',
+            'STRIPE_WEBHOOK_SECRET' => 'nullable|string',
+        ]);
 
         try {
             $envContent = File::get(base_path('.env'));
             $lineBreak = "\n";
             $envContent = preg_replace([
-                '/STRIPE_PUBLIC_KEY=(.*)\s/',
-                '/STRIPE_SECRATE_KEY=(.*)\s/',
+                '/STRIPE_KEY=(.*)\s/',
+                '/STRIPE_SECRET=(.*)\s/',
                 '/STRIPE_WEBHOOK_SECRET=(.*)\s/',
             ], [
-                'STRIPE_PUBLIC_KEY=' . $request->stripe_public_key . $lineBreak,
-                'STRIPE_SECRATE_KEY=' . $request->stripe_secrate_key . $lineBreak,
-                'STRIPE_WEBHOOK_SECRET=' . $request->stripe_webhook_secret . $lineBreak,
+                'STRIPE_KEY=' . $request->STRIPE_KEY . $lineBreak,
+                'STRIPE_SECRET=' . $request->STRIPE_SECRET . $lineBreak,
+                'STRIPE_WEBHOOK_SECRET=' . $request->STRIPE_WEBHOOK_SECRET . $lineBreak,
             ], $envContent);
 
             if ($envContent !== null) {

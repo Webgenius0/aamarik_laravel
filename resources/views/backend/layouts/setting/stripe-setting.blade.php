@@ -25,9 +25,9 @@
 
                             <!-- Stripe Public Key -->
                             <div class="flex flex-col md:flex-row md:items-center md:space-x-4">
-                                <label for="stripe_public_key" class="text-lg font-medium mb-2 md:w-1/4">STRIPE PUBLIC KEY</label>
-                                <input class="form-control @error('stripe_public_key') is-invalid @enderror md:w-3/4" type="text" name="stripe_public_key" id="stripe_public_key" value="{{ old('stripe_public_key', env('STRIPE_PUBLIC_KEY')) }}" placeholder="Stripe Public Key">
-                                @error('stripe_public_key')
+                                <label for="STRIPE_KEY" class="text-lg font-medium mb-2 md:w-1/4">STRIPE PUBLIC KEY</label>
+                                <input class="form-control @error('STRIPE_KEY') is-invalid @enderror md:w-3/4" type="text" name="STRIPE_KEY" id="STRIPE_KEY" value="{{ old('STRIPE_KEY', env('STRIPE_KEY')) }}" placeholder="Stripe Public Key">
+                                @error('STRIPE_KEY')
                                 <span class="text-red-500 block mt-1 text-sm">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -36,11 +36,11 @@
 
                             <!-- Stripe Secret Key -->
                             <div class="flex flex-col md:flex-row md:items-center md:space-x-4">
-                                <label for="stripe_secrate_key" class="text-lg font-medium mb-2 md:w-1/4">STRIPE SECRET KEY</label>
-                                <input class="form-control @error('stripe_secrate_key') is-invalid @enderror md:w-3/4" id="STRIPE_WEBHOOK_SECRET"
-                                    name="stripe_secrate_key" placeholder="Enter your Stripe Secret" type="text"
-                                    value="{{ env('stripe_secrate_key') }}">
-                                @error('stripe_secrate_key')
+                                <label for="STRIPE_SECRET" class="text-lg font-medium mb-2 md:w-1/4">STRIPE SECRET KEY</label>
+                                <input class="form-control @error('STRIPE_SECRET') is-invalid @enderror md:w-3/4" id="STRIPE_SECRET"
+                                    name="STRIPE_SECRET" placeholder="Enter your Stripe Secret" type="text"
+                                    value="{{ env('STRIPE_SECRET') }}">
+                                @error('STRIPE_SECRET')
                                 <span class="text-red-500 block mt-1 text-sm">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -49,11 +49,11 @@
 
                             <!-- Stripe Webhook Secret -->
                             <div class="flex flex-col md:flex-row md:items-center md:space-x-4">
-                                <label for="stripe_webhook_secret" class="text-lg font-medium mb-2 md:w-1/4">STRIPE WEBHOOK SECRET</label>
-                                <input class="form-control @error('stripe_webhook_secret') is-invalid @enderror md:w-3/4" id="STRIPE_WEBHOOK_SECRET"
-                                    name="stripe_webhook_secret" placeholder="Enter your Stripe Secret" type="text"
-                                    value="{{ env('stripe_webhook_secret') }}">
-                                @error('stripe_webhook_secret')
+                                <label for="STRIPE_WEBHOOK_SECRET" class="text-lg font-medium mb-2 md:w-1/4">STRIPE WEBHOOK SECRET</label>
+                                <input class="form-control @error('STRIPE_WEBHOOK_SECRET') is-invalid @enderror md:w-3/4" id="STRIPE_WEBHOOK_SECRET"
+                                    name="STRIPE_WEBHOOK_SECRET" placeholder="Enter your Stripe Secret" type="text"
+                                    value="{{ env('STRIPE_WEBHOOK_SECRET') }}">
+                                @error('STRIPE_WEBHOOK_SECRET')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
