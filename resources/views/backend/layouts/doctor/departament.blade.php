@@ -91,7 +91,7 @@
             <div class="flex justify-between align-middle">
                 <h3 class="card-title">Doctors</h3>
                 <div>
-                    <a href="" class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md">
+                    <a href="{{route('department.create.form')}}" class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md">
                         Add Department
                     </a>
                 </div>

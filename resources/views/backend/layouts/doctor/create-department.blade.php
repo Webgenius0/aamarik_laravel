@@ -28,7 +28,11 @@
                         <form  class="max-w-6xl w-full mx-auto space-y-4"
                              enctype="multipart/form-data" id="departmentForm">
                             @csrf
-
+                            <div class="flex justify-end">
+                                <a href="{{ route('doctors.department') }}" class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md align-right">
+                                    Back
+                                </a>
+                            </div>
                             <div class="flex-col md:flex-row">
                                 <h1 class="text-center text-lg ">Create Doctor Department</h1>
 
@@ -116,6 +120,10 @@
                 if (response.success) {
                     $('#department_name').val('');
                     flasher.success('Department Added Successfully.');
+                    setTimeout(function() {
+                       
+                        window.location.href = "{{ route('doctors.department') }}";
+                    }, 2000); 
                 } else {
                     flasher.error(response.message || 'Something went wrong.');
                 }
