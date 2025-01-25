@@ -65,7 +65,7 @@ class DoctorController extends Controller
         return view('backend.layouts.doctor.create-doctor');
     }
     //create department
-    public function createDepartment()
+    public function departmentCreateForm()
     {
         return view('backend.layouts.doctor.create-department');
     }
@@ -74,8 +74,8 @@ class DoctorController extends Controller
     public function department(Request $request)
     {
         if ($request->ajax()) {
-            // Retrieve doctor records
-            $data = Department::all(); // Fixed with parentheses
+            
+            $data = Department::all(); 
 
             return DataTables::of($data)
                 ->addIndexColumn()
@@ -99,12 +99,36 @@ class DoctorController extends Controller
                         </div>';
                 })
                 ->rawColumns(['name', 'avatar', 'status', 'action'])
-                ->make(true); // Ensures the proper JSON response format
+                ->make(true); 
         }
 
         return view('backend.layouts.doctor.departament');
     }
-    //Edit Department
+    //department status update
+
+    public function updateDepartmentStatus($id)
+    {
+        $dept = Department::find($id);
+        if (!$dept) {
+            return response()->json(['success' => false, 'message' => 'Not found']);
+        }
+        $dept->status = $dept->status == 'active' ? 'inactive' : 'active';
+        $dept->save();
+        return response()->json(['success' => true, 'message' => 'FAQ Status update successfully']);
+    }
+
+
+    //delete -departments
+    public function DestroyCategory($id)
+    {
+        $doctor = Department::find($id);
+        if (!$doctor) {
+            return response()->json(['success' => false, 'message' => 'Department Not found']);
+        }
+        $doctor->delete();
+
+        return response()->json(['success' => true, 'message' => 'Department deleted successfully']);
+    }
 
 
     //retribe department-for doctor updateAnd create
@@ -219,38 +243,32 @@ class DoctorController extends Controller
         $doctor->name = $request->name;
         $doctor->email = $request->email;
 
-        // Find the department by its name (since we're using department_name instead of department_id)
         $department = Department::where('department_name', $request->department)->first();
 
         if ($department) {
             $doctor->department = $department->department_name;
         }
 
-        // If the request has a new avatar
+       
         if ($request->hasFile('avatar')) {
-            // First, unlink the old avatar file if it exists
+            
             if ($doctor->avatar && file_exists(public_path($doctor->avatar))) {
                 unlink(public_path($doctor->avatar));
             }
-
-            // Handle the new avatar upload with a unique name
+          
             $avatar = $request->file('avatar');
-
-            // Generate a unique name for the avatar
+          
             $uniqueName = time() . '_' . uniqid() . '.' . $avatar->getClientOriginalExtension();
-
-            // Define the path where the avatar will be stored
+         
             $path = public_path('uploads/users/avatar');
-
-            // Make sure the directory exists
+        
             if (!file_exists($path)) {
-                mkdir($path, 0777, true); // Create the directory if it doesn't exist
+                mkdir($path, 0777, true); 
             }
-
-            // Move the uploaded file to the storage path with the unique name
+            
             $avatar->move($path, $uniqueName);
 
-            // Save the path to the database (relative path)
+            
             $doctor->avatar = 'uploads/users/avatar/' . $uniqueName;
         }
 

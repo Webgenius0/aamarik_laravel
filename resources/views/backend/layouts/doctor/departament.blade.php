@@ -118,10 +118,7 @@
                                         Status
                                     </th>
                                     
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Avatar
-                                    </th>
+                                    
                                     <th scope="col"
                                         class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Action
@@ -248,10 +245,7 @@ $(document).ready(function() {
                     name: 'status'
                 },
                
-                {
-                    data: 'avatar',
-                    name: 'avatar'
-                },
+                
                 {
                     data: 'action',
                     name: 'action',
@@ -325,7 +319,7 @@ $(document).ready(function() {
     $(document).ready(function() {
     
     $.ajax({
-        url: "{{ route('doctor.department') }}",  // Update this route to your actual API route
+        url: "{{ route('doctor.department') }}",  
         method: 'GET',
         success: function(response) {
         if (response && response.length > 0) {
@@ -334,17 +328,13 @@ $(document).ready(function() {
                        
             departmentSelect.append(new Option('Select Department', '', false, false));
 
-            // Populate department dropdown with department names
+           
             response.forEach(function(department) {
                 const option = new Option(department.department_name, department.department_name);
                 departmentSelect.append(option);
-            });
-
-            // If editing a doctor, pre-select the department based on department_name
-            const doctorDepartmentName = $('#doctor_department_name').val();  // Assuming doctor_department_name is passed in the form
-
-            if (doctorDepartmentName) {
-                // Select the department by department_name
+            });        
+            const doctorDepartmentName = $('#doctor_department_name').val();  
+            if (doctorDepartmentName) {              
                 departmentSelect.val(doctorDepartmentName).trigger('change');
             }
         }
@@ -358,10 +348,10 @@ $(document).ready(function() {
 
     // Form Submission
     $('#update-doctor-form').submit(function(event) {
-        event.preventDefault();  // Prevent default form submission
+        event.preventDefault();  
 
         var formData = new FormData(this);
-        var url = '{{ route("doctor.update", ":id") }}'.replace(':id', $('#doctor_id').val());  // Set the URL with doctor ID
+        var url = '{{ route("doctor.update", ":id") }}'.replace(':id', $('#doctor_id').val()); 
 
         $.ajax({
             url: url,
@@ -409,20 +399,20 @@ $(document).ready(function() {
 
         // Delete Button
         function deleteItem(id) {
-            var url = '{{ route('doctor.delete', ':id') }}';
+            var url = "{{ route('doctor.destroy.category', ':id') }}";
             $.ajax({
                 type: "DELETE",
                 url: url.replace(':id', id),
                 headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    },
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                         },
 
                 success: function(resp) {
                     console.log(resp);
-                    // Reloade DataTable
+                    
                     $('#data-table').DataTable().ajax.reload();
                     if (resp.success === true) {
-                        // show toast message
+                        
                         flasher.success(resp.message);
 
                     } else if (resp.errors) {
@@ -430,10 +420,56 @@ $(document).ready(function() {
                     } else {
                         flasher.error(resp.message);
                     }
+                }, 
+                error: function(error) {
+                   
+                } 
+            })
+        }
+
+
+
+         // Status Change Confirm Alert
+         function ShowStatusChangeAlert(id) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You want to update the status?',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    statusChange(id);
+                }
+            });
+        }
+
+        // Status Change
+        function statusChange(id) {
+            var url = '{{ route('doctor.status.update', ':id') }}';
+            $.ajax({
+                type: "GET",
+                url: url.replace(':id', id),
+                success: function(resp) {
+
+                    console.log(resp);
+                    // Reloade DataTable
+                    $('#data-table').DataTable().ajax.reload();
+                    if (resp.success === true) {
+                        // show toast message
+                        flasher.success(resp.message);
+                    } else if (resp.errors) {
+                        flasher.error(resp.errors[0]);
+                    } else {
+                        flasher.warning(resp.message);
+                    }
                 }, // success end
                 error: function(error) {
-                    // location.reload();
-                } // Error
+                    flasher.error(error);
+                }
             })
         }
  

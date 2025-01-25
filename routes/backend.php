@@ -104,10 +104,11 @@ Route::put('/doctor-update/{id}', [DoctorController::class, 'update'])->name('do
 Route::delete('/doctor-delete/{id}', [DoctorController::class, 'destroy'])->name('doctor.delete');
 
 //deprtment
-Route::get('/department', [DoctorController::class, 'createDepartment'])->name('department.create.form');
+Route::get('/department', [DoctorController::class, 'departmentCreateForm'])->name('department.create.form');
+Route::put('/status-update/{id}', [DoctorController::class, 'updateDepartmentStatus'])->name('doctor.status.update');
 Route::get('/department/show', [DoctorController::class, 'department'])->name('doctors.department');
 Route::post('/department-add', [DoctorController::class, 'departmentStore'])->name('doctor.department.store');
-//Route::delete('/department-delete/{id}', [DoctorController::class, 'DestroyCategory'])->name('doctor.destroy.category');
+Route::delete('/department-delete/{id}', [DoctorController::class, 'DestroyCategory'])->name('doctor.destroy.category');
 //department for show Departmentlist 
 
 Route::get('/department', [DoctorController::class, 'getDeparments'])->name('doctor.department');
