@@ -45,6 +45,7 @@ class OrderManagement extends Controller
             'code' => 'nullable|string|exists:coupons,code', // coupons code
             'subscription' => 'required|boolean',
             'prescription' => 'nullable|nullable|file|mimes:jpg,jpeg,png,pdf|max:10240',
+            'payment_method_id' => 'required|string',
 
             //amount
             'sub_total' => 'nullable|numeric',
@@ -104,11 +105,14 @@ class OrderManagement extends Controller
 
 
 
-            //find coupon and check is invalid or expire
-            $coupon = Coupon::where('code', $validatedData['coupon_code'])->first();
-            // Check if the coupon is valid
-            if ($coupon && !$coupon->isValid()) {
-                return $this->sendError('The coupon is invalid or expired.', [],410);
+            // Handle coupon validation
+            if (isset($validatedData['code'])) {
+                $coupon = Coupon::where('code', $validatedData['code'])->first();
+
+                // Check if the coupon is valid
+                if ($coupon && !$coupon->isValid()) {
+                    return $this->sendError('The coupon is invalid or expired.', [], 410);
+                }
             }
 
 
@@ -117,15 +121,20 @@ class OrderManagement extends Controller
             $totalPrice = 0;
             foreach ( $validatedData['medicines'] as $medicine) {
                 // Decrement medicine stock_quantity
-                $medicineRecord = Medicine::find($medicine['medicine_id']);
+                $medicineRecord = Medicine::with('details')->find($medicine['medicine_id']);
+                // Check if the medicine exists
+
+                // Access the related details model
+                $details = $medicineRecord->details;
+
                 if ($medicineRecord) {
                     // Ensure stock is sufficient before decrementing
-                    if ($medicineRecord->stock_quantity < $medicine['quantity']) {
-                        throw new \Exception("Insufficient stock for medicine ID: " . $medicine['medicine_id']);
+                    if ($details->stock_quantity < $medicine['quantity']) {
+                        throw new \Exception("Low stock for medicine");
                     }
 
                     // Update stock quantity
-                    $medicineRecord->decrement('stock_quantity', $medicine['quantity']);
+                    $details->decrement('stock_quantity', $medicine['quantity']);
                 } else {
                     throw new \Exception("Medicine " . $medicineRecord->title . " not found.");
                 }
@@ -141,7 +150,7 @@ class OrderManagement extends Controller
             $discountedAmount = $coupon->applyDiscount($sub_total);
 
             // Create the order
-            $order = $this->storeOrderData($validatedData,$sub_total,$discountedAmount );
+            $order = $this->storeOrderData($validatedData,$sub_total,$discountedAmount,$request);
 
             // Save billing address
             $this->storeBillingInfo($validatedData,$order);
@@ -171,7 +180,7 @@ class OrderManagement extends Controller
     /**
      *  Prescription file upload
      */
-    private function uploadPrescription($request)
+    private function uploadPrescription(Request $request)
     {
         if ($request->hasFile('prescription')) {
             $file = $request->file('prescription');
@@ -187,7 +196,7 @@ class OrderManagement extends Controller
     /**
      * Calculate total amount
      */
-    private function storeOrderData($validatedData,$sub_total,$discountedAmount)
+    private function storeOrderData($validatedData,$sub_total,$discountedAmount,$request)
     {
 
        return Order::create([
@@ -201,7 +210,7 @@ class OrderManagement extends Controller
             'discount'     => $discountedAmount ?? null,
             'total_price'  => $sub_total - $discountedAmount,
             'subscription' => $validatedData['subscription'],
-            'prescription' => $this->uploadPrescription($validatedData),
+            'prescription' => $this->uploadPrescription($request),
             'status'       => 'failed',
         ]);
     }
