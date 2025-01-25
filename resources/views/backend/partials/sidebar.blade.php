@@ -27,7 +27,12 @@
                     <span class="badge bg-primary rounded ms-auto">01</span>
                 </a>
             </li>
-
+            <li class="menu-item">
+                <a class="menu-link {{Request::RouteIs('') ? 'bg-blue-500 text-white' : '' }}" href="{{route('coupon.index')}}">
+                    <span class="menu-icon"><i class="uil uil-compass"></i></span>
+                    <span class="menu-text"> Create Coupon </span>
+                </a>
+            </li>
             <li class="menu-title">Frontend</li>
 
             <li class="menu-item">

@@ -17,6 +17,7 @@ use App\Http\Controllers\Web\Backend\CMSController;
 use App\Http\Controllers\Web\Backend\DoctorController;
 use App\Http\Controllers\Web\Backend\MedicineController;
 use App\Http\Controllers\Web\Backend\TreatMentController;
+use App\Http\Controllers\Web\Backend\coupon\CouponController;
 use Illuminate\Support\Facades\Mail;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -98,14 +99,14 @@ Route::put('/cms/working-process', [CmsController::class, 'updateWorkingProcess'
 //Route::get('/cms/doctor-section', [CmsController::class, 'doctorSection'])->name('cms.doctor.section');
 Route::get('/doctor', [DoctorController::class, 'index'])->name('doctor.index');
 Route::post('/doctor-add', [DoctorController::class, 'store'])->name('doctor.store');
-Route::get('/doctor-create', [DoctorController::class, 'create'])->name('doctor.create');
+Route::get('/doctor-create', [DoctorController::class, 'create'])->name('doctor.create-form');
 Route::get('/doctor-edit/{id}', [DoctorController::class, 'edit'])->name('doctor.edit');
 Route::put('/doctor-update/{id}', [DoctorController::class, 'update'])->name('doctor.update');
 Route::delete('/doctor-delete/{id}', [DoctorController::class, 'destroy'])->name('doctor.delete');
 
 //deprtment
-Route::get('/department', [DoctorController::class, 'departmentCreateForm'])->name('department.create.form');
-Route::put('/status-update/{id}', [DoctorController::class, 'updateDepartmentStatus'])->name('doctor.status.update');
+Route::get('/department-form', [DoctorController::class, 'departmentCreateForm'])->name('department.create.form');
+Route::get('/status-update/{id}', [DoctorController::class, 'updateDepartmentStatus'])->name('doctor.status.update');
 Route::get('/department/show', [DoctorController::class, 'department'])->name('doctors.department');
 Route::post('/department-add', [DoctorController::class, 'departmentStore'])->name('doctor.department.store');
 Route::delete('/department-delete/{id}', [DoctorController::class, 'DestroyCategory'])->name('doctor.destroy.category');
@@ -130,5 +131,15 @@ Route::controller(TreatMentController::class)->group(function () {
     Route::put('/treatment/update/{id}', 'update')->name('treatment.update');
     Route::delete('/treatment/delete/{id}', 'destroy')->name('treatment.destroy');
     Route::get('/treatment/status/update/{id}', 'updateStatus')->name('treatment.status.update');
+});
+
+//coupons
+Route::controller(CouponController::class)->group(function () {
+    Route::get('/coupon', 'index')->name('coupon.index');
+    Route::post('/coupon', 'store')->name('coupon.store');
+    Route::get('/coupon/edit/{id}', 'edit')->name('coupon.edit');
+    Route::put('/coupon/update/{id}', 'update')->name('coupon.update');
+    Route::delete('/coupon/delete/{id}', 'destroy')->name('coupon.destroy');
+    Route::get('/coupon/status/update/{id}', 'updateStatus')->name('coupon.status.update');
 });
 
