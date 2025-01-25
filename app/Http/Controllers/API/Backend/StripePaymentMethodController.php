@@ -9,11 +9,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Stripe\Customer;
 use Stripe\PaymentMethod;
+use Stripe\Stripe;
 use Stripe\Subscription;
 
 class StripePaymentMethodController extends Controller
 {
     use apiresponse;
+    public function __construct()
+    {
+        Stripe::setApiKey(config('services.stripe.secret'));
+    }
    /**
     * Add payment method to customer
     */
