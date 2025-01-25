@@ -80,7 +80,6 @@ class OrderManagement extends Controller
             return $this->sendError('Validation failed. Please check the provided details and try again.',$validator->errors()->toArray(), 422); // Change the HTTP code if needed
         }
 
-
         // Start a transaction to ensure atomicity
       DB::beginTransaction();
 
@@ -90,11 +89,17 @@ class OrderManagement extends Controller
 
             //get current user
             $user = auth()->user();
-            // Check if Stripe customer exists in the database
-            // Retrieve the existing customer on Stripe
-            $customer = Customer::retrieve($user->stripe_customer_id);
-            if (empty($customer)) {
-                return  $this->sendError('No payment method found .Please add a payment method', [],404);
+
+            // Ensure the user has a Stripe customer ID
+            if (empty($user->stripe_customer_id)) {
+                return $this->sendError('No Stripe customer ID found. Please add a payment method and try again.',[]);
+            }
+            // Retrieve the customer from Stripe
+            $customer = \Stripe\Customer::retrieve($user->stripe_customer_id);
+
+            // Check if the Stripe customer is invalid
+            if (!$customer || empty($customer->id)) {
+                return $this->sendError( 'Stripe customer not found. Please ensure your payment details are up-to-date.',[]);
             }
 
 
