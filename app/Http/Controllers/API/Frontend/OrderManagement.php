@@ -203,7 +203,7 @@ class OrderManagement extends Controller
        $coupon = Coupon::where('code', $validatedData['code'])->first();
 
        return Order::create([
-            'uuid'         => substr((string) Str::uuid(), 0, 20),
+            'uuid'         => substr((string) Str::uuid(), 0, 8),
             'user_id'      => auth()->id(),
             'treatment_id' => $validatedData['treatment_id'],
             'coupon_id'    => $coupon->id ?? null,
@@ -214,7 +214,7 @@ class OrderManagement extends Controller
             'total_price'  => $discountedAmount ?? null,
             'subscription' => $validatedData['subscription'],
             'prescription' => $this->uploadPrescription($request),
-            'status'       => 'failed',
+            'status'       => 'pending',
         ]);
     }
 
@@ -354,7 +354,7 @@ class OrderManagement extends Controller
 
         // Filter products based on metadata
         $filteredProducts = array_filter($productRetrive->data, function ($product) {
-            return isset($product->metadata['name']) && $product->metadata['shop_id'] == 1;
+            return isset($product->metadata['shop_id']) && $product->metadata['shop_id'] == 1;
         });
 
 

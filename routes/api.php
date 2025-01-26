@@ -83,6 +83,14 @@ Route::group(['middleware' => ['jwt.verify']], function () {
   //! Route for user controlller
     Route::controller(BackendUserController::class)->group(function () {
         Route::get('/auth-review', 'getAuthReview');
+
+    });
+
+    Route::controller(\App\Http\Controllers\API\Backend\OrderManagementController::class)->group(function () {
+        Route::post('/orders', 'index'); //get all orders
+        Route::get('/order/{id}', 'show'); //show order
+        Route::post('/order-review/{id}', 'storeOrderReview'); //review order user
+        Route::get('/assessments-result', 'getAssessmentResult');
     });
 });
 

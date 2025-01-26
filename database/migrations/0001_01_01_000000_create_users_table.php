@@ -26,7 +26,7 @@ return new class extends Migration
 
             $table->string('avatar')->nullable();
 
-            $table->enum('role', ['admin', 'user', 'doctor'])->default('user');
+            $table->enum('role', ['admin', 'user', 'doctor','pharmacist'])->default('user');
 
             $table->rememberToken();
             $table->timestamps();

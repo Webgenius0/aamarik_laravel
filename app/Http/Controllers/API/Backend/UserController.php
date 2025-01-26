@@ -22,5 +22,6 @@ class UserController extends Controller
         $reviews = Order::with('user', 'review')->get();
         return response()->json($reviews, 200);
 
+
     }
 }

@@ -25,4 +25,9 @@ class AssessmentResult extends Model
             'notes'          => 'string',
         ];
     }
+
+    public function assessment()
+    {
+        return $this->belongsTo(Assessment::class);
+    }
 }

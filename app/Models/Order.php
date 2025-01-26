@@ -81,7 +81,7 @@ class Order extends Model
 
     public function review()
     {
-        $this->hasOne(Review::class);
+        return $this->hasOne(Review::class);
     }
 
     // An order has one billing address
@@ -95,5 +95,10 @@ class Order extends Model
     public function coupon()
     {
         return $this->belongsTo(Coupon::class);
+    }
+
+    public function assessmentsResults()
+    {
+        return $this->hasMany(AssessmentResult::class);
     }
 }
