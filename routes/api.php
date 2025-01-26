@@ -5,6 +5,7 @@ use App\Http\Controllers\API\Auth\ForgetPasswordController;
 use App\Http\Controllers\API\Auth\LoginController;
 use App\Http\Controllers\API\Auth\ProfileController;
 use App\Http\Controllers\API\Backend\StripePaymentMethodController;
+use App\Http\Controllers\API\Backend\UserController as BackendUserController;
 use App\Http\Controllers\API\Frontend\CouponController;
 use App\Http\Controllers\API\Frontend\DoctoreController;
 use App\Http\Controllers\API\Frontend\FAQController;
@@ -78,6 +79,11 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::get('/get/stripe/customer/payment-method', 'getCustomerPaymentMethods');
         Route::delete('/remove/stripe/customer/payment-method/{paymentMethodID}', 'removeCustomerPaymentMethod');
   });
+
+  //! Route for user controlller
+    Route::controller(BackendUserController::class)->group(function () {
+        Route::get('/auth-review', 'getAuthReview');
+    });
 });
 
 

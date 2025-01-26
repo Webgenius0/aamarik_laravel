@@ -13,6 +13,7 @@ class Order extends Model
         'uuid',
         'user_id',
         'treatment_id',
+        'coupon_id',
         'tracked',
         'royal_mail_tracked_price',
         'sub_total',

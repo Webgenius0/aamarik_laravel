@@ -12,8 +12,10 @@ use App\Models\Coupon;
 use App\Models\Medicine;
 use App\Models\Order;
 use App\Models\order_item;
+use App\Notifications\OrderNotificationToUser;
 use App\Traits\apiresponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -116,7 +118,6 @@ class OrderManagement extends Controller
             }
 
 
-
             // Calculate the total price for the medicines and update stock quantity
             $totalPrice = 0;
             foreach ( $validatedData['medicines'] as $medicine) {
@@ -148,6 +149,7 @@ class OrderManagement extends Controller
 
             // Apply the discount
             $discountedAmount = $coupon->applyDiscount($sub_total);
+
 
             // Create the order
             $order = $this->storeOrderData($validatedData,$sub_total,$discountedAmount,$request);
@@ -198,17 +200,18 @@ class OrderManagement extends Controller
      */
     private function storeOrderData($validatedData,$sub_total,$discountedAmount,$request)
     {
+       $coupon = Coupon::where('code', $validatedData['code'])->first();
 
        return Order::create([
-            'uuid'         => (string) Str::uuid(),
+            'uuid'         => substr((string) Str::uuid(), 0, 20),
             'user_id'      => auth()->id(),
             'treatment_id' => $validatedData['treatment_id'],
             'coupon_id'    => $coupon->id ?? null,
             'tracked'      => !empty($validatedData['royal_maill_tracked_price']),
             'royal_mail_tracked_price' => $validatedData['royal_maill_tracked_price'],
             'sub_total'    => $sub_total, //sub total
-            'discount'     => $discountedAmount ?? null,
-            'total_price'  => $sub_total - $discountedAmount,
+            'discount'     => $sub_total - ($discountedAmount ?? 0) ,
+            'total_price'  => $discountedAmount ?? null,
             'subscription' => $validatedData['subscription'],
             'prescription' => $this->uploadPrescription($request),
             'status'       => 'failed',
@@ -283,10 +286,12 @@ class OrderManagement extends Controller
         //find order with order id
         $orderData = Order::find($order->id);
 
+        //current  auth
+        $user =  Auth::user();
         //meta data
         $metadata = [
             'order_uuid' => $orderData->uuid,
-            'user_id'    => auth()->id(),
+            'user_id'    => $user->id,
         ];
 
         // Create a payment intent with the calculated amount and metadata
@@ -295,7 +300,12 @@ class OrderManagement extends Controller
             'currency' => 'usd',
             'metadata' => $metadata,
             'payment_method' => $validatedData['payment_method_id'],
+            'customer' => $user->stripe_customer_id, // Add the customer ID here
             'confirm' => true,
+            'automatic_payment_methods' => [
+                'enabled' => true,
+                'allow_redirects' => 'never',
+            ],
         ]);
 
         // Update the order with payment intent details
@@ -307,6 +317,8 @@ class OrderManagement extends Controller
         if($validatedData['subscription']){
             $this->createSubscription($validatedData,$order,$paymentIntent);
         }
+
+
     }
 
 
@@ -367,16 +379,19 @@ class OrderManagement extends Controller
                 'price_data' => [
                     'currency' => 'usd',
                     'product' => $product->id,
-                    'order_id' => $order->uuid,
-                    'unit_amount' =>  $order->sub_total,
-                    'recurring' => ['interval' => 'month'],
+                    'unit_amount' => $order->sub_total * 100, // Amount in cents
+                    'recurring' => ['interval' => 'month'], // Monthly subscription
                 ],
             ]],
+            'metadata' => [
+                'order_id' => $order->uuid, // Custom metadata
+                'user_id' => $user->id,
+            ],
             'expand' => ['latest_invoice.payment_intent'],
         ]);
 
 
-        return $this->sendResponse([], 'Donation created successfully');
+        return $this->sendResponse([], 'Subscription created successfully');
     }
 
 
