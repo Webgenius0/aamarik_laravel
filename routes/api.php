@@ -94,6 +94,12 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::get('/assessments-result', 'getAssessmentResult');
     });
 
+    //! Route for doctor order management
+    Route::controller(\App\Http\Controllers\API\Backend\Doctore\OrderManagementController::class)->group(function () {
+        Route::get('/order-details/{id}', 'getOrderDetails');
+        Route::post('/order-status-note-update/{id}', 'updateOrderStatusNote');
+    });
+
     //! Route for user subscription
     Route::controller(SubscriptionController::class)->group(function () {
         Route::get('/my-subscriptions', 'getMySubscriptions');
