@@ -98,7 +98,7 @@ class SubscriptionController extends Controller
     }
 
     /**
-     * Delete Stripe current user subscription with subscripitobn
+     * Delete Stripe current user subscription with subscription
      */
     public function deleteSubscription($id)
     {

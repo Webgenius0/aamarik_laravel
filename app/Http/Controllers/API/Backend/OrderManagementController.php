@@ -49,7 +49,8 @@ class OrderManagementController extends Controller
                     $query->where('user_id', $user->id);
                     break;
                 case 'doctor':
-                    // Doctors can view all orders with full filtering and sorting
+                    // Doctors can view all orders with full filtering and sorting without pending status
+                    $query->whereNotIn('status', ['pending']);
                     break;
                 case 'pharmacist':
                     // Pharmacists see orders with status other than 'pending' or 'paid'
