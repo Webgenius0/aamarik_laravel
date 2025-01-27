@@ -17,13 +17,15 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('phone')->nullable();
+            $table->enum('gender', ['male', 'female','other'])->nullable();
             $table->string('department')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->string('reset_code')->nullable();
             $table->timestamp('reset_code_expires_at')->nullable();
             $table->date('date_of_birth')->nullable();
-
+            $table->string('address')->nullable();
             $table->string('avatar')->nullable();
 
             $table->enum('role', ['admin', 'user', 'doctor','pharmacist'])->default('user');

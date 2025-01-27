@@ -43,12 +43,13 @@ class ProfileController extends Controller
             'date_of_birth' => 'nullable|date_format:m/d/Y',
             'avatar'        => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'avatar_path'   => 'nullable|string',
-
+            'phone'         => 'nullable|string',
+            'gender'        => 'nullable|in:male,female,other',
+            'address'       => 'nullable|string',
         ]);
 
         // If validation fails, return error message
         if ($validation->fails()) {
-            Log::error('Failed to update user info', $validation->errors()->toArray());
             return $this->sendError($validation->errors()->first(), [], 422); // Change the HTTP code if needed
         }
 
@@ -60,6 +61,9 @@ class ProfileController extends Controller
             $user->name      = $request->name ?? $user->name;
             $user->email     = $request->email ?? $user->email;
             $user->date_of_birth  = $date ?? $user->date_of_birth;
+            $user->phone      = $request->phone ?? $user->phone;
+            $user->gender      = $request->gender ?? $user->gender;
+            $user->address     = $request->address ?? $user->address;
 
             if ($request->hasFile('avatar')) {
                 //delete user avatar

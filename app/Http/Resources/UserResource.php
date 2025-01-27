@@ -20,6 +20,9 @@ class UserResource extends JsonResource
             'name'  => $this->name,
             'email' => $this->email,
             'role'  => $this->role,
+            'phone' => $this->phone,
+            'gender' => $this->gender,
+            'address' => $this->address,
             'date_of_birth' => $this->date_of_birth
                 ? $this->date_of_birth->format('m/d/Y')
                 : null, //Y-m-d to m/d/Y

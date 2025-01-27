@@ -105,6 +105,12 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::get('/my-subscriptions', 'getMySubscriptions');
         Route::delete('/delete/subscription/{id}', 'deleteSubscription');
     });
+
+    //! Route for meeting management
+    Route::controller(\App\Http\Controllers\API\Backend\Doctore\MeetingManagementController::class)->group(function () {
+        Route::get('/meetings', 'index');
+        Route::post('/meeting/{id}', 'store');
+    });
 });
 
 
