@@ -5,6 +5,7 @@ use App\Http\Controllers\API\Auth\ForgetPasswordController;
 use App\Http\Controllers\API\Auth\LoginController;
 use App\Http\Controllers\API\Auth\ProfileController;
 use App\Http\Controllers\API\Backend\StripePaymentMethodController;
+use App\Http\Controllers\API\Backend\SubscriptionController;
 use App\Http\Controllers\API\Backend\UserController as BackendUserController;
 use App\Http\Controllers\API\Frontend\CouponController;
 use App\Http\Controllers\API\Frontend\DoctoreController;
@@ -91,6 +92,12 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::get('/order/{id}', 'show'); //show order
         Route::post('/order-review/{id}', 'storeOrderReview'); //review order user
         Route::get('/assessments-result', 'getAssessmentResult');
+    });
+
+    //! Route for user subscription
+    Route::controller(SubscriptionController::class)->group(function () {
+        Route::get('/my-subscriptions', 'getMySubscriptions');
+        Route::delete('/delete/subscription/{id}', 'deleteSubscription');
     });
 });
 
