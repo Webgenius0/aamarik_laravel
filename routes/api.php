@@ -110,6 +110,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::controller(\App\Http\Controllers\API\Backend\Doctore\MeetingManagementController::class)->group(function () {
         Route::get('/meetings', 'index');
         Route::post('/meeting/{id}', 'store');
+        Route::post('/meeting-update/{id}', 'updateStatus');
+        Route::delete('/delete/meeting/{id}', 'deleteMeeting');
     });
 });
 
