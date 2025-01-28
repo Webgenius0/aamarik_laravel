@@ -12,22 +12,28 @@ use Yajra\DataTables\Facades\DataTables;
 class CouponController extends Controller
 {
     public function index(Request $request) {
-        
-    
+
+
     if ($request->ajax()) {
         // Group by type
         $data = Coupon::all();
 
         return DataTables::of($data)
             ->addIndexColumn()
-            ->addColumn('Title', function ($data) {
-                return Str::limit($data->title, 50, '...');
+            ->addColumn('discount', function ($data) {
+                $discount = '';
+                if($data->discount_type == 'percentage') {
+                    $discount = $data->discount_amount .'%';
+                }else{
+                    $discount = $data->discount_amount;
+                }
+                return $discount;
             })
-            ->addColumn('brand', function ($data) {
-                return Str::limit($data->brand, 50, '...');
+            ->addColumn('start_date', function ($data) {
+                return $data->start_date->format('d-m-Y h:i A');
             })
-            ->addColumn('quantity', function ($data) {
-                return $data->details->quantity ?? 0;  // Use a default value if null
+            ->addColumn('end_date', function ($data) {
+                return $data->end_date->format('d-m-Y h:i A');
             })
             ->addColumn('stock_quantity', function ($data) {
                 return Str::limit($data->details->stock_quantity?? 0);
@@ -36,7 +42,7 @@ class CouponController extends Controller
                 return '<input type="checkbox" class="form-switch" onclick="ShowStatusChangeAlert(' . $data->id . ')" ' . ($data->status == "active" ? 'checked' : '') . '>';
             })
 
-            
+
             ->addColumn('action', function ($data) {
                 return '<div class="inline-flex gap-1">
                     <a href="javascript:void(0);" onclick="editMedicine(' . $data->id . ')" class="btn bg-success text-white rounded">
@@ -47,7 +53,7 @@ class CouponController extends Controller
                     </a>
                 </div>';
             })
-            ->rawColumns(['title','brand','quantity','stock_quantity','status', 'action','avatar'])
+            ->rawColumns(['discount','brand','quantity','stock_quantity','status', 'action','avatar'])
             ->make(true);
     }
     {
@@ -55,18 +61,18 @@ class CouponController extends Controller
     }
 }
 
-//store 
+//store
 public function store(Request $request)
     {
         // Validate the incoming request
         $validatedData = $request->validate([
             'code' => 'required|string|unique:coupons,code|max:255',
-            'discount_type' => 'required|in:fixed,percentage', 
-            'discount_amount' => 'required|numeric|min:0', 
-            'usage_limit' => 'required|integer|min:1', 
-            'start_date' => 'nullable|date', 
-            'end_date' => 'nullable|date|after_or_equal:start_date', 
-            
+            'discount_type' => 'required|in:fixed,percentage',
+            'discount_amount' => 'required|numeric|min:0',
+            'usage_limit' => 'required|integer|min:1',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+
         ]);
 
         // Create a new coupon in the database
@@ -75,10 +81,10 @@ public function store(Request $request)
             'discount_type' => $validatedData['discount_type'],
             'discount_amount' => $validatedData['discount_amount'],
             'usage_limit' => $validatedData['usage_limit'],
-            'used_count' => 0, 
+            'used_count' => 0,
             'start_date' => $validatedData['start_date'] ?? null,
             'end_date' => $validatedData['end_date'] ?? null,
-            
+
         ]);
 
         // Return a response, or you can redirect as needed
