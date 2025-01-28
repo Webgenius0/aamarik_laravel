@@ -35,4 +35,8 @@ class Medicine extends Model
         return $this->hasMany(MedicineFeature::class);
     }
 
+    public function images()
+    {
+        return $this->hasMany(MedicineImages::class);
+    }
 }

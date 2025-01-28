@@ -22,7 +22,7 @@ class MedicineController extends Controller
     {
         try {
             //Get medicines that are active and have stock available.
-            $medicines = Medicine::with(['details' => function ($query) {
+            $medicines = Medicine::with(['images','details' => function ($query) {
                 $query->where('stock_quantity', '>', 0);
             }])
                 ->where('status', 'active')
@@ -44,7 +44,7 @@ class MedicineController extends Controller
     public function show($medicineID)
     {
         try {
-            $medicine = Medicine::with(['details', 'features'])->find($medicineID);
+            $medicine = Medicine::with(['images','details', 'features'])->find($medicineID);
 
             if (!$medicine) {
                 return $this->sendResponse([], 'Medicine not found');
