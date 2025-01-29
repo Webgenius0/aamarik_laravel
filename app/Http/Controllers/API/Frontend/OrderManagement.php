@@ -349,15 +349,12 @@ class OrderManagement extends Controller
             return $this->sendError('Please add a payment method',[]);
         }
 
-        $decodedResponse = json_decode($this->checkCustomerHasPaymentMethod()->getContent(), true);
-        // dd($decodedResponse);
-
-        if (!$decodedResponse['status']) {
-            return $decodedResponse;
-        }
-        dd($customer);
-
-
+//        $decodedResponse = json_decode($this->checkCustomerHasPaymentMethod()->getContent(), true);
+//        // dd($decodedResponse);
+//
+//        if (!$decodedResponse['status']) {
+//            return $decodedResponse;
+//        }
 
         // Retrieve all active products
         $productRetrive = \Stripe\Product::all([
