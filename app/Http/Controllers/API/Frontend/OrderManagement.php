@@ -163,7 +163,7 @@ class OrderManagement extends Controller
             // Save assessments and check for correct answers
            $this->storeAssessmentsResult($validatedData,$order);
 
-           dd('workign......');
+
            //create payment intent
             $this->createPaymentIntent($validatedData,$order);
 
@@ -314,6 +314,7 @@ class OrderManagement extends Controller
             'stripe_payment_id' => $paymentIntent->id,
         ]);
 
+        dd('workign......');
         //create subscription if subscripiton is true
         if($validatedData['subscription']){
            $subscription =  $this->createSubscription($validatedData,$order,$paymentIntent);
