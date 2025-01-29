@@ -415,7 +415,7 @@ class OrderManagement extends Controller
         return $subscription;
     }
 
-    
+
     /**
      * Check if the customer has a payment method
      */

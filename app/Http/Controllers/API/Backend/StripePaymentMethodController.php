@@ -128,6 +128,8 @@ class StripePaymentMethodController extends Controller
                 'type' => 'card',
             ]);
 
+            dd($paymentMethods);
+
             // Check if no payment methods are found
             if (empty($paymentMethods->data)) {
                 return $this->sendError('No payment methods found.',(object)[],404);
