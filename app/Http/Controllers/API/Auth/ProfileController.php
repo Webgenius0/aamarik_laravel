@@ -42,7 +42,6 @@ class ProfileController extends Controller
             'email'         => 'nullable|email|max:255|unique:users,email,' . auth()->user()->id,
             'date_of_birth' => 'nullable|date_format:m/d/Y',
             'avatar'        => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'avatar_path'   => 'nullable|string',
             'phone'         => 'nullable|string',
             'gender'        => 'nullable|in:male,female,other',
             'address'       => 'nullable|string',
@@ -65,6 +64,7 @@ class ProfileController extends Controller
             $user->gender      = $request->gender ?? $user->gender;
             $user->address     = $request->address ?? $user->address;
 
+            $user->avatar      =  $user->avatar ?? null;
             if ($request->hasFile('avatar')) {
                 //delete user avatar
                 if ($user->avatar && file_exists(public_path($user->avatar))) {
@@ -72,8 +72,6 @@ class ProfileController extends Controller
                 }
                 $url = Helper::fileUpload($request->file('avatar'), 'users', $user->name . "-" . time());
                 $user->avatar = $url;
-            } elseif ($request->avatar_path) {
-                $user->avatar = $request->avatar_path; // Save predefined path
             }
 
             $user->save();
