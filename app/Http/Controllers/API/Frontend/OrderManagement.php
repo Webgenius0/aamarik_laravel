@@ -413,8 +413,7 @@ class OrderManagement extends Controller
             return $this->sendError('Subscription creation failed.', []);
         }
 
-//        return $subscription;
-        dd($subscription);
+        return $subscription;
     }
 
 
