@@ -404,7 +404,10 @@ class OrderManagement extends Controller
             'expand' => ['latest_invoice.payment_intent'],
         ]);
 
-        Log::info($subscription);
+        // Ensure subscription was successfully created
+        if (!isset($subscription->id)) {
+            return $this->sendError('Subscription creation failed.', []);
+        }
 
         return $subscription;
     }
