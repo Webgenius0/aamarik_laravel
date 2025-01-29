@@ -349,12 +349,12 @@ class OrderManagement extends Controller
             return $this->sendError('Please add a payment method',[]);
         }
 
-//        $decodedResponse = json_decode($this->checkCustomerHasPaymentMethod()->getContent(), true);
-//        // dd($decodedResponse);
-//
-//        if (!$decodedResponse['status']) {
-//            return $decodedResponse;
-//        }
+        $decodedResponse = json_decode($this->checkCustomerHasPaymentMethod()->getContent(), true);
+        // dd($decodedResponse);
+
+        if (!$decodedResponse['status']) {
+            return $decodedResponse;
+        }
         dd($customer);
 
 
@@ -438,7 +438,7 @@ class OrderManagement extends Controller
 
         if (!empty($customer->invoice_settings?->default_payment_method)) {
             $stripe = new \Stripe\StripeClient(config('services.stripe.secret'));
-            $paymentMethod = $stripe->customers->retrievePaymentMethod($customer->id, $customer->invoice_settings?->default_payment_method, []);
+            $paymentMethod = $stripe->customers->retrievePaymentMethod($customer?->id, $customer->invoice_settings?->default_payment_method, []);
             if (!$paymentMethod) {
                 return  $this->sendError('Please add your cart.',[]);
             } else {
