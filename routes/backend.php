@@ -131,6 +131,8 @@ Route::controller(TreatMentController::class)->group(function () {
     Route::put('/treatment/update/{id}', 'update')->name('treatment.update');
     Route::delete('/treatment/delete/{id}', 'destroy')->name('treatment.destroy');
     Route::get('/treatment/status/update/{id}', 'updateStatus')->name('treatment.status.update');
+    //for list
+    Route::get('/treatment/list', 'treatmentList')->name('treatment.list');
 });
 
 //coupons

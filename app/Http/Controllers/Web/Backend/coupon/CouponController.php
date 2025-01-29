@@ -11,58 +11,58 @@ use Yajra\DataTables\Facades\DataTables;
 
 class CouponController extends Controller
 {
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
 
 
-    if ($request->ajax()) {
-        // Group by type
-        $data = Coupon::all();
+        if ($request->ajax()) {
+            // Group by type
+            $data = Coupon::all();
 
-        return DataTables::of($data)
-            ->addIndexColumn()
-            ->addColumn('discount', function ($data) {
-                $discount = '';
-                if($data->discount_type == 'percentage') {
-                    $discount = $data->discount_amount .'%';
-                }else{
-                    $discount = $data->discount_amount;
-                }
-                return $discount;
-            })
-            ->addColumn('start_date', function ($data) {
-                return $data->start_date->format('d-m-Y h:i A');
-            })
-            ->addColumn('end_date', function ($data) {
-                return $data->end_date->format('d-m-Y h:i A');
-            })
-            ->addColumn('stock_quantity', function ($data) {
-                return Str::limit($data->details->stock_quantity?? 0);
-            })
-            ->addColumn('status', function ($data) {
-                return '<input type="checkbox" class="form-switch" onclick="ShowStatusChangeAlert(' . $data->id . ')" ' . ($data->status == "active" ? 'checked' : '') . '>';
-            })
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('discount', function ($data) {
+                    $discount = '';
+                    if ($data->discount_type == 'percentage') {
+                        $discount = $data->discount_amount . '%';
+                    } else {
+                        $discount = $data->discount_amount;
+                    }
+                    return $discount;
+                })
+                ->addColumn('start_date', function ($data) {
+                    return $data->start_date->format('d-m-Y h:i A');
+                })
+                ->addColumn('end_date', function ($data) {
+                    return $data->end_date->format('d-m-Y h:i A');
+                })
+                ->addColumn('stock_quantity', function ($data) {
+                    return Str::limit($data->details->stock_quantity ?? 0);
+                })
+                ->addColumn('status', function ($data) {
+                    return '<input type="checkbox" class="form-switch" onclick="ShowStatusChangeAlert(' . $data->id . ')" ' . ($data->status == "active" ? 'checked' : '') . '>';
+                })
 
 
-            ->addColumn('action', function ($data) {
-                return '<div class="inline-flex gap-1">
-                    <a href="javascript:void(0);" onclick="editMedicine(' . $data->id . ')" class="btn bg-success text-white rounded">
+                ->addColumn('action', function ($data) {
+                    return '<div class="inline-flex gap-1">
+                    <a href="javascript:void(0);" onclick="editCoupon(' . $data->id . ')" class="btn bg-success text-white rounded">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </a>
                     <a href="javascript:void(0);" onclick="showDeleteConfirm(' . $data->id . ')" class="btn bg-danger text-white rounded" title="Delete">
                         <i class="fa-solid fa-trash"></i>
                     </a>
                 </div>';
-            })
-            ->rawColumns(['discount','brand','quantity','stock_quantity','status', 'action','avatar'])
-            ->make(true);
+                })
+                ->rawColumns(['discount', 'brand', 'quantity', 'stock_quantity', 'status', 'action', 'avatar'])
+                ->make(true);
+        } {
+            return view('backend.layouts.coupons.index');
+        }
     }
-    {
-        return view('backend.layouts.coupons.index');
-    }
-}
 
-//store
-public function store(Request $request)
+    //store
+    public function store(Request $request)
     {
         // Validate the incoming request
         $validatedData = $request->validate([
@@ -96,4 +96,43 @@ public function store(Request $request)
     }
 
 
+    public function edit($id)
+    {
+        $faq = Coupon::find($id);
+        if ($faq) {
+            return response()->json(['success' => true, 'data' => $faq]); // Make sure the FAQ object is returned properly
+        }
+
+        return response()->json(['success' => false, 'message' => 'Coupon not found']);
+    }
+
+    /**
+     * Update FAQ
+     */
+    public function update(Request $request, $id)
+    {
+        $faq = Coupon::find($id);
+        $faq->update([
+            'code' => 'required|string|max:255',
+            'discount_type' => 'required|string',
+            'discount_amount' => 'required|numeric',
+            'usage_limit' => 'required|integer',
+            'start_date' => 'nullable|string',
+            'end_date' => 'nullable|string',
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Coupon updated successfully']);
+    }
+
+
+    public function updateStatus($id)
+    {
+        $faq = Coupon::find($id);
+        if (!$faq) {
+            return response()->json(['success' => false, 'message' => 'Not found']);
+        }
+        $faq->status = $faq->status == '1' ? '0' : '1';
+        $faq->save();
+        return response()->json(['success' => true, 'message' => 'Coupon Status update successfully']);
+    }
 }

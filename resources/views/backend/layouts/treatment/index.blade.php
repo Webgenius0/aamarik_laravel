@@ -182,111 +182,102 @@
             <h1 class="h1">About Section</h1>
         </div>
         <div class="card m-5 p-5">
-    <div class="flex flex-col md:w-full">
-        <label for="about[0][avatar]" class="text-lg font-medium mb-2">Avatar</label>
-        <input name="about[0][avatar]" type="file" class="form-input w-full dropify" accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg">
-    </div>
-    <div class="flex flex-wrap md:flex-nowrap">
-        <div class="flex flex-col md:w-1/2">
-            <label for="about[0][title]" class="text-lg font-medium mb-2">Title</label>
-            <input name="about[0][title]" class="form-input w-full" placeholder="Title">
-        </div>
-        <div class="flex flex-col md:w-1/2 ml-4">
-            <label for="about[0][short_description]" class="text-lg font-medium mb-2">Description</label>
-            <textarea name="about[0][short_description ]" class="form-input w-full" placeholder="Description"></textarea>
-        </div>
-    </div>
-</div>
-
-
-<div id="array-question-answer">
-    <div class="card m-5 p-5">
-        <div class="flex flex-wrap md:flex-nowrap">
-            <div class="flex flex-col md:w-1/2">
-                <label for="faqs[0][question]" class="text-lg font-medium mb-2">Question</label>
-                <input name="faqs[0][question]" class="form-input w-full" placeholder="Question">
+            <div class="flex flex-col md:w-full">
+                <label for="about[0][avatar]" class="text-lg font-medium mb-2">Avatar</label>
+                <input name="about[0][avatar]" type="file" class="form-input w-full dropify" accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg">
             </div>
-
-            <div class="flex flex-col md:w-1/2 ml-4">
-                <label for="faqs[0][answer]" class="text-lg font-medium mb-2">Answer</label>
-                <textarea name="faqs[0][answer]" class="form-input w-full" placeholder="Answer"></textarea>
+            <div class="flex flex-wrap md:flex-nowrap">
+                <div class="flex flex-col md:w-1/2">
+                    <label for="about[0][title]" class="text-lg font-medium mb-2">Title</label>
+                    <input name="about[0][title]" class="form-input w-full" placeholder="Title">
+                </div>
+                <div class="flex flex-col md:w-1/2 ml-4">
+                    <label for="about[0][short_description]" class="text-lg font-medium mb-2">Description</label>
+                    <textarea name="about[0][short_description]" class="form-input w-full" placeholder="Description"></textarea>
+                </div>
             </div>
         </div>
 
-        <div class="flex justify-end mt-4">
-            <button type="button" class="btn bg-red-500 text-white py-1 px-3 rounded-lg font-semibold remove-array-question-btn hidden">Remove</button>
-        </div>
-    </div>
-</div>
-
-
-
-
-<div class="flex justify-end mt-4">
-    <button type="button" id="add-array-question" class="btn bg-green-500 text-white py-2 px-4 rounded-lg font-semibold">Add New Card</button>
-</div>
-
-    </div>
-
-    <!-- Step 4: Assessment -->
-    <div class="step step-4 hidden">
-    <div class="card m-5 p-5">
-        <div class="flex items-center justify-center">
-            <h1 class="h1">Assessment</h1>
-        </div>
-
-        <!-- Container for dynamic question cards -->
-        <div id="cards-container">
-            <div class="dynamic-card">
-                <!-- Question Input -->
-                <div class="flex flex-col md:w-full">
-                    <label for="assessments[0][question]" class="text-lg font-medium mb-2">Question</label>
-                    <input name="assessments[0][question]" class="form-input w-full" placeholder="Question">
-                </div>
-
-                <!-- Option Inputs -->
+        <div id="array-question-answer">
+            <div class="card m-5 p-5">
                 <div class="flex flex-wrap md:flex-nowrap">
                     <div class="flex flex-col md:w-1/2">
-                        <label for="assessments[0][option1]" class="text-lg font-medium mb-2">Option 1</label>
-                        <input name="assessments[0][option1]" class="form-input w-full" placeholder="Option 1">
+                        <label for="faqs[0][question]" class="text-lg font-medium mb-2">Question</label>
+                        <input name="faqs[0][question]" class="form-input w-full" placeholder="Question">
                     </div>
-                    <div class="flex flex-col md:w-1/2 ml-4">
-                        <label for="assessments[0][option2]" class="text-lg font-medium mb-2">Option 2</label>
-                        <input name="assessments[0][option2]" class="form-input w-full" placeholder="Option 2">
-                    </div>
-                    <div class="flex flex-col md:w-1/2 ml-4">
-                        <label for="assessments[0][option3]" class="text-lg font-medium mb-2">Option 3</label>
-                        <input name="assessments[0][option3]" class="form-input w-full" placeholder="Option 3">
-                    </div>
-                </div>
 
-                <!-- More Option Inputs and Answer -->
-                <div class="flex flex-wrap md:flex-nowrap">
-                    <div class="flex flex-col md:w-1/2">
-                        <label for="assessments[0][option4]" class="text-lg font-medium mb-2">Option 4</label>
-                        <input name="assessments[0][option4]" class="form-input w-full" placeholder="Option 4">
-                    </div>
                     <div class="flex flex-col md:w-1/2 ml-4">
-                        <label for="assessments[0][answer]" class="text-lg font-medium mb-2">Answer</label>
-                        <input name="assessments[0][answer]" class="form-input w-full" placeholder="Answer">
-                    </div>
-                    <div class="flex flex-col md:w-1/2 ml-4">
-                        <label for="assessments[0][note]" class="text-lg font-medium mb-2">Note</label>
-                        <textarea name="assessments[0][note]" class="form-input w-full" placeholder="Note"></textarea>
+                        <label for="faqs[0][answer]" class="text-lg font-medium mb-2">Answer</label>
+                        <textarea name="faqs[0][answer]" class="form-input w-full" placeholder="Answer"></textarea>
                     </div>
                 </div>
 
                 <div class="flex justify-end mt-4">
-                    <button type="button" class="btn bg-red-500 text-white py-1 px-3 rounded-lg font-semibold remove-btn hidden">Remove</button>
+                    <button type="button" class="btn bg-red-500 text-white py-1 px-3 rounded-lg font-semibold remove-array-question-btn hidden">Remove</button>
                 </div>
             </div>
         </div>
 
         <div class="flex justify-end mt-4">
-            <button type="button" id="addBtn" class="btn bg-green-500 text-white py-2 px-4 rounded-lg font-semibold">Add New Card</button>
+            <button type="button" id="add-array-question" class="btn bg-green-500 text-white py-2 px-4 rounded-lg font-semibold">Add New Card</button>
         </div>
     </div>
-</div>
+
+    <!-- Step 4: Assessment -->
+    <div class="step step-4 hidden">
+        <div class="card m-5 p-5">
+            <div class="flex items-center justify-center">
+                <h1 class="h1">Assessment</h1>
+            </div>
+
+            <div id="cards-container">
+                <div class="dynamic-card">
+                    <div class="flex flex-col md:w-full">
+                        <label for="assessments[0][question]" class="text-lg font-medium mb-2">Question</label>
+                        <input name="assessments[0][question]" class="form-input w-full" placeholder="Question">
+                    </div>
+
+                    <div class="flex flex-wrap md:flex-nowrap">
+                        <div class="flex flex-col md:w-1/2">
+                            <label for="assessments[0][option1]" class="text-lg font-medium mb-2">Option 1</label>
+                            <input name="assessments[0][option1]" class="form-input w-full" placeholder="Option 1">
+                        </div>
+                        <div class="flex flex-col md:w-1/2 ml-4">
+                            <label for="assessments[0][option2]" class="text-lg font-medium mb-2">Option 2</label>
+                            <input name="assessments[0][option2]" class="form-input w-full" placeholder="Option 2">
+                        </div>
+                        <div class="flex flex-col md:w-1/2 ml-4">
+                            <label for="assessments[0][option3]" class="text-lg font-medium mb-2">Option 3</label>
+                            <input name="assessments[0][option3]" class="form-input w-full" placeholder="Option 3">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap md:flex-nowrap">
+                        <div class="flex flex-col md:w-1/2">
+                            <label for="assessments[0][option4]" class="text-lg font-medium mb-2">Option 4</label>
+                            <input name="assessments[0][option4]" class="form-input w-full" placeholder="Option 4">
+                        </div>
+                        <div class="flex flex-col md:w-1/2 ml-4">
+                            <label for="assessments[0][answer]" class="text-lg font-medium mb-2">Answer</label>
+                            <input name="assessments[0][answer]" class="form-input w-full" placeholder="Answer">
+                        </div>
+                        <div class="flex flex-col md:w-1/2 ml-4">
+                            <label for="assessments[0][note]" class="text-lg font-medium mb-2">Note</label>
+                            <textarea name="assessments[0][note]" class="form-input w-full" placeholder="Note"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end mt-4">
+                        <button type="button" class="btn bg-red-500 text-white py-1 px-3 rounded-lg font-semibold remove-btn hidden">Remove</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end mt-4">
+                <button type="button" id="addBtn" class="btn bg-green-500 text-white py-2 px-4 rounded-lg font-semibold">Add New Card</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Buttons -->
     <div class="flex justify-between mt-4">
@@ -295,6 +286,7 @@
         <button type="submit" id="submitBtn" class="btn bg-green-500 text-white py-2 px-4 rounded-lg font-semibold hidden">Submit</button>
     </div>
 </form>
+
 
 
 
@@ -405,208 +397,165 @@
         showStep(currentStep);
     });
 
-    //add Assestment card
+    document.addEventListener('DOMContentLoaded', function() {
+    let faqIndex = 1;
+    let assessmentIndex = 1;
+    let titleIndex = 1;
 
-    // JavaScript to handle dynamic card addition/removal
-    document.getElementById('addBtn').addEventListener('click', function() {
-        // Clone the first dynamic card
-        var card = document.querySelector('.dynamic-card');
-        var clone = card.cloneNode(true);
-
-        // Clear the input values in the cloned card
-        var inputs = clone.querySelectorAll('input, textarea');
-        inputs.forEach(function(input) {
-            input.value = '';
-        });
-
-        // Show the remove button for the new card
-        var removeButton = clone.querySelector('.remove-btn');
-        removeButton.classList.remove('hidden');
-
-        // Append the cloned card to the cards container
-        document.getElementById('cards-container').appendChild(clone);
-    });
-
-    // Event delegation for handling remove buttons in dynamically added cards
-    document.getElementById('cards-container').addEventListener('click', function(e) {
-        if (e.target && e.target.classList.contains('remove-btn')) {
-            // Remove the card
-            e.target.closest('.dynamic-card').remove();
-        }
-    });
-
-
-    //Array Quesstion Answer
-    document.addEventListener("DOMContentLoaded", function() {
-    let faqIndex = 0;  // Start from 0 for the first card
-
-    // Add event listener for adding new FAQ cards
+    // Add FAQ Card
     document.getElementById('add-array-question').addEventListener('click', function() {
-        // Select the first card inside the container (only once)
-        var cardContainer = document.getElementById('array-question-answer');
-        var card = cardContainer.querySelector('.card');  // Make sure it selects the card template
-
-        if (!card) {
-            console.log("Card element not found!");
-            return;  // If no card exists to clone, exit the function
-        }
-
-        var clone = card.cloneNode(true);  // Clone the first card inside the container
-
-        // Clear the input values in the cloned card
-        var inputs = clone.querySelectorAll('input, textarea');
-        inputs.forEach(function(input) {
-            input.value = ''; // Clear the input field in the cloned card
-        });
-
-        // Show the remove button for the new card
-        var removeButton = clone.querySelector('.remove-array-question-btn');
-        removeButton.classList.remove('hidden'); // Unhide the remove button for the cloned card
-
-        // Update the name attributes with unique indexes
-        var questionInput = clone.querySelector('input[name="faqs[][question]"]');
-        var answerInput = clone.querySelector('textarea[name="faqs[][answer]"]');
-        
-        if (questionInput && answerInput) {
-            questionInput.name = `faqs[${faqIndex}][question]`;
-            answerInput.name = `faqs[${faqIndex}][answer]`;
-        } else {
-            console.error('Failed to find input fields to update the name attributes');
-        }
-
-        // Append the cloned card to the parent container
-        cardContainer.appendChild(clone);
-
-        // Increment the faqIndex for the next card
+        const faqContainer = document.getElementById('array-question-answer');
+        const newCard = document.createElement('div');
+        newCard.classList.add('card', 'm-5', 'p-5');
+        newCard.innerHTML = `
+            <div class="flex flex-wrap md:flex-nowrap">
+                <div class="flex flex-col md:w-1/2">
+                    <label for="faqs[${faqIndex}][question]" class="text-lg font-medium mb-2">Question</label>
+                    <input name="faqs[${faqIndex}][question]" class="form-input w-full" placeholder="Question">
+                </div>
+                <div class="flex flex-col md:w-1/2 ml-4">
+                    <label for="faqs[${faqIndex}][answer]" class="text-lg font-medium mb-2">Answer</label>
+                    <textarea name="faqs[${faqIndex}][answer]" class="form-input w-full" placeholder="Answer"></textarea>
+                </div>
+            </div>
+            <div class="flex justify-end mt-4">
+                <button type="button" class="btn bg-red-500 text-white py-1 px-3 rounded-lg font-semibold remove-array-question-btn">Remove</button>
+            </div>
+        `;
+        faqContainer.appendChild(newCard);
         faqIndex++;
 
-        // Optional: Add functionality to remove the cloned card when the remove button is clicked
-        removeButton.addEventListener('click', function() {
-            clone.remove();
+        // Add event listener to "Remove" button
+        newCard.querySelector('.remove-array-question-btn').addEventListener('click', function() {
+            newCard.remove();
         });
+    });
+
+    // Add Assessment Card
+    document.getElementById('addBtn').addEventListener('click', function() {
+        const cardsContainer = document.getElementById('cards-container');
+        const newCard = document.createElement('div');
+        newCard.classList.add('dynamic-card', 'm-5', 'p-5');
+        newCard.innerHTML = `
+            <div class="flex flex-col md:w-full">
+                <label for="assessments[${assessmentIndex}][question]" class="text-lg font-medium mb-2">Question</label>
+                <input name="assessments[${assessmentIndex}][question]" class="form-input w-full" placeholder="Question">
+            </div>
+
+            <div class="flex flex-wrap md:flex-nowrap">
+                <div class="flex flex-col md:w-1/2">
+                    <label for="assessments[${assessmentIndex}][option1]" class="text-lg font-medium mb-2">Option 1</label>
+                    <input name="assessments[${assessmentIndex}][option1]" class="form-input w-full" placeholder="Option 1">
+                </div>
+                <div class="flex flex-col md:w-1/2 ml-4">
+                    <label for="assessments[${assessmentIndex}][option2]" class="text-lg font-medium mb-2">Option 2</label>
+                    <input name="assessments[${assessmentIndex}][option2]" class="form-input w-full" placeholder="Option 2">
+                </div>
+                <div class="flex flex-col md:w-1/2 ml-4">
+                    <label for="assessments[${assessmentIndex}][option3]" class="text-lg font-medium mb-2">Option 3</label>
+                    <input name="assessments[${assessmentIndex}][option3]" class="form-input w-full" placeholder="Option 3">
+                </div>
+            </div>
+
+            <div class="flex flex-wrap md:flex-nowrap">
+                <div class="flex flex-col md:w-1/2">
+                    <label for="assessments[${assessmentIndex}][option4]" class="text-lg font-medium mb-2">Option 4</label>
+                    <input name="assessments[${assessmentIndex}][option4]" class="form-input w-full" placeholder="Option 4">
+                </div>
+                <div class="flex flex-col md:w-1/2 ml-4">
+                    <label for="assessments[${assessmentIndex}][answer]" class="text-lg font-medium mb-2">Answer</label>
+                    <input name="assessments[${assessmentIndex}][answer]" class="form-input w-full" placeholder="Answer">
+                </div>
+                <div class="flex flex-col md:w-1/2 ml-4">
+                    <label for="assessments[${assessmentIndex}][note]" class="text-lg font-medium mb-2">Note</label>
+                    <textarea name="assessments[${assessmentIndex}][note]" class="form-input w-full" placeholder="Note"></textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-end mt-4">
+                <button type="button" class="btn bg-red-500 text-white py-1 px-3 rounded-lg font-semibold remove-btn">Remove</button>
+            </div>
+        `;
+        cardsContainer.appendChild(newCard);
+        assessmentIndex++;
+
+        // Add event listener to "Remove" button
+        newCard.querySelector('.remove-btn').addEventListener('click', function() {
+            newCard.remove();
+        });
+    });
+
+
+
+    //document.getElementById('addtreament_category').addEventListener('click', function() {
+    const container = document.getElementById('array-steps-container');
+    const newCard = document.createElement('div');
+    newCard.classList.add('card', 'm-5', 'p-5', 'treatment-category-card');
+    newCard.innerHTML = `
+        <div class="flex items-center justify-center">
+            <h1 class="h1">Treatment Category</h1>
+        </div>
+        <div class="flex flex-wrap md:flex-nowrap">
+            <div class="flex flex-col md:w-1/2 mr-4">
+                <label for="categories[][icon]" class="text-lg font-medium mb-2">Icon</label>
+                <input name="categories[][icon]" type="file" class="form-input w-full dropify h-[2.5rem]" accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg">
+            </div>
+            <div class="flex flex-col md:w-1/2">
+                <label for="categories[][title]" class="text-lg font-medium mb-2">Title</label>
+                <input name="categories[][title]" type="text" class="form-input w-full h-[2.5rem]" placeholder="Title">
+            </div>
+        </div>
+        <div class="flex justify-end mt-4">
+            <button type="button" class="btn bg-red-500 text-white py-1 px-3 rounded-lg font-semibold remove-treament-category-btn">Remove</button>
+        </div>
+    `;
+    container.appendChild(newCard);
+
+    // Attach event listener to the remove button inside the new card
+    newCard.querySelector('.remove-treament-category-btn').addEventListener('click', function() {
+        newCard.remove();
     });
 });
 
 
+document.getElementById('add-title-field').addEventListener('click', function() {
+    const container = document.getElementById('array-title-container');
 
-    //for submission question answer
-
-    
-
-    //Araay Title 
-
-    const addButton = document.getElementById('add-title-field');
-    const removeButton = document.getElementById('remove-title-field');
-    const arrayTitleContainer = document.getElementById('array-title-container');
-
-    // Track the number of fields added
-    let fieldCount = 1; // We start with 1 field already present
-
-    // Handle the addition of new title fields
-    addButton.addEventListener('click', function() {
-        // Increment the field count
-        fieldCount++;
-
-        // Create a new title field element
-        const newTitleField = document.createElement('div');
-        newTitleField.classList.add('flex', 'flex-col', 'md:w-full');
-
-        newTitleField.innerHTML = `
-        <label for="description" class="text-lg font-medium mb-2">Title</label>
-        <textarea name="title[]" class="form-input w-full" id="title" placeholder="title"></textarea>
+    // Create a new title field
+    const newTitleField = document.createElement('div');
+    newTitleField.classList.add('flex', 'flex-col', 'md:w-full', 'mr-4');
+    newTitleField.innerHTML = `
+        <label for="detail_items[][title]" class="text-lg font-medium mb-2">Title</label>
+        <textarea name="detail_items[][title]" class="form-input w-full" placeholder="Title"></textarea>
     `;
+    
+    // Append the new title field to the container
+    container.insertBefore(newTitleField, container.querySelector('.flex.items-center'));
 
-        // Append the new title field to the container
-        arrayTitleContainer.insertBefore(newTitleField, removeButton.parentNode); // Insert before the buttons
+    // Show the remove button when a new field is added
+    document.getElementById('remove-title-field').classList.remove('hidden');
+});
 
-        // Show the remove button
-        removeButton.classList.remove('hidden');
-    });
+// Add event listener for the remove button
+document.getElementById('remove-title-field').addEventListener('click', function() {
+    const container = document.getElementById('array-title-container');
+    const titleFields = container.querySelectorAll('.flex.flex-col');
 
-    // Handle the removal of the last title field
-    removeButton.addEventListener('click', function() {
-        // Only remove if there are more than 1 field
-        if (fieldCount > 1) {
-            // Remove the last title field
-            const titleFields = arrayTitleContainer.querySelectorAll('.flex.flex-col.md\\:w-full');
-            const lastTitleField = titleFields[titleFields.length - 1];
-            lastTitleField.remove();
+    // If there is more than one title field, remove the last one
+    if (titleFields.length > 1) {
+        titleFields[titleFields.length - 1].remove();
+    }
 
-            // Decrement the field count
-            fieldCount--;
+    // If there is only one field left, hide the remove button
+    if (titleFields.length === 1) {
+        document.getElementById('remove-title-field').classList.add('hidden');
+    }
+});
 
-            // Hide the remove button if no fields left to remove
-            if (fieldCount === 1) {
-                removeButton.classList.add('hidden');
-            }
-        }
-    });
 
-    //Add new treatment category
-    // Event listener to add a new treatment category card when the 'Add New Card' button is clicked
-    document.getElementById('addtreament_category').addEventListener('click', function() {
-        // Select the original treatment category card (the first one in the container)
-        var originalCard = document.querySelector('#array-steps-container .treatment-category-card');
 
-        // Clone the original card
-        var clonedCard = originalCard.cloneNode(true);
 
-        // Clear the input values for the cloned card (so they are empty for new inputs)
-        var inputs = clonedCard.querySelectorAll('input');
-        inputs.forEach(function(input) {
-            input.value = ''; // Clear the input and file fields
-        });
 
-        // Remove the hidden class from the Remove button in the cloned card
-        var removeButton = clonedCard.querySelector('.remove-treament-category-btn');
-        removeButton.classList.remove('hidden');
-
-        // Append the cloned card to the container
-        document.getElementById('array-steps-container').appendChild(clonedCard);
-
-        // Add event listener for the Remove button in the new cloned card
-        removeButton.addEventListener('click', function() {
-            clonedCard.remove(); // Remove the respective cloned card from the DOM
-        });
-    });
-
-    //form submission
-//     $(document).ready(function () {
-//     // Get CSRF token from meta tag
-//     var token = $('meta[name="csrf-token"]').attr('content');
-
-//     // Set the CSRF token globally for all AJAX requests
-//     $.ajaxSetup({
-//         headers: {
-//             'X-CSRF-TOKEN': token
-//         }
-//     });
-
-//     // Submit the form using AJAX
-//     $('#createUpdateForm').submit(function (e) {
-//         e.preventDefault(); // Prevent the default form submission
-
-//         var formData = new FormData(this); // Grab the form data
-
-//         $.ajax({
-//             url: "{{ route('treatment.store') }}",  // Replace with your actual route
-//             type: 'POST',
-//             data: formData,
-//             contentType: false,  // Prevent jQuery from setting content type
-//             processData: false,  // Prevent jQuery from serializing the data
-//             success: function (response) {
-//                 if (response.success) {
-//                     alert('Data submitted successfully!');
-//                 } else {
-//                     alert('There was an error with the submission');
-//                 }
-//             },
-//             error: function (xhr, status, error) {
-//                 alert('Error: ' + error);
-//             }
-//         });
-//     });
-// });
 
 </script>
 @endpush

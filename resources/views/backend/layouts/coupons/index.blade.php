@@ -242,7 +242,8 @@
 
                     <div class="flex flex-col md:w-1/2">
                         <label for="start_date" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Start Date</label>
-                        <input name="start_date" class="form-input w-full" id="start_date" placeholder="Enter start date..." value="{{old('start_date')}}"></input>
+                        <input name="start_date" class="form-input w-full" id="start_date" placeholder="Enter start date..." value="{{ old('start_date') ? \Carbon\Carbon::parse(old('start_date'))->format('Y-m-d') : '' }}"
+                        ></input>
 
                         @error('start_date')
                         <span class="text-red-500 block mt-1 text-sm">
@@ -257,7 +258,8 @@
                 <div class="flex flex-col md:flex-row items-center md:space-x-4">
                     <div class="flex flex-col md:w-1/2">
                         <label class="text-lg font-medium mb-2 md:mb-0 flex align-left">End Date</label>
-                        <input name="end_date" type="text" class="form-input w-full" id="end_date" placeholder="Enter end date.." value="{{old('end_date')}}">
+                        <input name="end_date" type="text" class="form-input w-full" id="end_date" placeholder="Enter end date.." value="{{ old('end_date') ? \Carbon\Carbon::parse(old('end_date'))->format('Y-m-d') : '' }}"
+                        >
                         @error('end_date')
                         <span class="text-red-500 block mt-1 text-sm">
                             <strong>{{ $message }}</strong>
@@ -402,8 +404,8 @@
     // Submit Form
     $('#createUpdateForm').on('submit', function(e) {
         e.preventDefault();
-        var faqId = $('#medicine_id').val();
-        var url = faqId ? "{{ route('medicine.update', ':id') }}".replace(':id', faqId) : "{{ route('coupon.store') }}";
+        var faqId = $('#coupon_id').val();
+        var url = faqId ? "{{ route('coupon.update', ':id') }}".replace(':id', faqId) : "{{ route('coupon.store') }}";
         var method = faqId ? "PUT" : "POST";
         // Make the AJAX request
         $.ajax({
@@ -498,5 +500,87 @@
             } // Error
         })
     }
+
+     // Status Change Confirm Alert
+     function ShowStatusChangeAlert(id) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You want to update the status?',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    statusChange(id);
+                }
+            });
+        }
+
+     // Status Change
+     function statusChange(id) {
+            var url = '{{ route('coupon.status.update', ':id') }}';
+            $.ajax({
+                type: "GET",
+                url: url.replace(':id', id),
+                success: function(resp) {
+
+                    console.log(resp);
+                    // Reloade DataTable
+                    $('#data-table').DataTable().ajax.reload();
+                    if (resp.success === true) {
+                        // show toast message
+                        flasher.success(resp.message);
+                    } else if (resp.errors) {
+                        flasher.error(resp.errors[0]);
+                    } else {
+                        flasher.warning(resp.message);
+                    }
+                }, // success end
+                error: function(error) {
+                    flasher.error(error);
+                }
+            })
+        }
+
+        function editCoupon(id) {
+    let route = '{{ route('coupon.edit', ':id') }}';
+    route = route.replace(':id', id);
+
+    $.ajax({
+        type: "GET",
+        url: route,
+        success: function(resp) {
+            console.log(resp.data); // Ensure the response data structure is as expected
+
+            if (resp.success === true) {
+                // Populate the form fields with data from the response
+                $('#coupon_id').val(resp.data.id);
+                $('#discount_type').val(resp.data.discount_type); // Set discount type dropdown
+                $('#discount_amount').val(resp.data.discount_amount); // Set discount amount
+                $('#usage_limit').val(resp.data.usage_limit); // Set usage limit
+                $('#start_date').val(resp.data.start_date); // Set start date
+                $('#end_date').val(resp.data.end_date); // Set end date
+                $('#code').val(resp.data.code); // Set coupon code
+
+                // Change the modal title to "Update Coupon"
+                $('#modalTitle').html('Update Coupon');
+                $('#modalOverlay').show().addClass('modal-open');
+            } else if (resp.errors) {
+                flasher.error(resp.errors[0]); // Show errors if any
+            } else {
+                flasher.warning(resp.message); // Show warning if no success
+            }
+        },
+        error: function(error) {
+            flasher.error('Error while fetching data.'); // Show error if AJAX fails
+        }
+    });
+}
+
+
+         
 </script>
 @endpush
