@@ -42,7 +42,6 @@ class ProfileController extends Controller
             'email'         => 'nullable|email|max:255|unique:users,email,' . auth()->user()->id,
             'date_of_birth' => 'nullable|date_format:m/d/Y',
             'avatar'        => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'avatar_path'   => 'nullable|string',
             'phone'         => 'nullable|string',
             'gender'        => 'nullable|in:male,female,other',
             'address'       => 'nullable|string',
@@ -55,16 +54,17 @@ class ProfileController extends Controller
 
 
         try {
-            $date = Carbon::createFromFormat('m/d/Y',  $request->date_of_birth)->format('Y-m-d');
+            $date = $request->date_of_birth ? Carbon::createFromFormat('m/d/Y',  $request->date_of_birth)->format('Y-m-d') : null;
 
             $user = User::where('id', Auth::id())->first();
             $user->name      = $request->name ?? $user->name;
             $user->email     = $request->email ?? $user->email;
-            $user->date_of_birth  = $date ?? $user->date_of_birth;
+            $user->date_of_birth  = $date;
             $user->phone      = $request->phone ?? $user->phone;
             $user->gender      = $request->gender ?? $user->gender;
             $user->address     = $request->address ?? $user->address;
 
+            $user->avatar      =  $user->avatar ?? null;
             if ($request->hasFile('avatar')) {
                 //delete user avatar
                 if ($user->avatar && file_exists(public_path($user->avatar))) {
@@ -72,14 +72,12 @@ class ProfileController extends Controller
                 }
                 $url = Helper::fileUpload($request->file('avatar'), 'users', $user->name . "-" . time());
                 $user->avatar = $url;
-            } elseif ($request->avatar_path) {
-                $user->avatar = $request->avatar_path; // Save predefined path
             }
 
             $user->save();
             return $this->sendResponse([], 'User info updated successfully');
         } catch (\Exception $e) {
-            return $this->sendError(' Error updating user info', [], 500);
+            return $this->sendError(' Error updating user info', $e->getMessage(), 500);
         }
     }
 

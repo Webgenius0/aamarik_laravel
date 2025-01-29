@@ -110,7 +110,7 @@ Route::get('/status-update/{id}', [DoctorController::class, 'updateDepartmentSta
 Route::get('/department/show', [DoctorController::class, 'department'])->name('doctors.department');
 Route::post('/department-add', [DoctorController::class, 'departmentStore'])->name('doctor.department.store');
 Route::delete('/department-delete/{id}', [DoctorController::class, 'DestroyCategory'])->name('doctor.destroy.category');
-//department for show Departmentlist 
+//department for show Departmentlist
 
 Route::get('/department', [DoctorController::class, 'getDeparments'])->name('doctor.department');
 
@@ -143,3 +143,10 @@ Route::controller(CouponController::class)->group(function () {
     Route::get('/coupon/status/update/{id}', 'updateStatus')->name('coupon.status.update');
 });
 
+//! Route for order management
+Route::controller(\App\Http\Controllers\Web\Backend\Order\OrderManagementController::class)->group(function () {
+    Route::get('/orders', 'index')->name('orders.index');
+    Route::post('/order/status/update/{id}', 'updateStatus')->name('order.status.update');
+    Route::get('/order/details/{id}', 'show')->name('order.details');
+    Route::delete('/order/delete/{id}', 'destroy')->name('order.delete');
+});

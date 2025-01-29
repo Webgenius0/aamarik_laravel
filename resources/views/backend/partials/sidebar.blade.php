@@ -1,7 +1,7 @@
 
 @push('styles')
 .menu-link.active {
-    background-color: #007bff; 
+    background-color: #007bff;
     color: white;
 }
 @endpush
@@ -33,6 +33,14 @@
                     <span class="menu-text"> Create Coupon </span>
                 </a>
             </li>
+            <li class="menu-title">Order Management</li>
+            <li class="menu-item">
+                <a class="menu-link {{Request::RouteIs('orders') ? 'bg-blue-500 text-white' : '' }}" href="{{route('orders.index')}}">
+                    <span class="menu-icon"><i class="uil uil-compass"></i></span>
+                    <span class="menu-text">  Orders </span>
+                </a>
+            </li>
+
             <li class="menu-title">Frontend</li>
 
             <li class="menu-item">
@@ -67,12 +75,12 @@
                             <span class="menu-text">Doctor List</span>
                         </a>
                     </li>
-                    
-                 
+
+
                 </ul>
             </li>
             <!-- End Doctor -->
-          
+
             <!-- Medicine start -->
             <li class="menu-item">
                 <a class="menu-link {{Request::RouteIs('medicine.index') ? 'bg-blue-500 text-white' : '' }}" href="{{route('medicine.index')}}">
@@ -112,7 +120,7 @@
                             <span class="menu-text">Banner</span>
                         </a>
                     </li>
-                    
+
                     <li class="menu-item">
                         <a href="{{route('home.section')}}" class="menu-link">
                             <span class="menu-dot"></span>
@@ -127,8 +135,8 @@
                         </a>
                     </li>
 
-                   
-                    
+
+
                 </ul>
             </li>
 

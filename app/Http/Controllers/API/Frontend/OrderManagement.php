@@ -315,7 +315,13 @@ class OrderManagement extends Controller
 
         //create subscription if subscripiton is true
         if($validatedData['subscription']){
-            $this->createSubscription($validatedData,$order,$paymentIntent);
+           $subscription =  $this->createSubscription($validatedData,$order,$paymentIntent);
+
+           //update order data
+            $orderData->update([
+                'subscription_id' => $subscription->id,
+            ]);
+
         }
 
 
@@ -358,6 +364,8 @@ class OrderManagement extends Controller
         });
 
 
+
+
         // Now check if there are any filtered products
         if (!empty($filteredProducts)) {
             // Access the first filtered product (if any)
@@ -371,6 +379,12 @@ class OrderManagement extends Controller
                 ],
             ]);
         }
+
+        if (!is_object($product)) {
+            Log::error('product retrieve failed');
+            return $this->sendError('Product retrieval failed.', []);
+        }
+
 
         // Create Subscription
         $subscription = Subscription::create([
@@ -390,8 +404,12 @@ class OrderManagement extends Controller
             'expand' => ['latest_invoice.payment_intent'],
         ]);
 
+        // Ensure subscription was successfully created
+        if (!isset($subscription->id)) {
+            return $this->sendError('Subscription creation failed.', []);
+        }
 
-        return $this->sendResponse([], 'Subscription created successfully');
+        return $subscription;
     }
 
 
