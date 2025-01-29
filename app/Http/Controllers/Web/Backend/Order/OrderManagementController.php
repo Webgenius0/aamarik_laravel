@@ -48,14 +48,13 @@ class OrderManagementController extends Controller
                 })
                 ->addColumn('action', function ($data) {
                     return '<div class="inline-flex gap-1">
-                        <a href="javascript:void(0);" onclick="viewOrderDetails(' . $data->id . ')" class="btn bg-info text-white rounded">
+                            <a href="javascript:void(0);" onclick="viewOrderDetails(' . $data->id . ')" class="btn bg-info text-white rounded">
                                 <i class="fa-solid fa-eye"></i>
-                        </a>
+                            </a>
 
-
-                        <a href="javascript:void(0);" onclick="showDeleteConfirm(' . $data->id . ')" class="btn bg-danger text-white rounded" title="Delete">
-                            <i class="fa-solid fa-trash"></i>
-                        </a>
+                            <a href="javascript:void(0);" onclick="showDeleteConfirm(' . $data->id . ')" class="btn bg-danger text-white rounded" title="Delete">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
                     </div>';
                 })
                 ->rawColumns(['order_code','order_date','order_status', 'action'])
@@ -78,14 +77,58 @@ class OrderManagementController extends Controller
         return response()->json(['success' => true, 'message' => 'Order status updated successfully.']);
     }
 
+
     /**
-     * show order details
+     * Show order details
      */
     public function show($id)
     {
-        $order = Order::with(['user', 'treatment', 'orderItems', 'billingAddress'])->findOrFail($id);
+        $order = Order::with(['user', 'treatment', 'orderItems', 'billingAddress'])->find($id);
 
-        return view('backend.layouts.Order.details', compact('order'));
+        if (!$order) {
+            return response()->json(['success' => false, 'message' => 'Order not found'], 404);
+        }
 
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'uuid' => $order->uuid,
+                'status' => $order->status,
+                'order_date' => $order->created_at->format('Y-m-d'),
+                'delivery_date' => $order->delivery_date ?? 'Not Assigned',
+                'user' => [
+                    'id' => $order->user->id,
+                    'name' => $order->user->name,
+                    'email' => $order->user->email,
+                ],
+                'billing_address' => [
+                    'name' => $order->billingAddress->name ?? '',
+                    'email' => $order->billingAddress->email ?? '',
+                    'address' => $order->billingAddress->address ?? '',
+                    'contact' => $order->billingAddress->contact ?? '',
+                    'city' => $order->billingAddress->city ?? '',
+                    'postcode' => $order->billingAddress->postcode ?? '',
+                ],
+                'order_items' => $order->orderItems->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'title' => $item->medicine->title,
+                        'quantity' => $item->quantity,
+                        'unit_price' => $item->unit_price,
+                        'total_price' => $item->total_price,
+                    ];
+                }),
+                'treatment' => [
+                    'id' => optional($order->treatment)->id,
+                    'name' => optional($order->treatment)->name,
+                ],
+                'sub_total' => $order->sub_total,
+                'discount' => $order->discount,
+                'total_price' => $order->total_price,
+                'note' => $order->note ?? null,
+            ]
+        ]);
     }
+
+
 }

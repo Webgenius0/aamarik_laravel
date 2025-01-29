@@ -103,71 +103,6 @@
     <main class="p-6">
         <div class="card bg-white overflow-hidden">
 
-
-
-            <!-- Order Details Modal -->
-{{--            <div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">--}}
-{{--                <div class="modal-dialog modal-lg">--}}
-{{--                    <div class="modal-content">--}}
-{{--                        <div class="modal-header">--}}
-{{--                            <h5 class="modal-title" id="orderDetailsModalLabel">Order Details</h5>--}}
-{{--                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>--}}
-{{--                        </div>--}}
-{{--                        <div class="modal-body">--}}
-{{--                            <!-- Order details will be injected here via AJAX -->--}}
-{{--                            <div class="order-details">--}}
-{{--                                <h4 class="text-lg font-bold mb-2">Order Information</h4>--}}
-{{--                                <p><strong>Order ID:</strong> <span id="order-id"></span></p>--}}
-{{--                                <p><strong>Status:</strong> <span id="order-status"></span></p>--}}
-{{--                                <p><strong>Order Date:</strong> <span id="order-date"></span></p>--}}
-{{--                                <p><strong>Delivery Date:</strong> <span id="delivery-date"></span></p>--}}
-
-{{--                                <h4 class="text-lg font-bold mb-2">User Information</h4>--}}
-{{--                                <p><strong>Name:</strong> <span id="user-name"></span></p>--}}
-{{--                                <p><strong>Email:</strong> <span id="user-email"></span></p>--}}
-
-{{--                                <h4 class="text-lg font-bold mb-2">Billing Address</h4>--}}
-{{--                                <p><strong>Name:</strong> <span id="billing-name"></span></p>--}}
-{{--                                <p><strong>Email:</strong> <span id="billing-email"></span></p>--}}
-{{--                                <p><strong>Address:</strong> <span id="billing-address"></span></p>--}}
-{{--                                <p><strong>Contact:</strong> <span id="billing-contact"></span></p>--}}
-{{--                                <p><strong>City:</strong> <span id="billing-city"></span></p>--}}
-{{--                                <p><strong>Postcode:</strong> <span id="billing-postcode"></span></p>--}}
-
-{{--                                <h4 class="text-lg font-bold mb-2">Order Items</h4>--}}
-{{--                                <table class="min-w-full table-auto border">--}}
-{{--                                    <thead>--}}
-{{--                                    <tr>--}}
-{{--                                        <th class="px-4 py-2 border">Medicine</th>--}}
-{{--                                        <th class="px-4 py-2 border">Quantity</th>--}}
-{{--                                        <th class="px-4 py-2 border">Unit Price</th>--}}
-{{--                                        <th class="px-4 py-2 border">Total Price</th>--}}
-{{--                                    </tr>--}}
-{{--                                    </thead>--}}
-{{--                                    <tbody id="order-items">--}}
-{{--                                    <!-- Order items will be injected here -->--}}
-{{--                                    </tbody>--}}
-{{--                                </table>--}}
-
-{{--                                <h4 class="text-lg font-bold mb-2">Treatment Information</h4>--}}
-{{--                                <p><strong>Name:</strong> <span id="treatment-name"></span></p>--}}
-
-{{--                                <h4 class="text-lg font-bold mb-2">Pricing Summary</h4>--}}
-{{--                                <p><strong>Sub Total:</strong> <span id="sub-total"></span></p>--}}
-{{--                                <p><strong>Discount:</strong> <span id="discount"></span></p>--}}
-{{--                                <p><strong>Total Price:</strong> <span id="total-price"></span></p>--}}
-
-{{--                                <h4 class="text-lg font-bold mb-2">Order Note</h4>--}}
-{{--                                <p id="order-note"></p>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-
-
-
-
             <div class="p-4">
                 <div class="overflow-x-auto custom-scroll">
                     <div class="min-w-full inline-block align-middle">
@@ -212,12 +147,103 @@
         </div>
     </main>
 
-    <!---->
+
+
+    <!-- Order Details Modal -->
+    <div id="orderDetailsModal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center transition-opacity duration-300">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-3xl w-full transform scale-95 transition-transform duration-300" id="modalContent">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center border-b pb-3">
+                <h2 class="text-2xl font-semibold text-gray-800">Order Details</h2>
+                <button onclick="closeOrderModal()" class="text-gray-600 hover:text-red-500 text-2xl font-bold">&times;</button>
+            </div>
+
+            <!-- Order Details -->
+            <div class="order-details mt-4 space-y-4 text-gray-700">
+
+                <!-- Order Info -->
+                <h4 class="text-lg font-bold text-gray-900">🛒 Order Information</h4>
+                <div class="grid grid-cols-2 gap-4 text-gray-800">
+                    <p><strong>Order ID:</strong> <span id="order-id"></span></p>
+                    <p><strong>Status:</strong> <span id="order-status" class="px-3 py-1 rounded-lg bg-gray-200 text-sm"></span></p>
+                    <p><strong>Order Date:</strong> <span id="order-date"></span></p>
+                    <p><strong>Delivery Date:</strong> <span id="delivery-date"></span></p>
+                </div>
+
+                <!-- User Info & Billing Address Side-by-Side -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    <!-- User Info -->
+                    <div class="bg-gray-100 p-4 rounded-lg shadow-md">
+                        <h4 class="text-lg font-bold text-gray-900">👤 User Information</h4>
+                        <p><strong>Name:</strong> <span id="user-name"></span></p>
+                        <p><strong>Email:</strong> <span id="user-email"></span></p>
+                    </div>
+
+                    <!-- Billing Address -->
+                    <div class="bg-gray-100 p-4 rounded-lg shadow-md">
+                        <h4 class="text-lg font-bold text-gray-900">🏠 Billing Address</h4>
+                        <p><strong>Name:</strong> <span id="billing-name"></span></p>
+                        <p><strong>Email:</strong> <span id="billing-email"></span></p>
+                        <p><strong>Address:</strong> <span id="billing-address"></span></p>
+                        <p><strong>Contact:</strong> <span id="billing-contact"></span></p>
+                        <p><strong>City:</strong> <span id="billing-city"></span></p>
+                        <p><strong>Postcode:</strong> <span id="billing-postcode"></span></p>
+                    </div>
+                </div>
+
+                <!-- Order Items Table -->
+                <h4 class="text-lg font-bold text-gray-900 mt-4">📦 Order Items</h4>
+                <div class="overflow-x-auto">
+                    <table class="w-full border mt-2 rounded-lg shadow-md bg-gray-100">
+                        <thead class="bg-gray-300">
+                        <tr>
+                            <th class="px-4 py-2 border">Medicine</th>
+                            <th class="px-4 py-2 border">Quantity</th>
+                            <th class="px-4 py-2 border">Unit Price</th>
+                            <th class="px-4 py-2 border">Total Price</th>
+                        </tr>
+                        </thead>
+                        <tbody id="order-items"></tbody>
+                    </table>
+                </div>
+
+                <!-- Treatment & Pricing Side-by-Side -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    <!-- Treatment -->
+                    <div class="bg-gray-100 p-4 rounded-lg shadow-md">
+                        <h4 class="text-lg font-bold text-gray-900">💊 Treatment Information</h4>
+                        <p><strong>Name:</strong> <span id="treatment-name"></span></p>
+                    </div>
+
+                    <!-- Pricing Summary -->
+                    <div class="bg-gray-100 p-4 rounded-lg shadow-md">
+                        <h4 class="text-lg font-bold text-gray-900">💰 Pricing Summary</h4>
+                        <p><strong>Sub Total:</strong> <span id="sub-total"></span></p>
+                        <p><strong>Discount:</strong> <span id="discount"></span></p>
+                        <p><strong>Total Price:</strong> <span id="total-price"></span></p>
+                    </div>
+                </div>
+
+                <!-- Order Note -->
+                <h4 class="text-lg font-bold text-gray-900 mt-4">📝 Order Note</h4>
+                <p id="order-note" class="italic text-gray-600"></p>
+            </div>
+
+            <!-- Close Button -->
+            <div class="mt-5 flex justify-end">
+                <button onclick="closeOrderModal()" class="bg-red-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-red-600 transition">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
 
 
 @endsection
 
 @push('scripts')
+
     <script src="https://unpkg.com/tailwindcss-jit-cdn@2.2.19/dist/tailwind.min.js"></script>
     {{-- Dropify --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"></script>
@@ -228,7 +254,10 @@
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
+    <!-- Define orderDetailsRoute here -->
+    <script>
+        var orderDetailsRoute = @json(route('order.details', ':id'));
+    </script>
 
     <script>
         function ShowCreateUpdateModal() {
@@ -356,80 +385,80 @@
             });
         }
 
-        // View order details in a modal
+        // Open the modal
         function viewOrderDetails(orderId) {
             var route = "{{ route('order.details', ':id') }}".replace(':id', orderId);
 
             $.ajax({
                 url: route,
-                type: "GET",
-                success: function(response) {
-                    $('#orderDetailsModal .modal-body').html(response); // Assuming response contains order details HTML
-                    $('#orderDetailsModal').modal('show'); // Show the modal
+                type: 'GET',
+                success: function (response) {
+                    if (response.success === true) {
+                        var data = response.data;
+
+                        // Fill Order Details
+                        $('#order-id').text(data.uuid);
+                        $('#order-status').text(data.status || 'N/A');
+                        $('#order-date').text(data.order_date || 'N/A');
+                        $('#delivery-date').text(data.delivery_date || 'N/A');
+
+                        // Fill User Details
+                        $('#user-name').text(data.user.name);
+                        $('#user-email').text(data.user.email);
+
+                        // Fill Billing Address
+                        $('#billing-name').text(data.billing_address.name);
+                        $('#billing-email').text(data.billing_address.email);
+                        $('#billing-address').text(data.billing_address.address);
+                        $('#billing-contact').text(data.billing_address.contact);
+                        $('#billing-city').text(data.billing_address.city);
+                        $('#billing-postcode').text(data.billing_address.postcode);
+
+                        // Fill Treatment Info
+                        $('#treatment-name').text(data.treatment.name || 'N/A');
+
+                        // Fill Pricing
+                        $('#sub-total').text('$' + data.sub_total);
+                        $('#discount').text('$' + data.discount);
+                        $('#total-price').text('$' + data.total_price);
+
+                        // Fill Order Note
+                        $('#order-note').text(data.note || 'No notes available');
+
+                        // Populate Order Items Table
+                        var orderItemsHTML = '';
+                        data.order_items.forEach(function (item) {
+                            orderItemsHTML += `
+                        <tr class="border">
+                            <td class="px-4 py-2 border">${item.title}</td>
+                            <td class="px-4 py-2 border">${item.quantity}</td>
+                            <td class="px-4 py-2 border">$${item.unit_price}</td>
+                            <td class="px-4 py-2 border">$${item.total_price}</td>
+                        </tr>`;
+                        });
+                        $('#order-items').html(orderItemsHTML);
+
+                        // Show Modal
+                        $('#orderDetailsModal').removeClass('hidden');
+                        $('#modalContent').removeClass('scale-95').addClass('scale-100');
+                    } else {
+                        alert('Order not found.');
+                    }
                 },
-                error: function(error) {
-                    flasher.error('An error occurred while fetching the order details.');
+                error: function () {
+                    alert('Failed to load order details.');
                 }
             });
         }
 
-        // Example function to fetch and display order details in the modal
-        {{--function viewOrderDetails(orderId) {--}}
-        {{--    // Replace with your actual route for fetching order details--}}
-        {{--    var route = "{{ route('order.details', ':id') }}".replace(':id', orderId);--}}
+        // Close the modal
+        function closeOrderModal() {
+            $('#modalContent').removeClass('scale-100').addClass('scale-95');
+            setTimeout(() => {
+                $('#orderDetailsModal').addClass('hidden');
+            }, 200);
+        }
 
-        {{--    $.ajax({--}}
-        {{--        url: route,--}}
-        {{--        type: "GET",--}}
-        {{--        success: function(response) {--}}
-        {{--            // Assuming your response contains the order details in the response.data--}}
-        {{--            var order = response.data;--}}
-
-        {{--            // Injecting the order details into the modal--}}
-        {{--            $('#order-id').text(order.uuid);--}}
-        {{--            $('#order-status').text(order.status.charAt(0).toUpperCase() + order.status.slice(1));--}}
-        {{--            $('#order-date').text(order.created_at);--}}
-        {{--            $('#delivery-date').text(order.status == 'delivered' ? order.updated_at : 'Not Delivered');--}}
-
-        {{--            $('#user-name').text(order.user.name);--}}
-        {{--            $('#user-email').text(order.user.email);--}}
-
-        {{--            $('#billing-name').text(order.billing_address.name ?? 'N/A');--}}
-        {{--            $('#billing-email').text(order.billing_address.email ?? 'N/A');--}}
-        {{--            $('#billing-address').text(order.billing_address.address ?? 'N/A');--}}
-        {{--            $('#billing-contact').text(order.billing_address.contact ?? 'N/A');--}}
-        {{--            $('#billing-city').text(order.billing_address.city ?? 'N/A');--}}
-        {{--            $('#billing-postcode').text(order.billing_address.postcode ?? 'N/A');--}}
-
-        {{--            // Inject order items dynamically--}}
-        {{--            var itemsHtml = '';--}}
-        {{--            order.order_items.forEach(function(item) {--}}
-        {{--                itemsHtml += '<tr>' +--}}
-        {{--                    '<td class="px-4 py-2 border">' + (item.medicine.name ?? 'N/A') + '</td>' +--}}
-        {{--                    '<td class="px-4 py-2 border">' + item.quantity + '</td>' +--}}
-        {{--                    '<td class="px-4 py-2 border">' + item.unit_price.toFixed(2) + '</td>' +--}}
-        {{--                    '<td class="px-4 py-2 border">' + item.total_price.toFixed(2) + '</td>' +--}}
-        {{--                    '</tr>';--}}
-        {{--            });--}}
-        {{--            $('#order-items').html(itemsHtml);--}}
-
-        {{--            $('#treatment-name').text(order.treatment.name ?? 'N/A');--}}
-
-        {{--            $('#sub-total').text(order.sub_total.toFixed(2));--}}
-        {{--            $('#discount').text(order.discount.toFixed(2));--}}
-        {{--            $('#total-price').text(order.total_price.toFixed(2));--}}
-
-        {{--            $('#order-note').text(order.note ?? 'N/A');--}}
-
-        {{--            // Open the modal--}}
-        {{--            $('#orderDetailsModal').modal('show');--}}
-        {{--        },--}}
-        {{--        error: function(error) {--}}
-        {{--            console.error('Error fetching order details:', error);--}}
-        {{--            alert('An error occurred while fetching the order details.');--}}
-        {{--        }--}}
-        {{--    });--}}
-        {{--}--}}
 
 
 

@@ -1,52 +1,64 @@
-<div class="order-details">
-    <h4 class="text-lg font-bold mb-2">Order Information</h4>
-    <p><strong>Order ID:</strong> {{ $order->uuid }}</p>
-    <p><strong>Status:</strong> {{ ucfirst($order->status) }}</p>
-    <p><strong>Order Date:</strong> {{ $order->created_at->format('d-m-Y') }}</p>
-    <p><strong>Delivery Date:</strong> {{ $order->status == 'delivered' ? $order->updated_at->format('d-m-Y') : 'Not Delivered' }}</p>
-
-    <h4 class="text-lg font-bold mb-2">User Information</h4>
-    <p><strong>Name:</strong> {{ $order->user->name }}</p>
-    <p><strong>Email:</strong> {{ $order->user->email }}</p>
-
-    <h4 class="text-lg font-bold mb-2">Billing Address</h4>
-    <p><strong>Name:</strong> {{ $order->billingAddress->name ?? 'N/A' }}</p>
-    <p><strong>Email:</strong> {{ $order->billingAddress->email ?? 'N/A' }}</p>
-    <p><strong>Address:</strong> {{ $order->billingAddress->address ?? 'N/A' }}</p>
-    <p><strong>Contact:</strong> {{ $order->billingAddress->contact ?? 'N/A' }}</p>
-    <p><strong>City:</strong> {{ $order->billingAddress->city ?? 'N/A' }}</p>
-    <p><strong>Postcode:</strong> {{ $order->billingAddress->postcode ?? 'N/A' }}</p>
-
-    <h4 class="text-lg font-bold mb-2">Order Items</h4>
-    <table class="min-w-full table-auto border">
-        <thead>
+<div class="table-responsive">
+    <table class="table table-bordered">
         <tr>
-            <th class="px-4 py-2 border">Medicine</th>
-            <th class="px-4 py-2 border">Quantity</th>
-            <th class="px-4 py-2 border">Unit Price</th>
-            <th class="px-4 py-2 border">Total Price</th>
+            <th>Order ID</th>
+            <td>{{ $order->uuid }}</td>
         </tr>
-        </thead>
-        <tbody>
-        @foreach($order->orderItems as $item)
-            <tr>
-                <td class="px-4 py-2 border">{{ $item->medicine->name ?? 'N/A' }}</td>
-                <td class="px-4 py-2 border">{{ $item->quantity }}</td>
-                <td class="px-4 py-2 border">{{ number_format($item->unit_price, 2) }}</td>
-                <td class="px-4 py-2 border">{{ number_format($item->total_price, 2) }}</td>
-            </tr>
-        @endforeach
-        </tbody>
+        <tr>
+            <th>Customer Name</th>
+            <td>{{ $order->user->name }}</td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>{{ $order->user->email }}</td>
+        </tr>
+        <tr>
+            <th>Order Date</th>
+            <td>{{ $order->created_at->format('d-m-Y') }}</td>
+        </tr>
+        <tr>
+            <th>Billing Address</th>
+            <td>{{ $order->billingAddress->address ?? 'N/A' }}</td>
+        </tr>
+        <tr>
+            <th>Order Status</th>
+            <td>{{ ucfirst($order->status) }}</td>
+        </tr>
+        <tr>
+            <th>Subtotal</th>
+            <td>${{ number_format($order->sub_total, 2) }}</td>
+        </tr>
+        <tr>
+            <th>Discount</th>
+            <td>${{ number_format($order->discount, 2) }}</td>
+        </tr>
+        <tr>
+            <th>Total</th>
+            <td>${{ number_format($order->total_price, 2) }}</td>
+        </tr>
     </table>
-
-    <h4 class="text-lg font-bold mb-2">Treatment Information</h4>
-    <p><strong>Name:</strong> {{ $order->treatment->name ?? 'N/A' }}</p>
-
-    <h4 class="text-lg font-bold mb-2">Pricing Summary</h4>
-    <p><strong>Sub Total:</strong> {{ number_format($order->sub_total, 2) }}</p>
-    <p><strong>Discount:</strong> {{ number_format($order->discount, 2) }}</p>
-    <p><strong>Total Price:</strong> {{ number_format($order->total_price, 2) }}</p>
-
-    <h4 class="text-lg font-bold mb-2">Order Note</h4>
-    <p>{{ $order->note ?? 'N/A' }}</p>
 </div>
+
+<h5>Order Items</h5>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Medicine</th>
+        <th>Quantity</th>
+        <th>Unit Price</th>
+        <th>Total Price</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach($order->orderItems as $item)
+        <tr>
+            <td>{{ $item->id }}</td>
+            <td>{{ $item->medicine_id }}</td>
+            <td>{{ $item->quantity }}</td>
+            <td>${{ number_format($item->unit_price, 2) }}</td>
+            <td>${{ number_format($item->total_price, 2) }}</td>
+        </tr>
+    @endforeach
+    </tbody>
+</table>
