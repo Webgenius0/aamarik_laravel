@@ -163,6 +163,7 @@ class OrderManagement extends Controller
             // Save assessments and check for correct answers
            $this->storeAssessmentsResult($validatedData,$order);
 
+           dd('workign......');
            //create payment intent
             $this->createPaymentIntent($validatedData,$order);
 
