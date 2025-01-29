@@ -340,20 +340,22 @@ class OrderManagement extends Controller
 
         //get current user
         $user = auth()->user();
-        dd($user);
+
         // Check if Stripe customer exists in the database
         // Retrieve the existing customer on Stripe
         $customer = Customer::retrieve($user->stripe_customer_id);
+
         if (empty($customer)) {
             return $this->sendError('Please add a payment method',[]);
         }
 
-        $decodedResponse = json_decode($this->checkCustomerHasPaymentMethod()->getContent(), true);
-        // dd($decodedResponse);
-
-        if (!$decodedResponse['status']) {
-            return $decodedResponse;
-        }
+//        $decodedResponse = json_decode($this->checkCustomerHasPaymentMethod()->getContent(), true);
+//        // dd($decodedResponse);
+//
+//        if (!$decodedResponse['status']) {
+//            return $decodedResponse;
+//        }
+        dd($customer);
 
 
 
