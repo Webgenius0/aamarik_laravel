@@ -349,12 +349,11 @@ class OrderManagement extends Controller
             return $this->sendError('Please add a payment method',[]);
         }
 
-//        $decodedResponse = json_decode($this->checkCustomerHasPaymentMethod()->getContent(), true);
-//        // dd($decodedResponse);
-//
-//        if (!$decodedResponse['status']) {
-//            return $decodedResponse;
-//        }
+        // Check and set the payment method as default if necessary
+        $paymentMethodId = $validatedData['payment_method_id'];
+
+        // Check if the customer has a default payment method, or set the provided one as default
+        $this->checkCustomerHasPaymentMethod($paymentMethodId);
 
         // Retrieve all active products
         $productRetrive = \Stripe\Product::all([
@@ -416,34 +415,47 @@ class OrderManagement extends Controller
         return $subscription;
     }
 
-
+    
     /**
-     * Check customers has payment method
+     * Check if the customer has a payment method
      */
-    private function checkCustomerHasPaymentMethod()
+    private function checkCustomerHasPaymentMethod($paymentMethodId = null)
     {
         $user = auth()->user();
+
         if (!$user?->stripe_customer_id) {
-            return  $this->sendError('Please add your cart.');
+            return $this->sendError('Please add your payment method to proceed.');
         }
 
         $customer = Customer::retrieve($user->stripe_customer_id);
         if (empty($customer)) {
-            return  $this->sendError('Please add your cart.',[]);
+            return $this->sendError('Customer not found in Stripe.');
         }
 
+        // Check if a default payment method exists
         if (!empty($customer->invoice_settings?->default_payment_method)) {
-            $stripe = new \Stripe\StripeClient(config('services.stripe.secret'));
-            $paymentMethod = $stripe->customers->retrievePaymentMethod($customer?->id, $customer->invoice_settings?->default_payment_method, []);
-            if (!$paymentMethod) {
-                return  $this->sendError('Please add your cart.',[]);
-            } else {
-                return $this->sendResponse($paymentMethod, 'Customer has payment method');
+            // Default payment method exists, return success
+            return $this->sendResponse([], 'Customer already has a default payment method.');
+        }
 
+        // If no default payment method, we need to set the provided one as default
+        if ($paymentMethodId) {
+            try {
+                // Attach the provided payment method to the customer
+                $paymentMethod = \Stripe\PaymentMethod::retrieve($paymentMethodId);
+                $paymentMethod->attach(['customer' => $customer->id]);
+
+                // Set the provided payment method as the default for the customer
+                $customer->invoice_settings->default_payment_method = $paymentMethodId;
+                $customer->save();
+
+                return $this->sendResponse([], 'Payment method set as default.');
+            } catch (\Exception $e) {
+                return $this->sendError('Failed to set default payment method. Please try again.', [$e->getMessage()]);
             }
         }
 
-        return  $this->sendError('Please add your cart.',[]);
+        return $this->sendError('No payment method provided.');
     }
 
 }
