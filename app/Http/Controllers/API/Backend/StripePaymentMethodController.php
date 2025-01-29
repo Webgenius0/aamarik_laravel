@@ -142,7 +142,7 @@ class StripePaymentMethodController extends Controller
                 $paymentMethod->default = ($paymentMethod->id === $customer->invoice_settings->default_payment_method);
                 return $paymentMethod;
             });
-            
+
             // Return the first payment method
             return $this->sendResponse(StripeCardResource::collection($paymentMethodsCollection), 'Payment methods retrieved successfully.');
         } catch (\Stripe\Exception\ApiErrorException $e) {

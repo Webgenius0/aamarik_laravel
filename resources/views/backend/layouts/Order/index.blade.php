@@ -494,12 +494,12 @@
 
                 success: function(resp) {
                     console.log(resp);
-                    // Reloade DataTable
+                    // Reload DataTable
                     $('#data-table').DataTable().ajax.reload();
-                    if (resp.success === true) {
-                        // show toast message
-                        flasher.success(resp.message);
 
+                    if (resp.success === true) {
+                        // Show toast message
+                        flasher.success(resp.message);
                     } else if (resp.errors) {
                         flasher.error(resp.errors[0]);
                     } else {

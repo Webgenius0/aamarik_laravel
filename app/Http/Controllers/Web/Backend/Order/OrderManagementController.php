@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web\Backend\Order;
 
+use App\Helper\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Coupon;
 use App\Models\FAQ;
@@ -141,30 +142,65 @@ class OrderManagementController extends Controller
      */
     public function destroy($id)
     {
-        //find order with uuid
-        $order = Order::with(['user','treatment','orderItems','assessmentResults','review','billingAddress','assessmentsResults'])->where('uuid', $id)->first();
+        // Find order with uuid
+        $order = Order::with(['user', 'treatment', 'orderItems', 'review', 'billingAddress', 'assessmentsResults'])->where('uuid', $id)->first();
         if (!$order) {
             return response()->json(['success' => false, 'message' => 'Order not found'], 404);
         }
 
-        //get order user strip_customer_id
+        // Get order user stripe_customer_id
         $customerID = $order->stripe_payment_id;
 
-        //get order subscription id
+        // Get order subscription id
         $subscriptionID = $order->subscription_id;
 
-        $subscription = \Stripe\Subscription::retrieve($subscriptionID);
-      if($order->subscription && $subscriptionID)
-      {
-          if (!$subscription && empty($subscription->data)) {
-              return response()->json(['success' => false, 'message' => 'Subscription not found'], 404);
-          }else{
-              if ($subscription->status != 'cancelled') {
-                  $subscription->customer == $customerID ? $subscription->cancel() : '';
-              }
-          }
+        if ($order->subscription && $subscriptionID) {
+            try {
+                $subscription = \Stripe\Subscription::retrieve($subscriptionID);
 
-      }
+                if (!$subscription || empty($subscription->data)) {
+                    return response()->json(['success' => false, 'message' => 'Subscription not found'], 404);
+                }
+
+                // Cancel the subscription if not already cancelled
+                if ($subscription->status != 'canceled') {
+                    if ($subscription->customer == $customerID) {
+                        $subscription->cancel();
+                    }
+                }
+            } catch (\Exception $e) {
+                return response()->json(['success' => false, 'message' => 'Error cancelling subscription: ' . $e->getMessage()], 500);
+            }
+        }
+
+         //if order has prescription
+         if ($order->prescription && file_exists(public_path($order->prescription))) {
+            unlink(public_path($order->prescription));
+         }
+
+        // Delete order review
+        if ($order->review) {
+            $order->review->delete();
+        }
+
+        // Delete order items
+        $order->orderItems()->delete();
+
+        // Delete order billing address
+        if ($order->billingAddress) {
+            $order->billingAddress->delete();
+        }
+
+        // Delete order assessments results
+        if ($order->assessmentsResults) {
+            $order->assessmentsResults->delete();
+        }
+
+        // Delete order
+        $order->delete();
+
+        return response()->json(['success' => true, 'message' => 'Order deleted successfully.']);
     }
+
 
 }

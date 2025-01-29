@@ -99,8 +99,4 @@ class Order extends Model
         return $this->belongsTo(Coupon::class);
     }
 
-    public function assessmentsResults()
-    {
-        return $this->hasMany(AssessmentResult::class);
-    }
 }
