@@ -340,6 +340,7 @@ class OrderManagement extends Controller
 
         //get current user
         $user = auth()->user();
+        dd($validatedData);
         // Check if Stripe customer exists in the database
         // Retrieve the existing customer on Stripe
         $customer = Customer::retrieve($user->stripe_customer_id);
@@ -354,7 +355,7 @@ class OrderManagement extends Controller
             return $decodedResponse;
         }
 
-        dd($validatedData);
+
 
         // Retrieve all active products
         $productRetrive = \Stripe\Product::all([
