@@ -336,6 +336,8 @@ class OrderManagement extends Controller
      */
     private function createSubscription($validatedData,$order,$paymentIntent)
     {
+
+        dd("validatedata: " $validatedData);
         //get current user
         $user = auth()->user();
         // Check if Stripe customer exists in the database
@@ -353,7 +355,6 @@ class OrderManagement extends Controller
         }
 
 
-        dd("productID: " . $customer?->id,"userId:".$user?->id);
 
         // Retrieve all active products
         $productRetrive = \Stripe\Product::all([
