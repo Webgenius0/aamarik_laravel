@@ -54,12 +54,12 @@ class ProfileController extends Controller
 
 
         try {
-            $date = Carbon::createFromFormat('m/d/Y',  $request->date_of_birth)->format('Y-m-d');
+            $date = $request->date_of_birth ? Carbon::createFromFormat('m/d/Y',  $request->date_of_birth)->format('Y-m-d') : null;
 
             $user = User::where('id', Auth::id())->first();
             $user->name      = $request->name ?? $user->name;
             $user->email     = $request->email ?? $user->email;
-            $user->date_of_birth  = $date ?? $user->date_of_birth;
+            $user->date_of_birth  = $date;
             $user->phone      = $request->phone ?? $user->phone;
             $user->gender      = $request->gender ?? $user->gender;
             $user->address     = $request->address ?? $user->address;
