@@ -315,7 +315,13 @@ class OrderManagement extends Controller
 
         //create subscription if subscripiton is true
         if($validatedData['subscription']){
-            $this->createSubscription($validatedData,$order,$paymentIntent);
+           $subscription =  $this->createSubscription($validatedData,$order,$paymentIntent);
+
+           //update order data
+            $orderData->update([
+                'subscription_id' => $subscription->id,
+            ]);
+
         }
 
 
@@ -391,7 +397,7 @@ class OrderManagement extends Controller
         ]);
 
 
-        return $this->sendResponse([], 'Subscription created successfully');
+        return $subscription;
     }
 
 

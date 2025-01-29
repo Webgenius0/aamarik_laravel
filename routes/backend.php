@@ -148,4 +148,5 @@ Route::controller(\App\Http\Controllers\Web\Backend\Order\OrderManagementControl
     Route::get('/orders', 'index')->name('orders.index');
     Route::post('/order/status/update/{id}', 'updateStatus')->name('order.status.update');
     Route::get('/order/details/{id}', 'show')->name('order.details');
+    Route::delete('/order/delete/{id}', 'destroy')->name('order.delete');
 });

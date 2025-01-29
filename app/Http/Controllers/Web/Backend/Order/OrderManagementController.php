@@ -130,5 +130,12 @@ class OrderManagementController extends Controller
         ]);
     }
 
+    /**
+     * destroy Order
+     */
+    public function destroy($id)
+    {
+        dd($id);
+    }
 
 }

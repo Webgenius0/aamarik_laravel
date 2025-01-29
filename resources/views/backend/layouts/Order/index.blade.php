@@ -483,10 +483,11 @@
 
         // Delete Button
         function deleteItem(id) {
-            var url = '';
+            var route = "{{ route('order.delete', ':id') }}".replace(':id', id);
+
             $.ajax({
                 type: "DELETE",
-                url: url.replace(':id', id),
+                url: route,
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },

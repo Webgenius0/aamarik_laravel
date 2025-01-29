@@ -24,6 +24,7 @@ class Order extends Model
         'stripe_payment_id',
         'subscription',
         'prescription',
+        'subscription_id',
         'note',
         'status',
     ];
@@ -48,6 +49,7 @@ class Order extends Model
             'subscription' => 'boolean',
             'prescription' => 'string',
             'note'         => 'string',
+            'subscription_id' => 'string',
             'status'       => 'string',
         ];
     }
