@@ -368,7 +368,7 @@ class OrderManagement extends Controller
         });
 
 
-
+        dd($validatedData);
 
         // Now check if there are any filtered products
         if (!empty($filteredProducts)) {
@@ -388,7 +388,7 @@ class OrderManagement extends Controller
             Log::error('product retrieve failed');
             return $this->sendError('Product retrieval failed.', []);
         }
-        dd($validatedData);
+
 
         // Create Subscription
         $subscription = Subscription::create([
