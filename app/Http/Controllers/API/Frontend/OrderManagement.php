@@ -337,7 +337,7 @@ class OrderManagement extends Controller
     private function createSubscription($validatedData,$order,$paymentIntent)
     {
 
-        dd($validatedData);
+
         //get current user
         $user = auth()->user();
         // Check if Stripe customer exists in the database
@@ -388,7 +388,7 @@ class OrderManagement extends Controller
             Log::error('product retrieve failed');
             return $this->sendError('Product retrieval failed.', []);
         }
-
+        dd($validatedData);
 
         // Create Subscription
         $subscription = Subscription::create([
