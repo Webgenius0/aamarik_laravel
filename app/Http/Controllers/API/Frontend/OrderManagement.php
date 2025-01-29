@@ -337,7 +337,7 @@ class OrderManagement extends Controller
     private function createSubscription($validatedData,$order,$paymentIntent)
     {
 
-        dd("validatedata: " .$validatedData);
+        dd($validatedData);
         //get current user
         $user = auth()->user();
         // Check if Stripe customer exists in the database
