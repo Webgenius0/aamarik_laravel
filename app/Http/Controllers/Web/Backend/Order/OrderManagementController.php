@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Web\Backend\Order;
 
 use App\Helper\Helper;
 use App\Http\Controllers\Controller;
+use App\Models\AssessmentResult;
 use App\Models\Coupon;
 use App\Models\FAQ;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Stripe\Customer;
 use Stripe\Stripe;
@@ -59,7 +62,7 @@ class OrderManagementController extends Controller
                                 <i class="fa-solid fa-eye"></i>
                             </a>
 
-                            <a href="javascript:void(0);" onclick="showDeleteConfirm(' . $data->uuid . ')" class="btn bg-danger text-white rounded" title="Delete">
+                            <a href="javascript:void(0);" onclick="showDeleteConfirm(' . $data->id . ')" class="btn bg-danger text-white rounded" title="Delete">
                                 <i class="fa-solid fa-trash"></i>
                             </a>
                     </div>';
@@ -142,65 +145,82 @@ class OrderManagementController extends Controller
      */
     public function destroy($id)
     {
-        // Find order with uuid
-        $order = Order::with(['user', 'treatment', 'orderItems', 'review', 'billingAddress', 'assessmentsResults'])->where('uuid', $id)->first();
-        if (!$order) {
-            return response()->json(['success' => false, 'message' => 'Order not found'], 404);
-        }
+        DB::beginTransaction();
+        try {
+            // Find order with uuid
+            $order = Order::with(['user', 'treatment', 'orderItems', 'review', 'billingAddress'])->find($id);
 
-        // Get order user stripe_customer_id
-        $customerID = $order->stripe_payment_id;
+            if (!$order) {
+                return response()->json(['success' => false, 'message' => 'Order not found'], 404);
+            }
 
-        // Get order subscription id
-        $subscriptionID = $order->subscription_id;
+            // Get order user stripe_customer_id
+            $customerID = $order->stripe_payment_id;
 
-        if ($order->subscription && $subscriptionID) {
-            try {
-                $subscription = \Stripe\Subscription::retrieve($subscriptionID);
+            // Get order subscription id
+            $subscriptionID = $order->subscription_id;
 
-                if (!$subscription || empty($subscription->data)) {
-                    return response()->json(['success' => false, 'message' => 'Subscription not found'], 404);
-                }
+            // If the order has a subscription, attempt to cancel it
+            if ($subscriptionID) {
+                try {
+                    $subscription = \Stripe\Subscription::retrieve($subscriptionID);
 
-                // Cancel the subscription if not already cancelled
-                if ($subscription->status != 'canceled') {
+                    // Log the subscription response for debugging
+                    Log::info('Stripe Subscription Response: ', (array) $subscription);
+
+                    // Check if subscription exists and is active
+                    if (!$subscription || $subscription->status != 'active') {
+                        return response()->json(['success' => false, 'message' => 'Subscription not found or is not active'], 404);
+                    }
+
+                    // Check if the customer ID matches before canceling the subscription
                     if ($subscription->customer == $customerID) {
                         $subscription->cancel();
+                        Log::info('Subscription canceled successfully: ' . $subscriptionID);
+                    } else {
+                        Log::info('Customer ID mismatch. Subscription not canceled.');
                     }
+                } catch (\Exception $e) {
+                    DB::rollBack(); // Rollback the transaction if Stripe API fails
+                    return response()->json(['success' => false, 'message' => 'Error cancelling subscription: ' . $e->getMessage()], 500);
                 }
-            } catch (\Exception $e) {
-                return response()->json(['success' => false, 'message' => 'Error cancelling subscription: ' . $e->getMessage()], 500);
             }
+
+            // If order has a prescription, delete it
+            if ($order->prescription && file_exists(public_path($order->prescription))) {
+                unlink(public_path($order->prescription));
+            }
+
+            // Delete associated review
+            if ($order->review) {
+                $order->review->delete();
+            }
+
+            // Delete associated order items
+            $order->orderItems()->delete();
+
+            // Delete associated billing address
+            if ($order->billingAddress) {
+                $order->billingAddress->delete();
+            }
+
+            // Delete associated assessment results
+            AssessmentResult::where('order_id', $order->id)->delete();
+
+            // Delete the order itself
+            $order->delete();
+
+            DB::commit(); // Commit the transaction if everything goes well
+
+            return response()->json(['success' => true, 'message' => 'Order deleted successfully.']);
+        } catch (\Exception $e) {
+            DB::rollBack(); // Rollback the transaction in case of error
+            return response()->json(['success' => false, 'message' => 'An error occurred: ' . $e->getMessage()], 500);
         }
-
-         //if order has prescription
-         if ($order->prescription && file_exists(public_path($order->prescription))) {
-            unlink(public_path($order->prescription));
-         }
-
-        // Delete order review
-        if ($order->review) {
-            $order->review->delete();
-        }
-
-        // Delete order items
-        $order->orderItems()->delete();
-
-        // Delete order billing address
-        if ($order->billingAddress) {
-            $order->billingAddress->delete();
-        }
-
-        // Delete order assessments results
-        if ($order->assessmentsResults) {
-            $order->assessmentsResults->delete();
-        }
-
-        // Delete order
-        $order->delete();
-
-        return response()->json(['success' => true, 'message' => 'Order deleted successfully.']);
     }
+
+
+
 
 
 }

@@ -122,7 +122,7 @@ class OrderManagement extends Controller
             $totalPrice = 0;
             foreach ( $validatedData['medicines'] as $medicine) {
                 // Decrement medicine stock_quantity
-                $medicineRecord = Medicine::with('detials')->find($medicine['medicine_id']);
+                $medicineRecord = Medicine::with('details')->find($medicine['medicine_id']);
                 // Check if the medicine exists
 
                 // Access the related details model
