@@ -364,6 +364,8 @@ class OrderManagement extends Controller
         });
 
 
+
+
         // Now check if there are any filtered products
         if (!empty($filteredProducts)) {
             // Access the first filtered product (if any)
@@ -377,6 +379,12 @@ class OrderManagement extends Controller
                 ],
             ]);
         }
+
+        if (!is_object($product)) {
+            Log::error('product retrieve failed');
+            return $this->sendError('Product retrieval failed.', []);
+        }
+
 
         // Create Subscription
         $subscription = Subscription::create([
