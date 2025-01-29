@@ -353,6 +353,7 @@ class OrderManagement extends Controller
         }
 
 
+        dd("productID: " . $customer?->id,"userId:".$user?->id);
 
         // Retrieve all active products
         $productRetrive = \Stripe\Product::all([
@@ -386,7 +387,7 @@ class OrderManagement extends Controller
             Log::error('product retrieve failed');
             return $this->sendError('Product retrieval failed.', []);
         }
-        dd("productID: " . $product?->id,"userId:".$user?->id);
+
 
         // Create Subscription
         $subscription = Subscription::create([
