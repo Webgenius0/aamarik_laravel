@@ -354,7 +354,7 @@ class OrderManagement extends Controller
             return $decodedResponse;
         }
 
-
+        dd($validatedData);
 
         // Retrieve all active products
         $productRetrive = \Stripe\Product::all([
@@ -368,7 +368,7 @@ class OrderManagement extends Controller
         });
 
 
-        dd($validatedData);
+
 
         // Now check if there are any filtered products
         if (!empty($filteredProducts)) {
