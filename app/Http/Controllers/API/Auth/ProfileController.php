@@ -79,7 +79,7 @@ class ProfileController extends Controller
             $user->save();
             return $this->sendResponse([], 'User info updated successfully');
         } catch (\Exception $e) {
-            return $this->sendError(' Error updating user info', [], 500);
+            return $this->sendError(' Error updating user info', $e->getMessage(), 500);
         }
     }
 
