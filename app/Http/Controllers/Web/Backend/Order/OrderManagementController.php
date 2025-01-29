@@ -8,10 +8,16 @@ use App\Models\FAQ;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Stripe\Customer;
+use Stripe\Stripe;
 use Yajra\DataTables\Facades\DataTables;
 
 class OrderManagementController extends Controller
 {
+    public function __construct()
+    {
+        Stripe::setApiKey(config('services.stripe.secret'));
+    }
     /**
      * Display list of orders
      */
@@ -52,7 +58,7 @@ class OrderManagementController extends Controller
                                 <i class="fa-solid fa-eye"></i>
                             </a>
 
-                            <a href="javascript:void(0);" onclick="showDeleteConfirm(' . $data->id . ')" class="btn bg-danger text-white rounded" title="Delete">
+                            <a href="javascript:void(0);" onclick="showDeleteConfirm(' . $data->uuid . ')" class="btn bg-danger text-white rounded" title="Delete">
                                 <i class="fa-solid fa-trash"></i>
                             </a>
                     </div>';
@@ -135,7 +141,30 @@ class OrderManagementController extends Controller
      */
     public function destroy($id)
     {
-        dd($id);
+        //find order with uuid
+        $order = Order::with(['user','treatment','orderItems','assessmentResults','review','billingAddress','assessmentsResults'])->where('uuid', $id)->first();
+        if (!$order) {
+            return response()->json(['success' => false, 'message' => 'Order not found'], 404);
+        }
+
+        //get order user strip_customer_id
+        $customerID = $order->stripe_payment_id;
+
+        //get order subscription id
+        $subscriptionID = $order->subscription_id;
+
+        $subscription = \Stripe\Subscription::retrieve($subscriptionID);
+      if($order->subscription && $subscriptionID)
+      {
+          if (!$subscription && empty($subscription->data)) {
+              return response()->json(['success' => false, 'message' => 'Subscription not found'], 404);
+          }else{
+              if ($subscription->status != 'cancelled') {
+                  $subscription->customer == $customerID ? $subscription->cancel() : '';
+              }
+          }
+
+      }
     }
 
 }

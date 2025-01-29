@@ -396,6 +396,7 @@ class OrderManagement extends Controller
             'expand' => ['latest_invoice.payment_intent'],
         ]);
 
+        Log::info($subscription);
 
         return $subscription;
     }
