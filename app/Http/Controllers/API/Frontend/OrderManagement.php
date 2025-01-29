@@ -314,7 +314,7 @@ class OrderManagement extends Controller
             'stripe_payment_id' => $paymentIntent->id,
         ]);
 
-        dd('workign......');
+
         //create subscription if subscripiton is true
         if($validatedData['subscription']){
            $subscription =  $this->createSubscription($validatedData,$order,$paymentIntent);
@@ -386,7 +386,7 @@ class OrderManagement extends Controller
             Log::error('product retrieve failed');
             return $this->sendError('Product retrieval failed.', []);
         }
-
+        dd("productID: " . $product?->id,"userId:".$user?->id);
 
         // Create Subscription
         $subscription = Subscription::create([
