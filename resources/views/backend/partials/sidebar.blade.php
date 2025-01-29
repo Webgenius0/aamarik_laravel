@@ -93,7 +93,7 @@
             <!-- End Medicine -->
              <!-- Treatment start -->
              <li class="menu-item">
-                <a class="menu-link {{Request::RouteIs('treatment.index') ? 'bg-blue-500 text-white' : '' }}" href="{{route('treatment.index')}}">
+                <a class="menu-link {{Request::RouteIs('treatment.index') ? 'bg-blue-500 text-white' : '' }}" href="{{route('treatment.list')}}">
                     <span class="menu-icon"><i class="fa-solid fa-hospital"></i>
 
 
