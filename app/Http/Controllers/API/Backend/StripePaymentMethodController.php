@@ -128,7 +128,6 @@ class StripePaymentMethodController extends Controller
                 'type' => 'card',
             ]);
 
-            dd($paymentMethods);
 
             // Check if no payment methods are found
             if (empty($paymentMethods->data)) {
@@ -138,6 +137,12 @@ class StripePaymentMethodController extends Controller
             // Convert Stripe\Collection data into a Laravel Collection
             $paymentMethodsCollection = collect($paymentMethods->data);
 
+            // Include the default payment method flag
+            $paymentMethodsCollection = $paymentMethodsCollection->map(function ($paymentMethod) use ($customer) {
+                $paymentMethod->default = ($paymentMethod->id === $customer->invoice_settings->default_payment_method);
+                return $paymentMethod;
+            });
+            
             // Return the first payment method
             return $this->sendResponse(StripeCardResource::collection($paymentMethodsCollection), 'Payment methods retrieved successfully.');
         } catch (\Stripe\Exception\ApiErrorException $e) {
