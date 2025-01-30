@@ -114,8 +114,39 @@ class ProfileController extends Controller
     public function getMyNotifications()
     {
         $user = Auth::user();
-        $notifications = $user->notifications()->latest()->get();
+        $notifications = $user->unreadNotifications()->latest()->get();
+
+        $notifications = $notifications->map(function ($notification) {
+            return [
+                'id' => $notification->id,
+                'title'   => 'Order #' . $notification->data['order_uuid'] . ' Placed',
+                'message' => 'Your order #' . $notification->data['order_uuid'] . ' is being processed. Total: $' . $notification->data['order_total'] . '. Thank you!',
+                'created_at' => $notification->created_at->toDateTimeString()
+            ];
+        });
+
         return $this->sendResponse($notifications, 'Notifications fetched successfully');
+    }
+
+
+    /**
+     * Read notification
+     */
+    public function markAsRead($id)
+    {
+        $user = Auth::user();
+
+        // Fetch the notification by ID
+        $notification = $user->unreadNotifications()->find($id);
+
+        if (!$notification) {
+            return $this->sendError('Notification not found or already read', 404);
+        }
+
+        // Mark the notification as read
+        $notification->markAsRead();
+
+        return $this->sendResponse([], 'Notification marked as read successfully');
     }
 
 
