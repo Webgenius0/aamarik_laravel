@@ -128,17 +128,18 @@
                                 Title
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Brand
+                                Avatar
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Quantity
+                                Category Title
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                About Title
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Stock Quantity
                             </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Status
-                            </th>
+                            
                             <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Action
                             </th>
@@ -447,18 +448,19 @@
                     data: 'avatar',
                     name: 'avatar'
                 },
-                // {
-                //     data: 'quantity',
-                //     name: 'quantity'
-                // },
-                // {
-                //     data: 'stock_quantity',
-                //     name: 'stock_quantity'
-                // },
-                // {
-                //     data: 'status',
-                //     name: 'status'
-                // },
+                {
+                    data: 'title',
+                    name: 'title'
+                },
+                {
+                    data: 'title',
+                    name: 'title'
+                },
+                {
+                    data: 'stock_quantity',
+                    name: 'stock_quantity'
+                },
+                
                 {
                     data: 'action',
                     name: 'action',

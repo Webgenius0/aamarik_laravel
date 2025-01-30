@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Web\Backend;
-
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use App\Models\Department;
@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Exception;
 use App\Helper\Helper;
 use Yajra\DataTables\Facades\DataTables;
+use App\Models\Doctor;
 
 class DoctorController extends Controller
 {
@@ -37,8 +38,9 @@ class DoctorController extends Controller
 
 
                 ->addColumn('action', function ($data) {
+                    $viewRoute = route('doctor.edit', ['doctor' => $data->id]);
                     return '<div class="inline-flex gap-1">
-                            <a href="javascript:void(0);" onclick="editDoctor(' . $data->id . ')" class="btn bg-success text-white rounded">
+                            <a href="javascript:void(0);" href="' . $viewRoute . '" class="btn bg-success text-white rounded">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
                             <a href="javascript:void(0);" onclick="showDeleteConfirm(' . $data->id . ')" class="btn bg-danger text-white rounded" title="Delete">
@@ -58,6 +60,14 @@ class DoctorController extends Controller
     //     $doctor = User::where('type', 'doctor')->first($id);
     //     return view('backend.layouts.doctor.index', compact('doctor'));
     // }
+
+    //doctor Edit
+
+    public function edit(User $doctor)
+    {
+        Log::info('Editing doctor with ID: ' . $doctor->id);
+        return view('backend.layout.doctor.editdoctor', compact('docotor'));
+    }
 
     //create-doctor
     public function create()
@@ -89,10 +99,11 @@ class DoctorController extends Controller
 
 
                 ->addColumn('action', function ($data) {
+                    $viewRoute = route('doctor.edit', ['doctor' => $data->id]);
                     return '<div class="inline-flex gap-1">
-                            <a href="javascript:void(0);" onclick="editDoctor(' . $data->id . ')" class="btn bg-success text-white rounded">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
+                             <a class="btn btn-sm btn-primary" href="' . $viewRoute . '">
+                             <i class="fa-solid fa-pen"></i>
+                         </a>
                             <a href="javascript:void(0);" onclick="showDeleteConfirm(' . $data->id . ')" class="btn bg-danger text-white rounded" title="Delete">
                                 <i class="fa-solid fa-trash"></i>
                             </a>
@@ -195,27 +206,27 @@ class DoctorController extends Controller
         }
     }
     //doctor edit
-    public function edit($id)
-    {
+    // public function edit($id)
+    // {
 
-        $user = User::find($id);
+    //     $user = User::find($id);
 
-        if ($user) {
+    //     if ($user) {
 
-            $avatarUrl = $user->avatar ? asset($user->avatar) : asset('uploads/users/avatar/default-avatar.png');
+    //         $avatarUrl = $user->avatar ? asset($user->avatar) : asset('uploads/users/avatar/default-avatar.png');
 
-            return response()->json([
-                'success' => true,
-                'data' => $user,
-                'avatar_url' => $avatarUrl
-            ]);
-        }
+    //         return response()->json([
+    //             'success' => true,
+    //             'data' => $user,
+    //             'avatar_url' => $avatarUrl
+    //         ]);
+    //     }
 
-        return response()->json([
-            'success' => false,
-            'message' => 'Doctor not found'
-        ]);
-    }
+    //     return response()->json([
+    //         'success' => false,
+    //         'message' => 'Doctor not found'
+    //     ]);
+    // }
 
 
     //doctor delete

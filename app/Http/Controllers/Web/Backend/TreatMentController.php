@@ -40,15 +40,15 @@ class TreatMentController extends Controller
                 //     return '<input type="checkbox" class="form-switch" onclick="ShowStatusChangeAlert(' . $data->id . ')" ' . ($data->status == "active" ? 'checked' : '') . '>';
                 // })
                 ->addColumn('avatar', function ($data) {
-                    $avatarUrl = $data->avatar ? asset('storage/avatars/' . $data->avatar) : asset('uploads/defult-image/default-avatar.png');
+                    $avatarUrl = $data->avatar ? asset($data->avatar) : asset('uploads/defult-image/default-avatar.png');
                     return $data->avatar ? 
                         '<a href="' . $avatarUrl . '" target="_blank"><img src="' . $avatarUrl . '" alt="Avatar" width="50" height="50"></a>' :
                         'No Avatar';
                 })
-                // Display Categories
-                // ->addColumn('categories', function ($data) {
-                //     return $data->categories->pluck('title')->implode(', '); // List category titles
-                // })
+                //Display Categories
+                ->addColumn('categories', function ($data) {
+                    return $data->categories->pluck('title')->implode(', '); // List category titles
+                })
                 // Display Details
                 // ->addColumn('details', function ($data) {
                 //     return $data->details->pluck('title')->implode(', '); // List detail titles
@@ -71,7 +71,7 @@ class TreatMentController extends Controller
                             </a>
                         </div>';
                 })
-                ->rawColumns(['name', 'avatar'])
+                ->rawColumns(['name', 'avatar','action','status'])
                 ->make(true);
             
         }
