@@ -22,7 +22,9 @@ class UserController extends Controller
         try {
             //get current auth
             $user = Auth::user();
-            $reviews = Order::with('user', 'review')->get();
+            $reviews = Order::with('user', 'review')
+                ->whereHas('review') // Only include orders that have a review
+                ->get();
             if($reviews->isEmpty())
             {
                 return $this->sendError("No reviews found");
