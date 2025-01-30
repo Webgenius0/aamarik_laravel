@@ -9,9 +9,9 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Queue\SerializesModels;
 
-class OrderNotificationToUser extends Notification implements ShouldQueue
+class OrderNotificationToUser extends Notification
 {
-    use Queueable, SerializesModels;
+    use Queueable;
 
     private $order;
 
@@ -49,7 +49,7 @@ class OrderNotificationToUser extends Notification implements ShouldQueue
         return $this->view('backend.layouts.Email.order_notification_to_user')
             ->with([
                 'notifiable' => $this->notifiable,
-                'order' => $this->order,
+                'order'      => $this->order,
             ]);
     }
 
