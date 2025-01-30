@@ -154,34 +154,27 @@ class OrderManagementController extends Controller
                 return response()->json(['success' => false, 'message' => 'Order not found'], 404);
             }
 
+
             // Get order user stripe_customer_id
-            $customerID = $order->stripe_payment_id;
+            $customerID = $order->user->stripe_customer_id;
 
             // Get order subscription id
             $subscriptionID = $order->subscription_id;
 
-            // If the order has a subscription, attempt to cancel it
+           // If the order has a subscription, attempt to cancel it
             if ($subscriptionID) {
                 try {
                     $subscription = \Stripe\Subscription::retrieve($subscriptionID);
 
-                    // Log the subscription response for debugging
-                    Log::info('Stripe Subscription Response: ', (array) $subscription);
-
-                    // Check if subscription exists and is active
-                    if (!$subscription || $subscription->status != 'active') {
-                        return response()->json(['success' => false, 'message' => 'Subscription not found or is not active'], 404);
-                    }
-
-                    // Check if the customer ID matches before canceling the subscription
-                    if ($subscription->customer == $customerID) {
+                    if($subscription->status === 'active' && $subscription->customer === $customerID) {
                         $subscription->cancel();
-                        Log::info('Subscription canceled successfully: ' . $subscriptionID);
-                    } else {
-                        Log::info('Customer ID mismatch. Subscription not canceled.');
+                        Log::info('Subscription canceled successfully');
                     }
-                } catch (\Exception $e) {
-                    DB::rollBack(); // Rollback the transaction if Stripe API fails
+
+
+                } catch (\Stripe\Exception\ApiErrorException $e) {
+                    DB::rollBack();
+
                     return response()->json(['success' => false, 'message' => 'Error cancelling subscription: ' . $e->getMessage()], 500);
                 }
             }
