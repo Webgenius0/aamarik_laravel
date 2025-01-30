@@ -33,7 +33,7 @@ class userOrderDetailsResource extends JsonResource
             'order_items' => $this->orderItems->map(function ($item) {
                 return [
                     'id' => $item->id,
-                    'medicine_id' => $item->medicine_id,
+                    'medicine' => $item->medicine->title,
                     'quantity' => $item->quantity,
                     'unit_price' => $item->unit_price,
                     'total_price' => $item->total_price,
