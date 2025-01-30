@@ -152,3 +152,20 @@ Route::controller(\App\Http\Controllers\Web\Backend\Order\OrderManagementControl
     Route::get('/order/details/{id}', 'show')->name('order.details');
     Route::delete('/order/delete/{id}', 'destroy')->name('order.delete');
 });
+
+//! Route for customer Management
+Route::controller(\App\Http\Controllers\Web\Backend\user\CustomerManagementController::class)->group(function () {
+    Route::get('/customers', 'index')->name('customer.index');
+    Route::get('/customer/details/{id}', 'show')->name('customer.show');
+    Route::get('/customer/order/sheet/{id}', 'orderSheet')->name('customer.order.sheet');
+    Route::get('/customer/order-details/{id}', 'orderDetails')->name('customer.order.details');
+});
+
+//! Route for empolyee management
+Route::controller(\App\Http\Controllers\Web\Backend\user\EmployeeManagementController::class)->group(function () {
+    Route::get('/employees', 'index')->name('employees.index');
+    Route::get('/employees/add', 'create')->name('employees.add');
+    Route::post('/employees/add', 'store')->name('employees.store');
+    Route::get('/employees-edit/{id}', 'edit')->name('employees.edit');
+    Route::post('/employees-update/{id}', 'update')->name('employees.update');
+});

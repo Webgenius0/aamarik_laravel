@@ -27,17 +27,32 @@
                     <span class="badge bg-primary rounded ms-auto">01</span>
                 </a>
             </li>
+            <li class="menu-title">Management</li>
             <li class="menu-item">
                 <a class="menu-link {{Request::RouteIs('') ? 'bg-blue-500 text-white' : '' }}" href="{{route('coupon.index')}}">
-                    <span class="menu-icon"><i class="uil uil-compass"></i></span>
+                    <span class="menu-icon"><i class="uil uil-percentage"></i></span>
                     <span class="menu-text"> Create Coupon </span>
                 </a>
             </li>
-            <li class="menu-title">Order Management</li>
+
             <li class="menu-item">
                 <a class="menu-link {{Request::RouteIs('orders') ? 'bg-blue-500 text-white' : '' }}" href="{{route('orders.index')}}">
-                    <span class="menu-icon"><i class="uil uil-compass"></i></span>
-                    <span class="menu-text">  Orders </span>
+                    <span class="menu-icon"><i class="uil uil-shopping-cart-alt"></i></span>
+                    <span class="menu-text">  Order Management </span>
+                </a>
+            </li>
+
+            <li class="menu-item">
+                <a class="menu-link {{ Request::RouteIs('customers*')  ? 'bg-blue-500 text-white' : '' }}" href="{{route('customer.index')}}">
+                    <span class="menu-icon"><i class="uil uil-users-alt"></i></span>
+                    <span class="menu-text">  Customers Management </span>
+                </a>
+            </li>
+
+            <li class="menu-item">
+                <a class="menu-link {{ Request::RouteIs('employees*')  ? 'bg-blue-500 text-white' : '' }}" href="{{route('employees.index')}}">
+                    <span class="menu-icon"><i class="uil uil-user-md"></i></span>
+                    <span class="menu-text"> Employee Management </span>
                 </a>
             </li>
 

@@ -1,6 +1,6 @@
 @extends('backend.app')
 
-@section('title', 'FAQ Management| ' . $setting->title ?? 'PrimeCare')
+@section('title', 'Doctore Management| ' . $setting->title ?? 'PrimeCare')
 
 @push('styles')
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
@@ -278,7 +278,7 @@ $(document).ready(function() {
         });
     });
 
-   
+
     // Edit Doctor Function
     function editDoctor(id) {
     let url = '{{ route("doctor.edit", ":id") }}';
@@ -297,13 +297,13 @@ $(document).ready(function() {
                 $('#department').val(doctor.department);
                 $('#doctor_id').val(doctor.id);
 
-                
-                const avatarPath = response.avatar_url ? response.avatar_url : '';  
+
+                const avatarPath = response.avatar_url ? response.avatar_url : '';
                 if (avatarPath) {
-                    
-                    const avatarUrl =  avatarPath;                   
-                    $('#avatar').attr('data-default-file', avatarUrl);                 
-                    $('#avatar').dropify('destroy').dropify();  
+
+                    const avatarUrl =  avatarPath;
+                    $('#avatar').attr('data-default-file', avatarUrl);
+                    $('#avatar').dropify('destroy').dropify();
                 }
 
                 // Show the modal
@@ -319,7 +319,7 @@ $(document).ready(function() {
 }
 
 
-    
+
     $('#close').click(function() {
         $('#modalOverlay').removeClass('modal-open');
         setTimeout(function() {
@@ -327,17 +327,17 @@ $(document).ready(function() {
         }, 200);
     });
 
-  
+
     $(document).ready(function() {
-    
+
     $.ajax({
         url: "{{ route('doctor.department') }}",  // Update this route to your actual API route
         method: 'GET',
         success: function(response) {
         if (response && response.length > 0) {
-            const departmentSelect = $('#department');          
+            const departmentSelect = $('#department');
             departmentSelect.empty();
-                       
+
             departmentSelect.append(new Option('Select Department', '', false, false));
 
             // Populate department dropdown with department names
@@ -360,7 +360,7 @@ $(document).ready(function() {
     }
     });
 
-   
+
 
     // Form Submission
     $('#update-doctor-form').submit(function(event) {
@@ -442,6 +442,6 @@ $(document).ready(function() {
                 } // Error
             })
         }
- 
+
 </script>
 @endpush

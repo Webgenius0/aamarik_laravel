@@ -61,6 +61,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('/user-update',  'updateUserInfo');
         Route::delete('/delete/user', 'deleteUser');
         Route::get('/my-notifications', 'getMyNotifications');
+        Route::patch('/notifications/read/{id}',  'markAsRead');
         Route::post('/change-password', 'changePassword');
     }); // End of User Auth Profile Controller
 
@@ -168,4 +169,7 @@ Route::controller(TreatmentController::class)->group(function () {
     Route::get('/treatment/{treatmentID}/consultation', 'treatmentConsultation');
 });
 
+
+//! Route for stripe webhook
+Route::post('/webhook/stripe', [\App\Http\Controllers\API\Backend\StripeWebhookController::class, 'handleWebhook']);
 
