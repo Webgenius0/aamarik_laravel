@@ -145,7 +145,7 @@ class OrderManagementController extends Controller
                return $this->sendResponse([], 'Order status is not delivered', 200);
            }
            if ($oder->review) {
-               return $this->sendResponse([], 'Order status is already reviewed', 200);
+               return $this->sendError('Order status is already reviewed',[] , 409);
            }
 
            Review::create([
