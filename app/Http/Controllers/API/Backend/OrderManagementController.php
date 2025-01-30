@@ -165,6 +165,62 @@ class OrderManagementController extends Controller
     /**
      * Get treatments assessments result
      */
+//    public function getAssessmentResult()
+//    {
+//        // Get the currently authenticated user
+//        $user = auth()->user();
+//        if (!$user) {
+//            return $this->sendError('Unauthorized access.', [], 401);
+//        }
+//
+//        // Fetch orders along with related treatment and assessment data
+//        $orders = Order::with(['treatment','assessmentResults','assessmentResults.assessment'])
+//            ->where('user_id', $user->id)
+//            ->latest()
+//            ->get();
+//
+//
+//        // Map the orders to a structured response
+//        $result = $orders->map(function ($order) {
+//            // Count correct and wrong answers
+//            $totalCorrect = $order->assessmentsResults->where('result', 'correct')->count();
+//            $totalWrong = $order->assessmentsResults->where('result', '!=', 'correct')->count();
+//            $totalAssessment = $order->assessmentsResults->count();
+//
+//            return [
+//                'Treatment' => $order->treatment->name,
+//                'Total_correct' => $totalCorrect,
+//                'Total_wrong' => $totalWrong,
+//                'Total_assessment' => $totalAssessment,
+//                'Order_uuid' => $order->uuid,
+//                'Assessment_results' => $order->assessmentsResults->map(function ($result) {
+//                    $assessmentData = [
+//                        'assessment' => $result->assessment->question,
+//                        'is_correct' => $result->result === 'correct',
+//                        'selected_option' => $result->selected_option,
+//                    ];
+//
+//                    // Add assessment options dynamically if they exist
+//                    foreach (['option1', 'option2', 'option3', 'option4'] as $optionKey) {
+//                        if (!empty($result->assessment->$optionKey)) {
+//                            $assessmentData[$optionKey] = $result->assessment->$optionKey;
+//                        }
+//                    }
+//
+//                    // Add the note if it exists
+//                    if (!empty($result->assessment->note)) {
+//                        $assessmentData['note'] = $result->assessment->note;
+//                        $assessmentData['note_answer'] = $result->notes;
+//                    }
+//
+//                    return $assessmentData;
+//                }),
+//            ];
+//        });
+//
+//        return $this->sendResponse($result, 'Assessment result retrieved successfully.');
+//    }
+
     public function getAssessmentResult()
     {
         // Get the currently authenticated user
@@ -174,27 +230,38 @@ class OrderManagementController extends Controller
         }
 
         // Fetch orders along with related treatment and assessment data
-        $orders = Order::with(['treatment', 'assessmentsResults.assessment'])
+        $orders = Order::with(['treatment', 'assessmentResults', 'assessmentResults.assessment'])
             ->where('user_id', $user->id)
             ->latest()
             ->get();
 
-        // Map the orders to a structured response
         $result = $orders->map(function ($order) {
+            // Check if assessmentResults exists before processing
+            if (!$order->assessmentResults) {
+                return [
+                    'Treatment' => $order->treatment->name ?? 'Unknown',
+                    'Total_correct' => 0,
+                    'Total_wrong' => 0,
+                    'Total_assessment' => 0,
+                    'Order_uuid' => $order->uuid,
+                    'Assessment_results' => []
+                ];
+            }
+
             // Count correct and wrong answers
-            $totalCorrect = $order->assessmentsResults->where('result', 'correct')->count();
-            $totalWrong = $order->assessmentsResults->where('result', '!=', 'correct')->count();
-            $totalAssessment = $order->assessmentsResults->count();
+            $totalCorrect = $order->assessmentResults->where('result', 'correct')->count();
+            $totalWrong = $order->assessmentResults->where('result', '!=', 'correct')->count();
+            $totalAssessment = $order->assessmentResults->count();
 
             return [
-                'Treatment' => $order->treatment->name,
+                'Treatment' => $order->treatment->name ?? 'Unknown',
                 'Total_correct' => $totalCorrect,
                 'Total_wrong' => $totalWrong,
                 'Total_assessment' => $totalAssessment,
                 'Order_uuid' => $order->uuid,
-                'Assessment_results' => $order->assessmentsResults->map(function ($result) {
+                'Assessment_results' => $order->assessmentResults->map(function ($result) {
                     $assessmentData = [
-                        'assessment' => $result->assessment->question,
+                        'assessment' => $result->assessment->question ?? 'Unknown',
                         'is_correct' => $result->result === 'correct',
                         'selected_option' => $result->selected_option,
                     ];
