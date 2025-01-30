@@ -19,6 +19,7 @@ class userOrdersResource extends JsonResource
             'uuid' => $this->uuid,
             'order_date' => $this->created_at->format('Y-m-d'),
             'Delivery_date' => $this->status == 'delivered' ? $this->updated_at->format('Y-m-d') : null,
+            'total' => $this->total_price,
             'status' => $this->status
         ];
     }
