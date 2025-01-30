@@ -38,20 +38,20 @@ class OrderNotificationToUser extends Notification
     /**
      * Get the mail representation of the notification.
      */
-    public function toMail(object $notifiable): MailMessage
-    {
-//        return (new MailMessage)
-//            ->subject('Order Confirmation')
-//            ->markdown('backend.layouts.Email.order_notification_to_user', [
-//                'order' =>$this->order,
-//                'notifiable' => $notifiable,
+//    public function toMail(object $notifiable): MailMessage
+//    {
+////        return (new MailMessage)
+////            ->subject('Order Confirmation')
+////            ->markdown('backend.layouts.Email.order_notification_to_user', [
+////                'order' =>$this->order,
+////                'notifiable' => $notifiable,
+////            ]);
+//        return $this->view('backend.layouts.Email.order_notification_to_user')
+//            ->with([
+//                'notifiable' => $this->notifiable,
+//                'order'      => $this->order,
 //            ]);
-        return $this->view('backend.layouts.Email.order_notification_to_user')
-            ->with([
-                'notifiable' => $this->notifiable,
-                'order'      => $this->order,
-            ]);
-    }
+//    }
 
     /**
      * Get the array representation of the notification.
