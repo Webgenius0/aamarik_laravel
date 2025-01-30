@@ -185,33 +185,29 @@
                 <input type="hidden" name="id" id="medicine_id">
 
                 {{-- favicon --}}
-                <div class="flex flex-row space-x-8">
-
-                    <div class="w-full">
-
-                        <div class="flex-col md:flex-row">
-                            <label class="text-lg font-medium mb-2 md:mb-0 md:w-1/3 flex align-left">Image</label>
-                            <div class="w-full">
-                                <input name="avatar"
-                                    class="form-input w-full dropify dropify-wrapper1 .dropify-preview dropify-render img"
-                                    data-height="300" type="file"
-                                    {{-- accept=".jpg, .png, image/jpeg, image/png" --}}
-                                    accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg"
-                                   id="avatar" >
-                                @error('avatar')
-                                <span class="text-red-500 block mt-1 text-sm">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-
-                                <div class="text-blue-500 text-sm mt-1">
-                                    Recommended to 32x32 px(jpeg,png,jpg,gif,ico,webp,bmp,svg).
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                <div class="flex flex-col md:flex-row space-x-8">
+    <div class="w-full">
+        <div class="flex-col md:flex-row">
+            <label class="text-lg font-medium mb-2 md:mb-0 md:w-1/3 flex align-left">Images</label>
+            <div id="avatarContainer" class="w-full">
+                <!-- Dynamic Image Input Fields Will Appear Here -->
+                <div class="flex items-center mb-2">
+                    <input name="avatar[]" class="form-input w-full dropify" type="file"
+                        accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg" data-height="300">
+                    <button type="button" class="ml-2 text-xl font-semibold removeBtn hidden">-</button>
                 </div>
+            </div>
+            <button type="button" id="incrementBtn" class="ml-2 text-xl font-semibold">+</button>
+
+            @error('avatar')
+                <span class="text-red-500 block mt-1 text-sm">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+</div>
+
 
 
                 <!-- medicine details start -->
@@ -357,7 +353,7 @@
                             </div>
                         </div>
                         <!-- Plus button on the same row, aligned to the right -->
-                        <button type="button" id="incrementBtn" class="ml-2 text-xl font-semibold">+</button>
+                        <button type="button" id="incrementBtntext" class="ml-2 text-xl font-semibold">+</button>
                     </div>
 
                     <!-- Error message handling -->
@@ -499,47 +495,54 @@
 
 // Submit Form
 $('#createUpdateForm').on('submit', function(e) {
-            e.preventDefault();       
-            var faqId = $('#medicine_id').val();            
-            var url = faqId ? "{{ route('medicine.update', ':id') }}".replace(':id', faqId) : "{{ route('medicine.store') }}";   
-            var method = faqId ? "PUT" : "POST"; 
-            // Make the AJAX request
-            $.ajax({
-                type: method,
-                url: url,
-                data: $(this).serialize(),
-                success: function(resp) {
-                    console.log(resp);
+    e.preventDefault();
 
-                    // Reload DataTable
-                    $('#data-table').DataTable().ajax.reload();
+    var faqId = $('#medicine_id').val();
+    var url = faqId ? "{{ route('medicine.update', ':id') }}".replace(':id', faqId) : "{{ route('medicine.store') }}";
+    var method = faqId ? "PUT" : "POST"; 
 
-                    // Handle response
-                    if (resp.success === true) {
-                        // Show success message
-                        flasher.success(resp.message);
+    // Create a FormData object to handle file uploads
+    var formData = new FormData(this);
 
-                        // Close modal
-                        $('#modalOverlay').removeClass('modal-open');
-                        setTimeout(function() {
-                            $('#modalOverlay').hide();
-                        }, 200);
-                    } else if (resp.errors) {
-                        // Show first error message
-                        flasher.error(resp.errors[0]);
-                    } else {
-                        // Show warning message
-                        flasher.warning(resp.message);
-                    }
-                },
-                error: function(error) {
-                    // Show error message
-                    flasher.error('An error occurred. Please try again.');
-                    console.error(error);
-                }
-            });
+    // Make the AJAX request
+    $.ajax({
+        type: method,
+        url: url,
+        data: formData,
+        processData: false,  // Prevent jQuery from automatically processing the data
+        contentType: false,  // Prevent jQuery from setting the content type
+        success: function(resp) {
+            console.log(resp);
 
-        });
+            // Reload DataTable
+            $('#data-table').DataTable().ajax.reload();
+
+            // Handle response
+            if (resp.success === true) {
+                // Show success message
+                flasher.success(resp.message);
+
+                // Close modal
+                $('#modalOverlay').removeClass('modal-open');
+                setTimeout(function() {
+                    $('#modalOverlay').hide();
+                }, 200);
+            } else if (resp.errors) {
+                // Show first error message
+                flasher.error(resp.errors[0]);
+            } else {
+                // Show warning message
+                flasher.warning(resp.message);
+            }
+        },
+        error: function(error) {
+            // Show error message
+            flasher.error('An error occurred. Please try again.');
+            console.error(error);
+        }
+    });
+});
+
     
 
 
@@ -599,6 +602,28 @@ function editMedicine(id) {
                     });
                 }
 
+
+                if(resp.images && resp.images.length>0)
+                {
+                    const featureAvatarContainer =$('#avatarContainer');
+                    featureAvatarContainer.empty();
+                    resp.images.forEach(function(image, index){
+                        featureAvatarContainer.append(`
+                        <div class="flex items-center mb-2">
+            <input name="avatar[]" class="form-input w-full dropify" type="file" 
+                accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg" data-height="300">
+            <button type="button" class="ml-2 text-xl font-semibold removeBtn">-</button>
+        </div>
+                        `);
+                    });
+
+                    $(document).on('click', '.removeBtn', function() {
+    $(this).closest('.flex').remove(); // Remove the entire file input field
+});
+                }
+                
+
+
                 // Open the modal
                 $('#modalTitle').html('Update Medicine');
                 $('#modalOverlay').show().addClass('modal-open');
@@ -615,7 +640,7 @@ function editMedicine(id) {
 
 
     // Add new input field when "+" is clicked
-    document.getElementById('incrementBtn').addEventListener('click', function() {
+    document.getElementById('incrementBtntext').addEventListener('click', function() {
         var container = document.getElementById('inputContainer');
         
         // Create a new input field container
@@ -657,6 +682,47 @@ function editMedicine(id) {
             });
         }
     });
+//medicine image multiple create
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Initialize Dropify for all existing file inputs when the page loads
+    $('.dropify').dropify();
+
+    const incrementBtn = document.getElementById('incrementBtn');
+    const avatarContainer = document.getElementById('avatarContainer'); // Container for avatar fields
+
+    // Listen for click event to add a new avatar field
+    incrementBtn.addEventListener('click', function () {
+        // Create a new field for avatar input
+        const newAvatarField = document.createElement('div');
+        newAvatarField.classList.add('flex', 'flex-col', 'items-center', 'mb-2');
+
+        newAvatarField.innerHTML = `
+            <!-- Avatar input field -->
+            <input name="avatar[]" class="form-input w-full dropify" type="file" accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg" data-height="300">
+            <!-- Remove button below the image -->
+            <button type="button" class="ml-2 text-xl font-semibold removeBtn mt-2">- Remove</button>
+        `;
+
+        // Append the new field to the container
+        avatarContainer.appendChild(newAvatarField);
+
+        // Reinitialize Dropify on the newly added input field
+        const dropifyField = newAvatarField.querySelector('.dropify');
+        $(dropifyField).dropify();
+
+        // Add functionality to remove the field when the remove button is clicked
+        const removeBtn = newAvatarField.querySelector('.removeBtn');
+        removeBtn.addEventListener('click', function () {
+            avatarContainer.removeChild(newAvatarField);
+        });
+    });
+});
+
+
+
+
+
 //edit medicine
 // function editMedicine(id) {
 //             let route = '{{ route('medicine.edit', ':id') }}';

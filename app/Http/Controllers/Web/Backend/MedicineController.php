@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Models\MedicineDetails;
 use App\Helper\Helper;
+use App\Models\MedicineImages;
 Use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -60,14 +61,15 @@ class MedicineController extends Controller
         return view('backend.layouts.medicine.create-medicine');
     }
 
-    public function Store(Request $request){
-
+    public function Store(Request $request)
+    {
         $request->validate([
             'title' => 'required|string|max:255',
             'brand' => 'required|string|max:255',
             'generic_name' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,webp,bmp,svg',
+            'avatar' => 'nullable|array',
+            'avatar.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,webp,bmp,svg', // Array of images
             'form' => 'nullable|in:tablet,liquid,capsule,inhaler,syrup,ointment',
             'doges' => 'nullable|string',
             'unit' => 'nullable|string|max:50',
@@ -77,9 +79,9 @@ class MedicineController extends Controller
             'feature' => 'nullable|array',
             'feature.*' => 'nullable|string',
         ]);
-
+    
         DB::beginTransaction();
-
+    
         try {
             // Create the medicine entry
             $medicine = Medicine::create([
@@ -89,16 +91,25 @@ class MedicineController extends Controller
                 'description' => $request->input('description'),
                 'status' => 'active', // Adjust the status if needed
             ]);
-
-            $avatarPath = null;
+    
+            // Initialize an array to store avatar paths
+            $avatarPaths = [];
+    
+            // Check if 'avatar' files are provided and store them in 'medicine_images' table
             if ($request->hasFile('avatar')) {
-               
-                $avatarPath = Helper::fileUpload($request->file('avatar'), 'users', 'avatar');
-               
+                foreach ($request->file('avatar') as $file) {
+                    // Store each image and save it in 'medicine_images' table
+                    $path = Helper::fileUpload($file, 'users', 'avatar');
+                    MedicineImages::create([
+                        'medicine_id' => $medicine->id,  // Link the image to the medicine ID
+                        'image' => $path,  // Store the image path
+                    ]);
+                }
             }
+    
+            // Create the medicine detail entry without avatar since we're saving images in the medicine_images table
             $medicineDetail = MedicineDetails::create([
                 'medicine_id' => $medicine->id,
-                'avatar' => $avatarPath,
                 'form' => $request->input('form'),
                 'dosage' => $request->input('doges'),
                 'unit' => $request->input('unit'),
@@ -106,7 +117,8 @@ class MedicineController extends Controller
                 'quantity' => $request->input('quantity'),
                 'stock_quantity' => $request->input('stock_quantity'),
             ]);
-            
+    
+            // Store features if provided
             if ($request->has('feature')) {
                 foreach ($request->input('feature') as $feature) {
                     MedicineFeature::create([
@@ -115,8 +127,9 @@ class MedicineController extends Controller
                     ]);
                 }
             }
-
+    
             DB::commit();
+    
             return response()->json(['success' => true, 'message' => 'Medicine created successfully!']);
         } catch (Exception $e) {
             DB::rollBack();
@@ -124,15 +137,16 @@ class MedicineController extends Controller
             return response()->json(['success' => false, 'message' => 'Medicine creation failed!']);
         }
     }
-
+    
     //edit medicine
     public function edit($id)
     {
         $medicine = Medicine::with('details')->find($id);
         $features = MedicineFeature::where('medicine_id', $id)->pluck('feature')->toArray();
+        $images=MedicineImages::where('medicine_id',$id)->pluck('image')->toArray();
        
         if ($medicine) {
-            return response()->json(['success' => true, 'data'=>$medicine,'features'=>$features]); // Make sure the FAQ object is returned properly
+            return response()->json(['success' => true, 'data'=>$medicine,'features'=>$features,'images'=>$images]); // Make sure the FAQ object is returned properly
         }
 
 
