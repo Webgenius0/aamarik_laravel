@@ -273,4 +273,59 @@ class SettingController extends Controller
             return redirect(route('dashboard'))->with('t-error', 'Stripe Setting Update Failed');
         }
     }
+
+ /**
+     * get Microsoft Setting
+     *
+     */
+
+public function microsoftSetting()
+{
+    return view('backend.layouts.setting.microsoft-setting');
+}
+
+      /**
+     * Update Microsoft Setting
+     *
+     */
+
+
+
+     public function microsoftSettingUpdate(Request $request)
+     {
+         $request->validate([
+             'MS_CLIENT_ID' => 'nullable|string',
+             'MS_CLIENT_SECRET' => 'nullable|string',
+             'MS_TENANT_ID' => 'nullable|string',
+             'MS_GRAPH_SCOPE' => 'nullable|string',
+             'MS_AUTHORITY' => 'nullable|string',
+         ]);
+ 
+         try {
+             $envContent = File::get(base_path('.env'));
+             $lineBreak = "\n";
+             $envContent = preg_replace([
+                 '/MS_CLIENT_ID=(.*)\s/',
+                 '/MS_CLIENT_SECRET=(.*)\s/',
+                 '/MS_TENANT_ID=(.*)\s/',
+                 '/MS_GRAPH_SCOPE=(.*)\s/',
+                 '/MS_AUTHORITY=(.*)\s/',
+             ], [
+                 'MS_CLIENT_ID=' . $request->MS_CLIENT_ID . $lineBreak,
+                 'MS_CLIENT_SECRET=' . $request->MS_CLIENT_SECRET . $lineBreak,
+                 'MS_TENANT_ID=' . $request->MS_TENANT_ID . $lineBreak,
+                 'MS_GRAPH_SCOPE=' . $request->MS_GRAPH_SCOPE . $lineBreak,
+                 'MS_AUTHORITY=' . $request->MS_AUTHORITY . $lineBreak,
+             ], $envContent);
+ 
+             if ($envContent !== null) {
+                 File::put(base_path('.env'), $envContent);
+             }
+             session()->flash('success', 'Microsoft settings updated successfully.');
+             return redirect()->back();
+            // return redirect()->back()->with('t-success', 'Stripe Setting Update successfully.');
+         } catch (\Throwable $th) {
+             return redirect(route('dashboard'))->with('t-error', 'Microsoft Setting Update Failed');
+         }
+     }
 }

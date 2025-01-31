@@ -44,7 +44,9 @@ Route::post('mail/setting', [SettingController::class, 'mailSettingUpdate'])->na
 //Mail Setting Controller
 Route::get('stripe/setting', [SettingController::class, 'stripeSetting'])->name('stripe.setting');
 Route::post('stripe/setting', [SettingController::class, 'stripeSettingUpdate'])->name('stripe.setting.update');
-
+//Microsoft Setting Controller
+Route::get('microsoft/setting', [SettingController::class, 'microsoftSetting'])->name('microsoft.setting');
+Route::post('microsoft/setting', [SettingController::class, 'microsoftSettingUpdate'])->name('microsoft.setting.update');
 /* // Social Media
 Route::get('social-media/setting', [SocialMediaController::class, 'index'])->name('social.setting'); */
 

@@ -96,6 +96,19 @@
         overflow-y: auto;
         /* Ensure content scrolls if it exceeds the height */
     }
+
+
+
+    .image-item {
+    width: calc(50% - 1rem); /* For more precise control over image width */
+    margin-bottom: 1rem;
+}
+
+.image-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem; /* Adjust the gap to your liking */
+}
 </style>
 @endpush
 
@@ -182,7 +195,7 @@
                 enctype="multipart/form-data" >
               
                 <h1 class="flex align-left h1">Create Medicine</h1>
-                <input type="hidden" name="id" id="medicine_id">
+                <input type="text" name="id" id="medicine_id"  value="">
 
                 {{-- favicon --}}
                 <div class="flex flex-col md:flex-row space-x-8">
@@ -496,13 +509,17 @@
 // Submit Form
 $('#createUpdateForm').on('submit', function(e) {
     e.preventDefault();
-
+    
     var faqId = $('#medicine_id').val();
+    console.log(faqId);
     var url = faqId ? "{{ route('medicine.update', ':id') }}".replace(':id', faqId) : "{{ route('medicine.store') }}";
+   
     var method = faqId ? "PUT" : "POST"; 
+    console.log('Request URL:', method);
 
     // Create a FormData object to handle file uploads
     var formData = new FormData(this);
+    console.log(formData.medicine_id);
 
     // Make the AJAX request
     $.ajax({
@@ -610,15 +627,21 @@ function editMedicine(id) {
     // Create a flex container for the images
     featureAvatarContainer.append('<div class="image-row flex flex-wrap gap-4">');
 
-    // Loop through the images and display them
-    resp.images.forEach(function(image, index) {
-        // Make sure the image URL is correct, prepend the asset() function if using Laravel
-        let imageUrl = "{{ asset('storage') }}/" + image.url;  // Adjust path if needed
+    let baseUrl = "{{ asset('') }}";  // Get the base URL for assets
 
+    // Loop through the images and display them with dropify for changing images
+    resp.images.forEach(function(image, index) {
+        console.log(image);  // Check the image object in the console
+
+        // Construct the image URL relative to the public folder
+        let imageUrl = baseUrl  + image;  // Assuming image is the filename
+
+        // Add a dropify input for the existing image preview
         featureAvatarContainer.append(`
-            <div class="image-item flex-shrink-0 w-1/2 mb-4">
-                <img src="${imageUrl}" alt="Uploaded Image" class="w-full h-auto object-cover" />
-                <button type="button" class="ml-2 text-xl font-semibold removeBtn" data-image="${image.url}" data-id="${image.id}">Delete</button>
+            <div class="image-item d-flex flex-shrink-0 w-1/2 mb-4  ">
+                <!-- Add a dropify input field for replacing the image -->
+                <input type="file" name="avatar[]" class="dropify" data-default-file="${imageUrl}" data-height="300" />
+                
             </div>
         `);
     });
@@ -626,14 +649,8 @@ function editMedicine(id) {
     // Close the image container
     featureAvatarContainer.append('</div>');
 
-    // Add a file input for adding new images
-    featureAvatarContainer.append(`
-        <div class="flex items-center mb-2">
-            <input name="avatar[]" class="form-input w-full dropify" type="file" 
-                accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg" data-height="300">
-            <button type="button" class="ml-2 text-xl font-semibold removeBtn">-</button>
-        </div>
-    `);
+    // Initialize Dropify
+    $('.dropify').dropify();
 }
 
                 

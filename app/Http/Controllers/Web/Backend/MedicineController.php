@@ -159,13 +159,15 @@ class MedicineController extends Controller
 
     public function update(Request $request, $id)
     {
-        //dd("update");
+        dd($id);
+        dd($request->all());
+        // Log the incoming request data to help with debugging
+        Log::info('Request data: ', $request->all('id'));
+        
         // Validate the incoming request data
-        Log::info($request->all());
-        //dd($request->all());
         $request->validate([
-            'title' => 'nullable|string|max:255',
-            'brand' => 'nullable|string|max:255',
+            'title' => 'required|string|max:255',
+            'brand' => 'required|string|max:255',
             'generic_name' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:1000',
             'status' => 'nullable|string|in:active,inactive',
@@ -175,74 +177,104 @@ class MedicineController extends Controller
             'price' => 'nullable|numeric',
             'quantity' => 'nullable|integer',
             'stock_quantity' => 'nullable|integer',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'avatar' => 'nullable|array',
+            'avatar.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'feature' => 'nullable|array',
             'feature.*' => 'nullable|string|max:255',
         ]);
+        
+        DB::beginTransaction();
+        
+        try {
+            // Find the medicine by ID, including related details
+            $medicine = Medicine::find($id);
+            
+            if (!$medicine) {
+                return response()->json(['success' => false, 'message' => 'Medicine not found'], 404);
+            }
     
-        // Find the medicine by ID, including the related details
-        $medicine = Medicine::with('details')->find($id);
+            // Update the medicine entry
+            $medicine->update([
+                'title' => $request->input('title'),
+                'brand' => $request->input('brand'),
+                'generic_name' => $request->input('generic_name'),
+                'description' => $request->input('description'),
+                'status' => $request->input('status', 'active'), // Default to 'active' if not provided
+            ]);
     
-        if (!$medicine) {
-            return response()->json(['success' => false, 'message' => 'Medicine not found'], 404);
-        }
-    
-        // Update the medicine entry
-        $medicine->update([
-            'title' => $request->input('title'),
-            'brand' => $request->input('brand'),
-            'generic_name' => $request->input('generic_name'),
-            'description' => $request->input('description'),
-            'status' => $request->input('status', 'active'), // Default to 'active' if not provided
-        ]);
-    
-        // Handle the avatar upload (if present)
-        $avatarPath = null;
-        if ($request->hasFile('avatar')) {
-            // If an avatar already exists, unlink (delete) the old file
-            if ($medicine->details && $medicine->details->avatar) {
-                // Assuming avatars are stored in the 'avatars' directory within 'storage/app/public'
-                $oldAvatarPath = storage_path( $medicine->details->avatar);
-                if (file_exists($oldAvatarPath)) {
-                    unlink($oldAvatarPath); // Delete the old avatar file
+            // Handle the avatar upload (if present)
+            $avatarPaths = [];
+            if ($request->hasFile('avatar')) {
+                // If an avatar already exists, unlink (delete) the old files
+                foreach ($medicine->images as $existingImage) {
+                    $oldImagePath = storage_path('app/public/' . $existingImage->image);
+                    if (file_exists($oldImagePath)) {
+                        unlink($oldImagePath); // Delete the old avatar file
+                    }
+                }
+                
+                // Upload the new avatar files and store their paths
+                foreach ($request->file('avatar') as $file) {
+                    $uniqueName = uniqid() . '-' . $file->getClientOriginalName();
+                    $path = Helper::fileUpload($file, 'medicine', $uniqueName);
+                    
+                    // Store the image in the database
+                    MedicineImages::create([
+                        'medicine_id' => $medicine->id, // Link the image to the medicine ID
+                        'image' => $path, // Store the image path
+                    ]);
                 }
             }
     
-            // Upload the new avatar file and store its path
-            $avatarPath = Helper::fileUpload($request->file('avatar'), 'users', 'avatar');
-        }
-    
-        // Update or create the medicine details
-        $medicineDetail = $medicine->details;
-        $medicineDetail->update([
-            'avatar' => $avatarPath,
-            'form' => $request->input('form'),
-            'dosage' => $request->input('doges'),
-            'unit' => $request->input('unit'),
-            'price' => $request->input('price'),
-            'quantity' => $request->input('quantity'),
-            'stock_quantity' => $request->input('stock_quantity'),
-        ]);
-    
-        // Update the medicine features (if provided)
-        if ($request->has('feature')) {
-            // First, delete the existing features
-            MedicineFeature::where('medicine_id', $medicine->id)->delete();
-    
-            // Add the new features
-            foreach ($request->input('feature') as $feature) {
-                MedicineFeature::create([
+            // Update or create the medicine details
+            $medicineDetail = $medicine->details;
+            if ($medicineDetail) {
+                $medicineDetail->update([
+                    'form' => $request->input('form'),
+                    'dosage' => $request->input('doges'),
+                    'unit' => $request->input('unit'),
+                    'price' => $request->input('price'),
+                    'quantity' => $request->input('quantity'),
+                    'stock_quantity' => $request->input('stock_quantity'),
+                ]);
+            } else {
+                MedicineDetails::create([
                     'medicine_id' => $medicine->id,
-                    'feature' => $feature,
+                    'form' => $request->input('form'),
+                    'dosage' => $request->input('doges'),
+                    'unit' => $request->input('unit'),
+                    'price' => $request->input('price'),
+                    'quantity' => $request->input('quantity'),
+                    'stock_quantity' => $request->input('stock_quantity'),
                 ]);
             }
-        }
     
-        // Return success response
-        return response()->json(['success' => true, 'message' => 'Medicine updated successfully']);
+            // Update the medicine features (if provided)
+            if ($request->has('feature')) {
+                // First, delete the existing features
+                MedicineFeature::where('medicine_id', $medicine->id)->delete();
+                
+                // Add the new features
+                foreach ($request->input('feature') as $feature) {
+                    MedicineFeature::create([
+                        'medicine_id' => $medicine->id,
+                        'feature' => $feature,
+                    ]);
+                }
+            }
+    
+            // Commit the transaction
+            DB::commit();
+            
+            return response()->json(['success' => true, 'message' => 'Medicine updated successfully!']);
+        } catch (Exception $e) {
+            // Rollback the transaction if anything goes wrong
+            DB::rollBack();
+            Log::error('Error updating medicine: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Medicine update failed!']);
+        }
     }
     
-
 
     //status update
     public function updateStatus($id)

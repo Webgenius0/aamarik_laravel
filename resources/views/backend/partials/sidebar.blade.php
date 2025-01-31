@@ -197,6 +197,14 @@
                             <span class="menu-text">Stripe Settings</span>
                         </a>
                     </li>
+
+
+                    <li class="menu-item">
+                        <a href="{{route('microsoft.setting')}}" class="menu-link">
+                            <span class="menu-dot"></span>
+                            <span class="menu-text">Microsoft Settings</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
             <li class="menu-item">
