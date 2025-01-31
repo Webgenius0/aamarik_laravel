@@ -171,5 +171,5 @@ Route::controller(TreatmentController::class)->group(function () {
 
 
 //! Route for stripe webhook
-Route::post('/webhook/stripe', [\App\Http\Controllers\API\Backend\StripeWebhookController::class, 'handleWebhook']);
+Route::post('/webhook/stripe', [\App\Http\Controllers\API\Backend\StripeWebhookController::class,'handleWebhook']);
 
