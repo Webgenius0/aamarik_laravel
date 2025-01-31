@@ -15,6 +15,46 @@ class OrderManagementController extends Controller
     use apiresponse;
 
     /**
+     * Get Order Overview
+     * If current auth role is doctor and pharmacist this time get total order consultation and Order pending and order Delivered
+     */
+    public function  getOrderOverview()
+    {
+        //get current user
+        $user = auth()->user();
+        if (!$user) {
+            return $this->sendError('Unauthorized access.', [], 401);
+        }
+
+        // Initialize variables
+        $total = 0;
+        $pending = 0;
+        $delivered = 0;
+
+        // Query based on user role
+        if ($user->role == 'doctor' || $user->role == 'pharmacist') {
+            // Get total order
+            $total = Order::count();
+
+            // Get pending and delivered orders for the user
+            $pending = Order::whereNot('status', 'delivered')
+                ->count();
+
+            $delivered = Order::where('status', 'delivered')
+                ->count();
+        }else{
+            return $this->sendError('Unauthorized access.', [], 403);
+        }
+
+        //return response
+        return  $this->sendResponse([
+            'total' => $total,
+            'pending'      => $pending,
+            'delivered'    => $delivered
+        ], 'Orders Overview retrieved successfully.');
+    }
+
+    /**
      * Show order Details with order uuid
      */
     public  function  getOrderDetails(Request $request,$id) //$id mean uuid

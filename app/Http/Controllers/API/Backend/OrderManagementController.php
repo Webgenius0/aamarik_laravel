@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\Backend;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\userOrderDetailsResource;
 use App\Http\Resources\userOrdersResource;
+use App\Models\Meeting;
 use App\Models\Order;
 use App\Models\Review;
 use App\Traits\apiresponse;
@@ -91,6 +92,50 @@ class OrderManagementController extends Controller
         }
     }
 
+
+    /**
+     * Get Order Overview
+     * If current auth role is user this time get user order total consultation and Order pending and order Delivered
+     */
+    public function  getOrderOverview()
+    {
+        //get current user
+        $user = auth()->user();
+        if (!$user) {
+            return $this->sendError('Unauthorized access.', [], 401);
+        }
+
+        // Initialize variables
+        $total_consultations = 0;
+        $pending_orders = 0;
+        $delivered_orders = 0;
+
+        // Query based on user role
+        if ($user->role == 'user') {
+            // Get total consultations for the user
+            $total_consultations = Meeting::where('user_id', $user->id)
+                ->where('status', 'completed')
+                ->count();
+
+            // Get pending and delivered orders for the user
+            $pending_orders = Order::where('user_id', $user->id)
+                ->whereIn('status', ['pending', 'paid', 'processing'])
+                ->count();
+
+            $delivered_orders = Order::where('user_id', $user->id)
+                ->where('status', 'delivered')
+                ->count();
+        }else{
+            return $this->sendError('Unauthorized access.', [], 403);
+        }
+
+       //return response
+        return  $this->sendResponse([
+            'total_consultations' => $total_consultations,
+            'pending_orders'      => $pending_orders,
+            'delivered_orders'    => $delivered_orders
+        ], 'Orders Overview retrieved successfully.');
+    }
    /**
     * Show order details
     */

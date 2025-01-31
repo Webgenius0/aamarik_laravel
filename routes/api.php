@@ -93,12 +93,16 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::get('/order/{id}', 'show'); //show order
         Route::post('/order-review/{id}', 'storeOrderReview'); //review order user
         Route::get('/assessments-result', 'getAssessmentResult');
+
+        //! Route for Order count for user
+        Route::get('/orders/user-overview', 'getOrderOverview');
     });
 
     //! Route for doctor order management
     Route::controller(\App\Http\Controllers\API\Backend\Doctore\OrderManagementController::class)->group(function () {
         Route::get('/order-details/{id}', 'getOrderDetails');
         Route::post('/order-status-note-update/{id}', 'updateOrderStatusNote');
+        Route::get('/orders/overview', 'getOrderOverview');
     });
 
     //! Route for user subscription
