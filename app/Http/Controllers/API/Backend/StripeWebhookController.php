@@ -36,7 +36,7 @@ class StripeWebhookController extends Controller
                 case 'payment_intent.succeeded':
                     $paymentIntent = $event->data->object;
 
-                    $uuid = $paymentIntent->metadata->uuid;
+                    $uuid = $paymentIntent->metadata->order_uuid;
 
                     Log::info('Payment Intent Succeeded', ['uuid' => $uuid]);
 
@@ -55,7 +55,7 @@ class StripeWebhookController extends Controller
                 case 'payment_intent.payment_failed':
                     $paymentIntent = $event->data->object;
 
-                    $uuid = $paymentIntent->metadata->uuid; //get metadata uuid
+                    $uuid = $paymentIntent->metadata->order_uuid; //get metadata uuid
                     Log::info('Payment Intent Failed', ['uuid' => $uuid]);
 
                     if ($uuid) {
