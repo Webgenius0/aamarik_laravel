@@ -99,7 +99,9 @@ class MedicineController extends Controller
             if ($request->hasFile('avatar')) {
                 foreach ($request->file('avatar') as $file) {
                     // Store each image and save it in 'medicine_images' table
-                    $path = Helper::fileUpload($file, 'users', 'avatar');
+                    $uniqueName = uniqid() . '-' . $file->getClientOriginalName(); 
+                    $path = Helper::fileUpload($file, 'medicine', $uniqueName);
+                    
                     MedicineImages::create([
                         'medicine_id' => $medicine->id,  // Link the image to the medicine ID
                         'image' => $path,  // Store the image path

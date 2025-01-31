@@ -603,24 +603,39 @@ function editMedicine(id) {
                 }
 
 
-                if(resp.images && resp.images.length>0)
-                {
-                    const featureAvatarContainer =$('#avatarContainer');
-                    featureAvatarContainer.empty();
-                    resp.images.forEach(function(image, index){
-                        featureAvatarContainer.append(`
-                        <div class="flex items-center mb-2">
+                if (resp.images && resp.images.length > 0) {
+    const featureAvatarContainer = $('#avatarContainer');
+    featureAvatarContainer.empty(); // Clear any existing inputs
+
+    // Create a flex container for the images
+    featureAvatarContainer.append('<div class="image-row flex flex-wrap gap-4">');
+
+    // Loop through the images and display them
+    resp.images.forEach(function(image, index) {
+        // Make sure the image URL is correct, prepend the asset() function if using Laravel
+        let imageUrl = "{{ asset('storage') }}/" + image.url;  // Adjust path if needed
+
+        featureAvatarContainer.append(`
+            <div class="image-item flex-shrink-0 w-1/2 mb-4">
+                <img src="${imageUrl}" alt="Uploaded Image" class="w-full h-auto object-cover" />
+                <button type="button" class="ml-2 text-xl font-semibold removeBtn" data-image="${image.url}" data-id="${image.id}">Delete</button>
+            </div>
+        `);
+    });
+
+    // Close the image container
+    featureAvatarContainer.append('</div>');
+
+    // Add a file input for adding new images
+    featureAvatarContainer.append(`
+        <div class="flex items-center mb-2">
             <input name="avatar[]" class="form-input w-full dropify" type="file" 
                 accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg" data-height="300">
             <button type="button" class="ml-2 text-xl font-semibold removeBtn">-</button>
         </div>
-                        `);
-                    });
+    `);
+}
 
-                    $(document).on('click', '.removeBtn', function() {
-    $(this).closest('.flex').remove(); // Remove the entire file input field
-});
-                }
                 
 
 
