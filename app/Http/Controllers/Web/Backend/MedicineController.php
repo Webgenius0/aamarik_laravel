@@ -159,10 +159,9 @@ class MedicineController extends Controller
 
     public function update(Request $request, $id)
     {
-        dd($id);
-        dd($request->all());
+        
         // Log the incoming request data to help with debugging
-        Log::info('Request data: ', $request->all('id'));
+       
         
         // Validate the incoming request data
         $request->validate([
