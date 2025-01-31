@@ -60,7 +60,6 @@ class StripeWebhookController extends Controller
 
                     if ($uuid) {
                         Order::where('uuid', $uuid)->update(['status' => 'failed']);
-                        Log::info('Order status updated to failed', ['uuid' => $uuid]);
                     } else {
                         Log::error('Order UUID not found in metadata', ['payment_intent' => $paymentIntent]);
                     }
