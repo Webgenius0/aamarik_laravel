@@ -27,20 +27,27 @@ class StripeWebhookController extends Controller
         $payload        = $request->getContent();
         $sigHeader      = $request->header('Stripe-Signature');
         $endpointSecret = config('services.stripe.webhook_secret');
-
+        Log::info('Stripe Webhook Received', ['payload' => $payload]);
         try {
             $event = Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
-            Log::info($event);
+            Log::info('Stripe Event Type:', ['type' => $event->type]);
             // Handle the event
             switch ($event->type) {
                 case 'payment_intent.succeeded':
                     $paymentIntent = $event->data->object;
 
-                    return response($paymentIntent);
                     $uuid = $paymentIntent->metadata->uuid;
-                    Order::where('uuid', $uuid)->update(['status'=>'paid']);
+
+                    Log::info('Payment Intent Succeeded', ['uuid' => $uuid]);
+
+                    if ($uuid) {
+                        Order::where('uuid', $uuid)->update(['status' => 'paid']);
+                        Log::info('Order status updated to paid', ['uuid' => $uuid]);
+                    } else {
+                        Log::error('Order UUID not found in metadata', ['payment_intent' => $paymentIntent]);
+                    }
                     return response()->json([
-                        'message' => 'order #'.$uuid.'id payment success.'
+                        'message' => 'order payment success.'
                     ]);
                     break;
 
@@ -48,13 +55,17 @@ class StripeWebhookController extends Controller
                     $paymentIntent = $event->data->object;
 
                     $uuid = $paymentIntent->metadata->uuid; //get metadata uuid
-                    Order::where('uuid', $uuid)->update(['status'=>'failed']);
-                    return response()->json([
-                        'message' =>'order #'.$uuid.'id payment fail.'
-                    ]);
+                    Log::info('Payment Intent Failed', ['uuid' => $uuid]);
+
+                    if ($uuid) {
+                        Order::where('uuid', $uuid)->update(['status' => 'failed']);
+                        Log::info('Order status updated to failed', ['uuid' => $uuid]);
+                    } else {
+                        Log::error('Order UUID not found in metadata', ['payment_intent' => $paymentIntent]);
+                    }
+                    return response()->json(['message' => "Order #{$uuid} payment failed."], 404);
                     break;
             }
-            return response()->json(['status' => 'success'], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Webhook signature verification failed: ' . $e->getMessage()], 400);
         }
