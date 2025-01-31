@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Traits\apiresponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Stripe\Stripe;
 use Stripe\Webhook;
 
@@ -29,7 +30,7 @@ class StripeWebhookController extends Controller
 
         try {
             $event = Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
-
+            Log::info($event);
             // Handle the event
             switch ($event->type) {
                 case 'payment_intent.succeeded':
