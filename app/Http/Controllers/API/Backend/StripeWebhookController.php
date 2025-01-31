@@ -47,7 +47,8 @@ class StripeWebhookController extends Controller
                         Log::error('Order UUID not found in metadata', ['payment_intent' => $paymentIntent]);
                     }
                     return response()->json([
-                        'message' => 'order payment success.'
+                        'message' => 'order payment success.',
+                        'uuid' => $uuid
                     ]);
                     break;
 
