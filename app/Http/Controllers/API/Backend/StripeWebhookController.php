@@ -38,15 +38,17 @@ class StripeWebhookController extends Controller
                     $uuid = $paymentIntent->metadata->uuid;
                     Order::where('uuid', $uuid)->update(['status'=>'paid']);
                     return response()->json([
-                        'message' => ' payment success.'
+                        'message' => 'order #'.$uuid.'id payment success.'
                     ]);
                     break;
 
                 case 'payment_intent.payment_failed':
                     $paymentIntent = $event->data->object;
-                    $this->handleFailedTable($paymentIntent);
+
+                    $uuid = $paymentIntent->metadata->uuid; //get metadata uuid
+                    Order::where('uuid', $uuid)->update(['status'=>'failed']);
                     return response()->json([
-                        'message' => $paymentIntent->metadata->type . ' payment fail.'
+                        'message' =>'order #'.$uuid.'id payment fail.'
                     ]);
                     break;
             }
