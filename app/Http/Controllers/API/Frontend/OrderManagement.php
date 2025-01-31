@@ -219,6 +219,7 @@ class OrderManagement extends Controller
             'subscription' => $validatedData['subscription'],
             'prescription' => $this->uploadPrescription($request),
             'status'       => 'pending',
+            'created_at'   => now(),
         ]);
     }
 
