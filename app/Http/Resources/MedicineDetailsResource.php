@@ -26,10 +26,10 @@ class MedicineDetailsResource extends JsonResource
             'price'       => $this->details->price,
             'quantity'    => $this->details->quantity,
             'stock_quantity'=> $this->details->stock_quantity,
-            'avatars'     => $this->avatars ? $this->avatars->map(function ($avatar) {
+            'avatars'     => $this->images ? $this->images->map(function ($image) {
                 return [
-                    'id'          => $avatar->id,
-                    'avatar'      => $avatar->avatar,
+                    'id'          => $image->id,
+                    'avatar'      => $image->image,
                 ];
             }) : [],
             'features'    => $this->features->map(function ($feature) {

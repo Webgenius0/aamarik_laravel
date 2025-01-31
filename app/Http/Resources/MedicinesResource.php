@@ -22,12 +22,7 @@ class MedicinesResource extends JsonResource
              'max_star'    => '4',
              'review'      => '10',
              'price'       => $this->details->price,
-             'avatars'     => $this->avatars ? $this->avatars->map(function ($avatar) {
-                 return [
-                     'id'          => $avatar->id,
-                     'avatar'      => $avatar->avatar,
-                 ];
-             }) : []
+             'avatar'      => $this->images->isNotEmpty() ?  $this->images->first()->image: null,
          ];
     }
 }
