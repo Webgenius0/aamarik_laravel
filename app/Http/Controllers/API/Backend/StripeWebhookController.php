@@ -35,6 +35,7 @@ class StripeWebhookController extends Controller
                 case 'payment_intent.succeeded':
                     $paymentIntent = $event->data->object;
 
+                    return response($paymentIntent);
                     $uuid = $paymentIntent->metadata->uuid;
                     Order::where('uuid', $uuid)->update(['status'=>'paid']);
                     return response()->json([
