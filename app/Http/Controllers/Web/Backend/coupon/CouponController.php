@@ -98,9 +98,9 @@ class CouponController extends Controller
 
     public function edit($id)
     {
-        $faq = Coupon::find($id);
-        if ($faq) {
-            return response()->json(['success' => true, 'data' => $faq]); // Make sure the FAQ object is returned properly
+        $coupon = Coupon::find($id);
+        if ($coupon) {
+            return response()->json(['success' => true, 'data' => $coupon]); // Make sure the FAQ object is returned properly
         }
 
         return response()->json(['success' => false, 'message' => 'Coupon not found']);
@@ -111,14 +111,14 @@ class CouponController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $faq = Coupon::find($id);
-        $faq->update([
-            'code' => 'required|string|max:255',
-            'discount_type' => 'required|string',
-            'discount_amount' => 'required|numeric',
-            'usage_limit' => 'required|integer',
-            'start_date' => 'nullable|string',
-            'end_date' => 'nullable|string',
+        $coupon = Coupon::find($id);
+        $coupon->update([
+            'code' => $request->code ?? $coupon->code,
+            'discount_type' => $request->discount_type ?? $coupon->discount_type,
+            'discount_amount' => $request->discount_amount ?? $coupon->discount_amount,
+            'usage_limit' => $request->usage_limit ?? $coupon->usage_limit,
+            'start_date' => $request->start_date ?? $coupon->start_date,
+            'end_date' => $request->end_date ?? $coupon->end_date,
         ]);
 
         return response()->json(['success' => true, 'message' => 'Coupon updated successfully']);

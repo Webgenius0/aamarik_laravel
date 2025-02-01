@@ -43,14 +43,14 @@
             </li>
 
             <li class="menu-item">
-                <a class="menu-link {{ Request::RouteIs('customers*')  ? 'bg-blue-500 text-white' : '' }}" href="{{route('customer.index')}}">
+                <a class="menu-link {{ Request::routeIs('admin.customer*')   ? 'bg-blue-500 text-white' : '' }}" href="{{route('customer.index')}}">
                     <span class="menu-icon"><i class="uil uil-users-alt"></i></span>
                     <span class="menu-text">  Customers Management </span>
                 </a>
             </li>
 
             <li class="menu-item">
-                <a class="menu-link {{ Request::RouteIs('employees*')  ? 'bg-blue-500 text-white' : '' }}" href="{{route('employees.index')}}">
+                <a class="menu-link {{  Request::routeIs('employees.index', 'employees.add', 'employees.edit')   ? 'bg-blue-500 text-white' : '' }}" href="{{route('employees.index')}}">
                     <span class="menu-icon"><i class="uil uil-user-md"></i></span>
                     <span class="menu-text"> Employee Management </span>
                 </a>
@@ -59,7 +59,7 @@
             <li class="menu-title">Frontend</li>
 
             <li class="menu-item">
-                <a class="menu-link {{Request::RouteIs('faq.index') ? 'bg-blue-500 text-white' : '' }}" href="{{route('faq.index')}}">
+                <a class="menu-link {{ Request::RouteIs('faq.index') ? 'bg-blue-500 text-white' : '' }}" href="{{route('faq.index')}}">
                     <span class="menu-icon"><i class="uil uil-compass"></i></span>
                     <span class="menu-text"> FAQ </span>
                 </a>

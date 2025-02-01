@@ -232,7 +232,7 @@
                 <div class="flex flex-col md:flex-row items-center md:space-x-4">
                     <div class="flex flex-col md:w-1/2">
                         <label for="usage_limit" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Usage Limit</label>
-                        <input name="usage_limit" type="number" class="form-input w-full" id="usage_limit" placeholder="Enter usage limit.." value="{{old('usage_limit')}}">
+                        <input  name="usage_limit" type="number" class="form-input w-full" id="usage_limit" placeholder="Enter usage limit.." value="{{old('usage_limit')}}">
                         @error('usage_limit')
                         <span class="text-red-500 block mt-1 text-sm">
                             <strong>{{ $message }}</strong>
@@ -242,7 +242,7 @@
 
                     <div class="flex flex-col md:w-1/2">
                         <label for="start_date" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Start Date</label>
-                        <input name="start_date" class="form-input w-full" id="start_date" placeholder="Enter start date..." value="{{ old('start_date') ? \Carbon\Carbon::parse(old('start_date'))->format('Y-m-d') : '' }}"
+                        <input type="date" name="start_date" class="form-input w-full" id="start_date" placeholder="Enter start date..." value="{{ old('start_date')  }}"
                         ></input>
 
                         @error('start_date')
@@ -258,7 +258,7 @@
                 <div class="flex flex-col md:flex-row items-center md:space-x-4">
                     <div class="flex flex-col md:w-1/2">
                         <label class="text-lg font-medium mb-2 md:mb-0 flex align-left">End Date</label>
-                        <input name="end_date" type="text" class="form-input w-full" id="end_date" placeholder="Enter end date.." value="{{ old('end_date') ? \Carbon\Carbon::parse(old('end_date'))->format('Y-m-d') : '' }}"
+                        <input type="date"  name="end_date" type="text" class="form-input w-full" id="end_date" placeholder="Enter end date.." value="{{ old('end_date') }}"
                         >
                         @error('end_date')
                         <span class="text-red-500 block mt-1 text-sm">
@@ -545,7 +545,7 @@
             })
         }
 
-        function editCoupon(id) {
+   function editCoupon(id) {
     let route = '{{ route('coupon.edit', ':id') }}';
     route = route.replace(':id', id);
 
@@ -561,8 +561,15 @@
                 $('#discount_type').val(resp.data.discount_type); // Set discount type dropdown
                 $('#discount_amount').val(resp.data.discount_amount); // Set discount amount
                 $('#usage_limit').val(resp.data.usage_limit); // Set usage limit
-                $('#start_date').val(resp.data.start_date); // Set start date
-                $('#end_date').val(resp.data.end_date); // Set end date
+
+                // Convert the date format from 'YYYY-MM-DDTHH:mm:ss.sssZ' to 'YYYY-MM-DD'
+                const startDate = resp.data.start_date.split('T')[0]; // Take the date part only
+                const endDate = resp.data.end_date.split('T')[0]; // Take the date part only
+
+                // Set the formatted dates
+                $('#start_date').val(startDate);
+                $('#end_date').val(endDate);
+
                 $('#code').val(resp.data.code); // Set coupon code
 
                 // Change the modal title to "Update Coupon"
@@ -581,6 +588,6 @@
 }
 
 
-         
+
 </script>
 @endpush

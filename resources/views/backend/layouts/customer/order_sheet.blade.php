@@ -20,6 +20,8 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sub Total</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Discount</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pay Amount</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Amount</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
 
@@ -32,6 +34,8 @@
                                 <td class="px-6 py-4 text-sm text-gray-500">{{ $order->sub_total }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-500">{{ $order->discount }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-500">{{ $order->total_price }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-500">{{ $order->pay_amount }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-500">{{ $order->due_amount }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-500">{{ $order->created_at->format('Y-m-d') }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-500">{{ $order->status }}</td>
                             </tr>

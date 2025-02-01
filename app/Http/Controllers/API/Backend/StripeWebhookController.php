@@ -41,8 +41,16 @@ class StripeWebhookController extends Controller
                     Log::info('Payment Intent Succeeded', ['uuid' => $uuid]);
 
                     if ($uuid) {
-                        Order::where('uuid', $uuid)->update(['status' => 'paid']);
-                        Log::info('Order status updated to paid', ['uuid' => $uuid]);
+                        //find order with uuid
+                        $order = Order::where('uuid', $uuid)->first();
+                        if ($order) {
+                            $order->status = 'paid';
+                            $order->pay_amount = $order->total_price;
+                            $order->save();
+                            Log::info('Order status updated to paid', ['uuid' => $uuid]);
+                        }
+
+                        Log::info('not found order ', ['uuid' => $uuid]);
                     } else {
                         Log::error('Order UUID not found in metadata', ['payment_intent' => $paymentIntent]);
                     }
@@ -59,7 +67,15 @@ class StripeWebhookController extends Controller
                     Log::info('Payment Intent Failed', ['uuid' => $uuid]);
 
                     if ($uuid) {
-                        Order::where('uuid', $uuid)->update(['status' => 'failed']);
+                        //find order with uuid
+                        $order = Order::where('uuid', $uuid)->first();
+                        if ($order) {
+                            $order->status = 'failed';
+                            $order->due_amount = $order->total_price;
+                            $order->save();
+                            Log::info('Order status updated to failed', ['uuid' => $uuid]);
+                        }
+                        Log::info('not found order ', ['uuid' => $uuid]);
                     } else {
                         Log::error('Order UUID not found in metadata', ['payment_intent' => $paymentIntent]);
                     }

@@ -128,6 +128,14 @@
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Pay Amount
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Due Amount
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Status
                                     </th>
                                     <th scope="col"
@@ -313,6 +321,14 @@
                     {
                         data: 'delivery_date',
                         name: 'delivery_date'
+                    },
+                    {
+                        data: 'pay_amount',
+                        name: 'pay_amount'
+                    },
+                    {
+                        data: 'due_amount',
+                        name: 'due_amount'
                     },
                     {
                         data: 'order_status',
