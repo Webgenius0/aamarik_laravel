@@ -465,24 +465,24 @@
             confirmButtonText: 'Yes, delete it!',
         }).then((result) => {
             if (result.isConfirmed) {
-                deleteItem(id);
+                deleteCoupon(id);
             }
         });
     };
 
 
-    // Delete Button
-    function deleteItem(id) {
-        var url = '';
+    function deleteCoupon(id)
+    {
+        var url = "{{ route('coupon.destroy', ':id') }}".replace(':id', id)
         $.ajax({
             type: "DELETE",
-            url: url.replace(':id', id),
+            url: url,
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
 
             success: function(resp) {
-                console.log(resp);
+
                 // Reloade DataTable
                 $('#data-table').DataTable().ajax.reload();
                 if (resp.success === true) {
@@ -500,6 +500,8 @@
             } // Error
         })
     }
+
+
 
      // Status Change Confirm Alert
      function ShowStatusChangeAlert(id) {

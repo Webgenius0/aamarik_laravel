@@ -127,12 +127,22 @@ class CouponController extends Controller
 
     public function updateStatus($id)
     {
-        $faq = Coupon::find($id);
-        if (!$faq) {
+        $coupon = Coupon::find($id);
+        if (!$coupon) {
             return response()->json(['success' => false, 'message' => 'Not found']);
         }
-        $faq->status = $faq->status == '1' ? '0' : '1';
-        $faq->save();
+        $coupon->status = $coupon->status == '1' ? '0' : '1';
+        $coupon->save();
         return response()->json(['success' => true, 'message' => 'Coupon Status update successfully']);
+    }
+
+    public function destroy($id)
+    {
+        $coupon = Coupon::find($id);
+        if (!$coupon) {
+            return response()->json(['success' => false, 'message' => 'Not found']);
+        }
+        $coupon->delete();
+        return response()->json(['success' => true, 'message' => 'Coupon delete successfully']);
     }
 }
