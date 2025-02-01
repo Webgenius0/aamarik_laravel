@@ -93,122 +93,80 @@
             </div><!--end-->
         </div>
 
-        <div class="grid lg:grid-cols-3 gap-6 mb-6">
+        <!--Order progress-->
+        <div class="grid xl:grid-cols-5 md:grid-cols-2 gap-4 mb-6 ">
+            <div class="row-span-2">
+                <div class="card mb-3">
+                    <div class="card-header">Order Statistics</div>
+                    <div class="card-body">
+                        <canvas id="orderChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <!--today order-->
+            <div class="row-span-2">
+                <div class="card mb-3 p-4 text-center">
+                    <h4 class="card-title mb-4">Orders</h4>
 
-{{--            <div class="lg:col-span-2">--}}
-{{--                <div class="card">--}}
-{{--                    <div class="p-5">--}}
+                    <!-- Today's Orders -->
+                    <div class="d-flex justify-content-center">
+                        <input data-plugin="knob" data-width="175" data-height="175" data-linecap="round"
+                               data-fgColor="#7a08c2" value="{{ $today_orders ?? '0' }}" data-skin="tron"
+                               data-angleOffset="180" data-readOnly="true" data-thickness=".15" />
+                    </div>
+                    <h5 class="text-gray-400 mt-3">Total orders today</h5>
 
-{{--                        <div class="grid lg:grid-cols-3 gap-5">--}}
-{{--                            <div class="lg:col-span-2">--}}
-{{--                                <div class="flex justify-between items-center">--}}
-{{--                                    <h4 class="card-title mb-4">Statistics</h4>--}}
+                    <!-- Yesterday's Orders -->
+                    <p class="text-gray-400 mt-3">Yesterday's Orders: {{ $yesterday_orders ?? '0' }}</p>
 
-{{--                                    <div class="relative">--}}
-{{--                                        <button class="hs-dropdown-toggle text-lg text-gray-600 p-2" type="button">--}}
-{{--                                            <i class="mdi mdi-dots-vertical"></i>--}}
-{{--                                        </button>--}}
-
-{{--                                        <div--}}
-{{--                                            class="hs-dropdown-menu hidden z-10 bg-white w-44 shadow rounded border p-2 transition-all duration-300 hs-dropdown-open:translate-y-0 translate-y-3">--}}
-{{--                                            <a class="flex items-center py-1.5 px-3.5 rounded text-sm transition-all duration-300 bg-transparent text-gray-800 hover:bg-stone-100"--}}
-{{--                                                href="javascript:void(0)">--}}
-{{--                                                Action--}}
-{{--                                            </a>--}}
-{{--                                            <a class="flex items-center py-1.5 px-3.5 rounded text-sm transition-all duration-300 bg-transparent text-gray-800 hover:bg-gray-100"--}}
-{{--                                                href="javascript:void(0)">--}}
-{{--                                                Another action--}}
-{{--                                            </a>--}}
-{{--                                            <a class="flex items-center py-1.5 px-3.5 rounded text-sm transition-all duration-300 bg-transparent text-gray-800 hover:bg-gray-100"--}}
-{{--                                                href="javascript:void(0)">--}}
-{{--                                                Something else here--}}
-{{--                                            </a>--}}
-{{--                                        </div>--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-
-{{--                                <div id="morris-bar-example" class="morris-chart" style="height: 330px;"></div>--}}
-{{--                            </div>--}}
-
-{{--                            <div>--}}
-{{--                                <h4 class="card-title mb-4">Stock</h4>--}}
-
-{{--                                <div class="mx-auto text-center">--}}
-{{--                                    <input data-plugin="knob" data-width="175" data-height="175" data-linecap=round--}}
-{{--                                        data-fgColor="#7a08c2" value="45" data-skin="tron" data-angleOffset="180"--}}
-{{--                                        data-readOnly=true data-thickness=".15" />--}}
-{{--                                    <h5 class="text-gray-400 mt-5">Total sales made today</h5>--}}
-{{--                                </div>--}}
-
-
-{{--                                <div class="text-center w-full">--}}
-{{--                                    <p class="text-gray-400 w-75 mx-auto line-clamp-2">Traditional heading--}}
-{{--                                        elements are--}}
-{{--                                        designed to work best in the meat of your page content.</p>--}}
-{{--                                </div>--}}
-
-{{--                                <div class="flex gap-4 text-center mt-3">--}}
-{{--                                    <div class="w-1/2">--}}
-{{--                                        <p class="text-gray-400 text-xl mb-1 truncate">Target</p>--}}
-{{--                                        <h4><i class="fas fa-arrow-up text-success mr-1"></i>$7.8k</h4>--}}
-
-{{--                                    </div>--}}
-{{--                                    <div class="w-1/2">--}}
-{{--                                        <p class="text-gray-400 text-xl mb-1 truncate">Last week</p>--}}
-{{--                                        <h4><i class="fas fa-arrow-down text-danger mr-1"></i>$1.4k</h4>--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-
-
-                    <div class="lg:col-span-2">
-                <div class="card">
-                    <div class="p-5">
-                        <div class="grid lg:grid-cols-3 gap-5">
-                            <div>
-                                <h4 class="card-title mb-4">Orders</h4>
-                                <div class="mx-auto text-center">
-                                    <!-- Today's Orders -->
-                                    <input data-plugin="knob" data-width="175" data-height="175" data-linecap=round
-                                           data-fgColor="#7a08c2" value="{{ $today_orders }}" data-skin="tron" data-angleOffset="180"
-                                           data-readOnly=true data-thickness=".15" />
-                                    <h5 class="text-gray-400 mt-5">Total orders today</h5>
-                                </div>
-
-                                <!-- Yesterday's Orders -->
-                                <div class="text-center w-full mt-4">
-                                    <p class="text-gray-400 w-75 mx-auto line-clamp-2">
-                                        Yesterday's Orders: {{ $yesterday_orders }}
-                                    </p>
-                                </div>
-
-                                <!-- Order Difference -->
-                                <div class="flex gap-4 text-center mt-3">
-                                    <div class="w-1/2">
-                                        <p class="text-gray-400 text-xl mb-1 truncate">Difference</p>
-                                        <h4>
-                                            @if($order_difference > 0)
-                                                <i class="fas fa-arrow-up text-success mr-1"></i>
-                                            @elseif($order_difference < 0)
-                                                <i class="fas fa-arrow-down text-danger mr-1"></i>
-                                            @else
-                                                <i class="fas fa-minus text-gray-500 mr-1"></i>
-                                            @endif
-                                            {{ abs($order_difference) }}
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Order Difference -->
+                    <div class="mt-3">
+                        <p class="text-gray-400 text-xl mb-1">Difference</p>
+                        <h4>
+                            @if($order_difference > 0)
+                                <i class="fas fa-arrow-up text-success mr-1"></i>
+                            @elseif($order_difference < 0)
+                                <i class="fas fa-arrow-down text-danger mr-1"></i>
+                            @else
+                                <i class="fas fa-minus text-gray-500 mr-1"></i>
+                            @endif
+                            {{ abs($order_difference) }}
+                        </h4>
                     </div>
                 </div>
             </div>
 
+            <!--filter order-->
+            <div class="row-span-2">
+                <div class="card mb-3 p-4 text-center">
+                    <h4 class="card-title mb-4">Order Trends</h4>
+
+                    <!-- filter -->
+                    <div class="col-md-6 text-end">
+                        <select id="filter-orders" class="form-select d-inline-block w-auto">
+                            <option value="today" {{ $selectedFilter == 'today' ? 'selected' : '' }}>Today</option>
+                            <option value="this_month" {{ $selectedFilter == 'this_month' ? 'selected' : '' }}>This Month</option>
+                            <option value="this_year" {{ $selectedFilter == 'this_year' ? 'selected' : '' }}>This Year</option>
+                            <option value="last_month" {{ $selectedFilter == 'last_month' ? 'selected' : '' }}>Last Month</option>
+                        </select>
+                    </div>
+
+                    <!-- Display Orders Trend -->
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <h5 class="text-muted">Orders for Selected Period</h5>
+                            <h3 id="orders-trend" class="display-4">{{ $orders_trend }}</h3>
+
+                            <h5 class="text-muted">Total Sales for Selected Period</h5>
+                            <h3 id="total-sales" class="display-4">${{ number_format($total_sales, 2) }}</h3>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
         </div>
+
 
     </main>
 @endsection
@@ -216,5 +174,60 @@
 
 @push('scripts')
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#filter-orders').change(function() {
+                let filter = $(this).val();
 
+                $.ajax({
+                    url: "{{ route('dashboard') }}",
+                    type: "GET",
+                    data: { filter: filter },
+                    success: function(response) {
+                        console.log(response);
+                        $('#orders-trend').text(response.orders_trend);
+                        $('#total-sales').text('$' + parseFloat(response.total_sales).toFixed(2));
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+        });
+
+
+
+
+
+        var ctx = document.getElementById('orderChart').getContext('2d');
+        var orderChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {!! json_encode(array_keys($orders_by_month->toArray())) !!},
+                datasets: [{
+                    label: 'Orders This Year',
+                    data: {!! json_encode(array_values($orders_by_month->toArray())) !!},
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                },
+                    {
+                        label: 'Orders Last Year',
+                        data: {!! json_encode(array_values($previous_orders_by_month->toArray())) !!},
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
 @endpush
