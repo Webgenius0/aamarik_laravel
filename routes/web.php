@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResetController;
 use App\Http\Controllers\Web\Backend\DashboardController;
 use App\Http\Controllers\Web\Backend\LocationController;
+use App\Http\Controllers\Web\Backend\Order\OrderManagementController;
 use App\Http\Controllers\Web\Backend\SettingController;
 use App\Http\Controllers\Web\Backend\SocialMediaController;
 use App\Http\Controllers\Web\Backend\UserUpdateController;
@@ -29,7 +30,9 @@ Route::get('/dump/autoload', [ResetController::class, 'dumpAutoLoad'])->name('du
 Route::get('/comand/{comand}', [ResetController::class, 'comand'])->name('comand');
 Route::get('/composer/update', [ResetController::class, 'composerUpdate'])->name('composer.update');
 
-
+//download pdf
+Route::get('/download/order/invoice/{id}', [\App\Http\Controllers\Web\Order\InvoiceController::class, 'downloadInvoice'])->name('order.invoice.download');
+Route::get('/show/order/invoice/{id}', [\App\Http\Controllers\Web\Order\InvoiceController::class, 'show'])->name('order.invoice.show');
 
 
 

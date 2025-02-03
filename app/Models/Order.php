@@ -18,6 +18,7 @@ class Order extends Model
         'royal_mail_tracked_price',
         'sub_total',
         'discount',
+        'tax',
         'total_price',
         'pay_amount',
         'due_amount',
@@ -26,6 +27,8 @@ class Order extends Model
         'prescription',
         'subscription_id',
         'note',
+        'qr_code',
+
         'status',
     ];
 
@@ -42,6 +45,7 @@ class Order extends Model
             'royal_mail_tracked_price' => 'decimal:2',
             'sub_total'    => 'decimal:2',  //total amount
             'discount'     => 'decimal:2', //discount amount
+            'tax'          => 'decimal:2',
             'total_price'  => 'decimal:2', //after discount
             'pay_amount'   => 'decimal:2',
             'due_amount'   => 'decimal:2',
@@ -50,6 +54,7 @@ class Order extends Model
             'prescription' => 'string',
             'note'         => 'string',
             'subscription_id' => 'string',
+            'qr_code'       => 'string',
             'status'       => 'string',
         ];
     }

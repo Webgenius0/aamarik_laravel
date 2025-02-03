@@ -189,13 +189,16 @@
 
                     <!-- Billing Address -->
                     <div class="bg-gray-100 p-4 rounded-lg shadow-md">
-                        <h4 class="text-lg font-bold text-gray-900">🏠 Billing Address</h4>
+                        <h4 class="text-lg font-bold text-gray-900">🏠 Shipping Address</h4>
                         <p><strong>Name:</strong> <span id="billing-name"></span></p>
                         <p><strong>Email:</strong> <span id="billing-email"></span></p>
                         <p><strong>Address:</strong> <span id="billing-address"></span></p>
                         <p><strong>Contact:</strong> <span id="billing-contact"></span></p>
                         <p><strong>City:</strong> <span id="billing-city"></span></p>
                         <p><strong>Postcode:</strong> <span id="billing-postcode"></span></p>
+                        <p><strong>Gp Number:</strong> <span id="billing-gpNumber"></span></p>
+                        <p><strong>Gp :</strong> <span id="billing-gpAddress"></span></p>
+
                     </div>
                 </div>
 
@@ -238,7 +241,12 @@
             </div>
 
             <!-- Close Button -->
-            <div class="mt-5 flex justify-end">
+            <div class="mt-5 flex justify-end space-x-3">
+                <!-- Download PDF Invoice Button -->
+                <a href="#" id="downloadPDF" class="bg-green-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-green-600 transition">
+                    Download Invoice PDF
+                </a>
+
                 <button onclick="closeOrderModal()" class="bg-red-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-red-600 transition">
                     Close
                 </button>
@@ -261,6 +269,7 @@
     <script src="{{ asset('Backend/plugins/tinymc/tinymce.min.js') }}"></script>
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <!-- Define orderDetailsRoute here -->
     <script>
@@ -268,7 +277,9 @@
     </script>
 
     <script>
-        function ShowCreateUpdateModal() {
+
+
+    function ShowCreateUpdateModal() {
             $('#createUpdateForm')[0].reset();
             $('#medicine_id').val('');
             $('#modalTitle').html('Create New Medicine');
@@ -403,6 +414,7 @@
 
         // Open the modal
         function viewOrderDetails(orderId) {
+
             var route = "{{ route('order.details', ':id') }}".replace(':id', orderId);
 
             $.ajax({
@@ -412,6 +424,9 @@
                     if (response.success === true) {
                         var data = response.data;
 
+                        var downloadRoute = "{{ route('order.invoice.download', ':id') }}".replace(':id', data.uuid);
+                        // Set Download PDF button link
+                        $('#downloadPDF').attr('href', downloadRoute);
                         // Fill Order Details
                         $('#order-id').text(data.uuid);
                         $('#order-status').text(data.status || 'N/A');
@@ -429,6 +444,8 @@
                         $('#billing-contact').text(data.billing_address.contact);
                         $('#billing-city').text(data.billing_address.city);
                         $('#billing-postcode').text(data.billing_address.postcode);
+                        $('#billing-gpNumber').text(data.billing_address.gp_number);
+                        $('#billing-gpAddress').text(data.billing_address.gp_address);
 
                         // Fill Treatment Info
                         $('#treatment-name').text(data.treatment.name || 'N/A');
@@ -527,5 +544,7 @@
                 } // Error
             })
         }
+
+
     </script>
 @endpush

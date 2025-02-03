@@ -143,17 +143,12 @@
     </main>
 
     <!-- Edit Doctor Form Modal -->
-    <div id="modalOverlay" style="display:none;">
-        <div id="modal" class="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
-            <div class="flex py-2 w-full justify-between border-b">
-                <!-- Close Button -->
-                <button id="closeModal" class="absolute top-2 right-2 text-gray-600 hover:bg-gray-200 p-2 rounded-full focus:outline-none">
-                    ✖
-                </button>
-            </div>
+    <div id="modalOverlay" style="display:none;" class="">
+        <div id="modal" class="w-10 max-w-md p-6 bg-white rounded-lg shadow-lg">
+
             <form id="update-doctor-form" method="POST" enctype="multipart/form-data">
                 @csrf
-                @method('PUT')
+                @method('POST')
                 <input type="hidden" id="doctor_id" name="doctor_id">
 
                 <!-- Name -->
@@ -173,8 +168,14 @@
                     <input type="text" id="phone" name="phone" class="form-input mt-1 block w-full">
                 </div>
 
-                <!-- Submit Button -->
-                <button type="submit" class="btn bg-success text-white py-2 px-5 rounded-md">Update</button>
+
+                <!-- Close Button -->
+                <div class="mt-5 flex justify-end space-x-3">
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn bg-success text-white py-2 px-5 rounded-md">Update</button>
+                </div>
+
+
             </form>
 
         </div>
@@ -297,10 +298,12 @@
             });
         }
 
-        // Close modal when clicking the close button
-        $('#closeModal').click(function() {
-            $('#modalOverlay').fadeOut();
-        });
+        function closeOrderModal() {
+            $('#modalContent').removeClass('scale-100').addClass('scale-95');
+            setTimeout(() => {
+                $('#orderDetailsModal').addClass('hidden');
+            }, 200);
+        }
 
         // Close modal when clicking outside the modal content
         $(document).on('click', function(event) {

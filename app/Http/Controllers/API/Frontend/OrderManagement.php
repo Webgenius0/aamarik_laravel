@@ -14,6 +14,10 @@ use App\Models\Order;
 use App\Models\order_item;
 use App\Notifications\OrderNotificationToUser;
 use App\Traits\apiresponse;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +28,8 @@ use Stripe\Customer;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
 use Stripe\Subscription;
+use Illuminate\Support\Facades\File;
+use Endroid\QrCode\QrCode;
 use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 class OrderManagement extends Controller
@@ -173,7 +179,7 @@ class OrderManagement extends Controller
             // Commit transaction
             DB::commit();
 
-            return  $this->sendResponse([],'Your order has been successfully placed and is currently being processed.',200);
+            return  $this->sendResponse((object)[],'Your order has been successfully placed and is currently being processed.',200);
         }catch (\Exception $exception){
             DB::rollBack();
             return $this->sendError('Something went wrong while processing your order. Please try again later.',$exception->getMessage(),422);
@@ -206,7 +212,8 @@ class OrderManagement extends Controller
     {
        $coupon = Coupon::where('code', $validatedData['code'])->first();
 
-       return Order::create([
+
+         $order =  Order::create([
             'uuid'         => substr((string) Str::uuid(), 0, 8),
             'user_id'      => auth()->id(),
             'treatment_id' => $validatedData['treatment_id'],
@@ -221,6 +228,55 @@ class OrderManagement extends Controller
             'status'       => 'pending',
             'created_at'   => now(),
         ]);
+
+
+       //generate qr code
+        $fileName = $this->generateOrderQRcode($order);
+
+        // Update order with QR code path
+        $order->update([
+            'qr_code' => 'uploads/qr-code/' . $fileName
+        ]);
+
+
+
+        //return order
+        return $order;
+    }
+
+    /*
+     * Generate qr code
+     */
+    private function  generateOrderQRcode($order)
+    {
+        // Define the base URL for the QR code
+        $baseUrl = request()->getSchemeAndHttpHost(); // e.g., http://yourdomain.com
+        $qrCodeUrl = "{$baseUrl}/show/order/invoice/" . $order->uuid;
+
+        // Generate a unique filename for the QR code
+        $fileName = 'qr_' . $order->uuid . '.png';
+        $directoryPath = public_path('uploads/qr-code');
+        $filePath = $directoryPath . '/' . $fileName;
+
+        // Create directory if not exists
+        if (!File::exists($directoryPath)) {
+            File::makeDirectory($directoryPath, 0755, true);
+        }
+
+        // Generate and save the QR code image
+        $qrCode = Builder::create()
+            ->writer(new PngWriter())
+            ->encoding(new Encoding('UTF-8'))
+            ->errorCorrectionLevel(ErrorCorrectionLevel::Medium)
+            ->size(200)
+            ->margin(10)
+            ->data($qrCodeUrl)
+            ->build();
+
+
+        // Save the QR code image to the file system
+        file_put_contents($filePath, $qrCode->getString());
+        return $fileName;
     }
 
     /**

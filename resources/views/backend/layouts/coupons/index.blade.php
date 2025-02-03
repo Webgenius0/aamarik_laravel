@@ -177,27 +177,11 @@
 {{-- modal start --}}
 <div id="modalOverlay" style="display:none;">
     <div id="modal" class="rounded-2xl max-w-2xl">
-        <div class="flex py-2 w-full justify-between border-b">
-
-            <button id="close"
-                class="m-4 absolute top-0 right-1 hover:bg-gray-200 rounded-full p-1 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-black"
-                type="button">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-        </div>
         <div class="px-8 py-4">
             <form id="createUpdateForm" class="max-w-6xl w-full mx-auto space-y-4"
                 enctype="multipart/form-data">
 
-                <h1 class="flex align-left h1">Create Coupon</h1>
                 <input type="hidden" name="id" id="coupon_id">
-
-                {{-- favicon --}}
-
-
 
                 <!-- Coupon Fields -->
 
@@ -279,12 +263,9 @@
 
                 </div>
 
-                <div class="flex justify-center mt-4">
-
-                    <button type="submit"
-                        class="btn bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold ml-auto flex">Save</button>
-
-
+                <div class="flex justify-end mt-4 space-x-4"> <!-- Added space-x-4 for spacing -->
+                    <button type="button" id="close" class="btn bg-red-600 text-white rounded-lg font-semibold flex items-center justify-center">Close</button>
+                    <button type="submit" class="btn bg-blue-500 text-white rounded-lg font-semibold flex items-center justify-center">Save</button>
                 </div>
             </form>
         </div>
@@ -547,7 +528,7 @@
             })
         }
 
-   function editCoupon(id) {
+     function editCoupon(id) {
     let route = '{{ route('coupon.edit', ':id') }}';
     route = route.replace(':id', id);
 
@@ -558,6 +539,7 @@
             console.log(resp.data); // Ensure the response data structure is as expected
 
             if (resp.success === true) {
+                $('#modal_title').html('Edit Coupon')
                 // Populate the form fields with data from the response
                 $('#coupon_id').val(resp.data.id);
                 $('#discount_type').val(resp.data.discount_type); // Set discount type dropdown

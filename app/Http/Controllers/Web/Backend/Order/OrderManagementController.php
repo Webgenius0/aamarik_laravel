@@ -14,7 +14,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Stripe\Customer;
 use Stripe\Stripe;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Yajra\DataTables\Facades\DataTables;
+
 
 class OrderManagementController extends Controller
 {
@@ -58,6 +60,7 @@ class OrderManagementController extends Controller
                 })
                 ->addColumn('action', function ($data) {
                     return '<div class="inline-flex gap-1">
+
                             <a href="javascript:void(0);" onclick="viewOrderDetails(' . $data->id . ')" class="btn bg-info text-white rounded">
                                 <i class="fa-solid fa-eye"></i>
                             </a>
@@ -99,6 +102,7 @@ class OrderManagementController extends Controller
             return response()->json(['success' => false, 'message' => 'Order not found'], 404);
         }
 
+
         return response()->json([
             'success' => true,
             'data' => [
@@ -118,6 +122,8 @@ class OrderManagementController extends Controller
                     'contact' => $order->billingAddress->contact ?? '',
                     'city' => $order->billingAddress->city ?? '',
                     'postcode' => $order->billingAddress->postcode ?? '',
+                    'gp_number' => $order->billingAddress->gp_number ?? '',
+                    'gp_address' => $order->billingAddress->gp_address ?? '',
                 ],
                 'order_items' => $order->orderItems->map(function ($item) {
                     return [
@@ -211,6 +217,9 @@ class OrderManagementController extends Controller
             return response()->json(['success' => false, 'message' => 'An error occurred: ' . $e->getMessage()], 500);
         }
     }
+
+
+
 
 
 
