@@ -231,6 +231,8 @@
                         <h4 class="text-lg font-bold text-gray-900">💰 Pricing Summary</h4>
                         <p><strong>Sub Total:</strong> <span id="sub-total"></span></p>
                         <p><strong>Discount:</strong> <span id="discount"></span></p>
+                        <p><strong>Shipping Charge:</strong> <span id="shipping_charge"></span></p>
+                        <p><strong>Tax:</strong> <span id="tax"></span></p>
                         <p><strong>Total Price:</strong> <span id="total-price"></span></p>
                     </div>
                 </div>
@@ -456,6 +458,8 @@
                         // Fill Pricing
                         $('#sub-total').text('$' + data.sub_total);
                         $('#discount').text('$' + data.discount);
+                        $('#shipping_charge').text('$' + data.shipping_charge);
+                        $('#tax').text('$' + data.tax);
                         $('#total-price').text('$' + data.total_price);
 
                         // Fill Order Note

@@ -97,9 +97,9 @@
         <div>
             <h3>Payment Summary</h3>
             <p><strong>Subtotal:</strong> ${{ $order->sub_total  }}</p>
+            <p><strong>Discount:</strong> -${{ $order->discount }}</p>
             <p><strong>Shipping charge:</strong> ${{ $order->shipping_charge ?? '0.00' }} (2%)</p> <!-- Show the shipping charge dynamically -->
             <p><strong>Tax:</strong> ${{ $order->tax }} (10%)</p>
-            <p><strong>Discount:</strong> -${{ $order->discount }}</p>
             <p><strong>Total Amount:</strong> ${{ $totalPrice }}</p> <!-- Show the dynamically calculated total price -->
 
         </div>

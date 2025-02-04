@@ -297,10 +297,9 @@ public function microsoftSetting()
              'MS_CLIENT_ID' => 'nullable|string',
              'MS_CLIENT_SECRET' => 'nullable|string',
              'MS_TENANT_ID' => 'nullable|string',
-             'MS_GRAPH_SCOPE' => 'nullable|string',
-             'MS_AUTHORITY' => 'nullable|string',
+             'MS_REDIRECT_URI' => 'nullable|string',
          ]);
- 
+
          try {
              $envContent = File::get(base_path('.env'));
              $lineBreak = "\n";
@@ -308,16 +307,14 @@ public function microsoftSetting()
                  '/MS_CLIENT_ID=(.*)\s/',
                  '/MS_CLIENT_SECRET=(.*)\s/',
                  '/MS_TENANT_ID=(.*)\s/',
-                 '/MS_GRAPH_SCOPE=(.*)\s/',
-                 '/MS_AUTHORITY=(.*)\s/',
+                 '/MS_REDIRECT_URI=(.*)\s/',
              ], [
                  'MS_CLIENT_ID=' . $request->MS_CLIENT_ID . $lineBreak,
                  'MS_CLIENT_SECRET=' . $request->MS_CLIENT_SECRET . $lineBreak,
                  'MS_TENANT_ID=' . $request->MS_TENANT_ID . $lineBreak,
-                 'MS_GRAPH_SCOPE=' . $request->MS_GRAPH_SCOPE . $lineBreak,
-                 'MS_AUTHORITY=' . $request->MS_AUTHORITY . $lineBreak,
+                 'MS_REDIRECT_URI=' . $request->MS_REDIRECT_URI . $lineBreak,
              ], $envContent);
- 
+
              if ($envContent !== null) {
                  File::put(base_path('.env'), $envContent);
              }

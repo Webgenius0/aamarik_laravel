@@ -234,6 +234,7 @@ class OrderManagement extends Controller
         ]);
 
 
+
         //generate qr code
         $fileName = $this->generateOrderQRcode($order);
 

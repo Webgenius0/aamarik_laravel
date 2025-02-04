@@ -140,7 +140,9 @@ class OrderManagementController extends Controller
                 ],
                 'sub_total' => $order->sub_total,
                 'discount' => $order->discount,
-                'total_price' => $order->total_price,
+                'shipping_charge' => $order->shipping_charge,
+                'tax' => $order->tax,
+                'total_price' =>   number_format($order->sub_total - $order->discount + $order->royal_mail_tracked_price + $order->shipping_charge + $order->tax, 2, '.', ''),
                 'note' => $order->note ?? null,
             ]
         ]);
