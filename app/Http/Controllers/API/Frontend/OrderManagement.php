@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\Frontend;
 use App\Helper\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderCheckoutRequest;
+use App\Http\Resources\OrderInvoiceResource;
 use App\Models\Assessment;
 use App\Models\AssessmentResult;
 use App\Models\BilingAddress;
@@ -580,4 +581,23 @@ class OrderManagement extends Controller
         return $this->sendError('No payment method provided.');
     }
 
+
+
+
+    /**
+     * Order invoice
+     */
+    public function orderInvoice($id)
+    {
+        try {
+            $order = Order::with(['user', 'treatment', 'orderItems', 'billingAddress'])->where('uuid', $id)->first();
+            if (empty($order)) {
+                return $this->sendError('Order not found.');
+            }
+
+            return $this->sendResponse(new OrderInvoiceResource($order), 'Order invoice retrieved successfully.');
+        }catch (\Exception $e) {
+            return $this->sendError($e->getMessage());
+        }
+    }
 }

@@ -121,7 +121,7 @@
                 <div>
                     <button class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md"
                         onclick="ShowCreateUpdateModal()">
-                        Create Medicine
+                        Add Medicine
                     </button>
                 </div>
             </div>
@@ -193,33 +193,33 @@
         <div class="px-8 py-4">
             <form id="createUpdateForm" class="max-w-6xl w-full mx-auto space-y-4"
                 enctype="multipart/form-data" >
-              
-                <h1 class="flex align-left h1">Create Medicine</h1>
-                <input type="text" name="id" id="medicine_id"  value="">
+
+                <h1 class="flex align-left h1">Add Medicine</h1>
+                <input type="hidden" name="id" id="medicine_id"  value="">
 
                 {{-- favicon --}}
                 <div class="flex flex-col md:flex-row space-x-8">
-    <div class="w-full">
-        <div class="flex-col md:flex-row">
-            <label class="text-lg font-medium mb-2 md:mb-0 md:w-1/3 flex align-left">Images</label>
-            <div id="avatarContainer" class="w-full">
-                <!-- Dynamic Image Input Fields Will Appear Here -->
-                <div class="flex items-center mb-2">
-                    <input name="avatar[]" class="form-input w-full dropify" type="file"
-                        accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg" data-height="300">
-                    <button type="button" class="ml-2 text-xl font-semibold removeBtn hidden">-</button>
+                <div class="w-full">
+                    <div class="flex-col md:flex-row">
+                        <label class="text-lg font-medium mb-2 md:mb-0 md:w-1/3 flex align-left">Images</label>
+                        <div id="avatarContainer" class="w-full">
+                            <!-- Dynamic Image Input Fields Will Appear Here -->
+                            <div class="flex items-center mb-2">
+                                <input name="avatar[]" class="form-input w-full dropify" type="file"
+                                    accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg" data-height="300">
+                                <button type="button" class="ml-2 text-xl font-semibold removeBtn hidden">-</button>
+                            </div>
+                        </div>
+                        <button type="button" id="incrementBtn" class="ml-2 text-xl font-semibold">+</button>
+
+                        @error('avatar')
+                            <span class="text-red-500 block mt-1 text-sm">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
                 </div>
             </div>
-            <button type="button" id="incrementBtn" class="ml-2 text-xl font-semibold">+</button>
-
-            @error('avatar')
-                <span class="text-red-500 block mt-1 text-sm">
-                    <strong>{{ $message }}</strong>
-                </span>
-            @enderror
-        </div>
-    </div>
-</div>
 
 
 
@@ -275,14 +275,23 @@
 
                 <div class="flex flex-col md:flex-row items-center md:space-x-4">
                     <div class="flex flex-col md:w-1/2">
-                        <label  class="text-lg font-medium mb-2 md:mb-0 flex align-left">Form</label>
-                        <input name="form" type="text" class="form-input w-full" id="form" placeholder="generic name.." value="{{old('form')}}">
+                        <label class="text-lg font-medium mb-2 md:mb-0 flex align-left">Form</label>
+                        <select name="form" id="form" class="form-input w-full">
+                            <option value="" disabled selected>Choose a form...</option>
+                            <option value="tablet" {{ old('form') == 'tablet' ? 'selected' : '' }}>Tablet</option>
+                            <option value="liquid" {{ old('form') == 'liquid' ? 'selected' : '' }}>Liquid</option>
+                            <option value="capsule" {{ old('form') == 'capsule' ? 'selected' : '' }}>Capsule</option>
+                            <option value="inhaler" {{ old('form') == 'inhaler' ? 'selected' : '' }}>Inhaler</option>
+                            <option value="syrup" {{ old('form') == 'syrup' ? 'selected' : '' }}>Syrup</option>
+                            <option value="ointment" {{ old('form') == 'ointment' ? 'selected' : '' }}>Ointment</option>
+                        </select>
                         @error('form')
                         <span class="text-red-500 block mt-1 text-sm">
                             <strong>{{ $message }}</strong>
                         </span>
                         @enderror
                     </div>
+
 
                     <div class="flex flex-col md:w-1/2">
                         <label for="description" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Doges</label>
@@ -509,12 +518,12 @@
 // Submit Form
 $('#createUpdateForm').on('submit', function(e) {
     e.preventDefault();
-    
+
     var faqId = $('#medicine_id').val();
     console.log(faqId);
     var url = faqId ? "{{ route('medicine.update', ':id') }}".replace(':id', faqId) : "{{ route('medicine.store') }}";
-   
-    var method = faqId ? "PUT" : "POST"; 
+
+    var method = faqId ? "PUT" : "POST";
     console.log('Request URL:', method);
 
     // Create a FormData object to handle file uploads
@@ -560,7 +569,7 @@ $('#createUpdateForm').on('submit', function(e) {
     });
 });
 
-    
+
 
 
 
@@ -575,7 +584,7 @@ function editMedicine(id) {
                 $('#medicine_id').val(resp.data.id);
                 $('#title').val(resp.data.title); // Ensure these fields are populated
                 $('#brand').val(resp.data.brand);
-               
+
                 $('#description').val(resp.data.description);
                 $('#form').val(resp.data.form);
                 $('#doges').val(resp.data.doges);
@@ -583,7 +592,7 @@ function editMedicine(id) {
                 $('#price').val(resp.data.price);
                 $('#quantity').val(resp.data.quantity);
                 $('#stock_quantity').val(resp.data.stock_quantity);
-                
+
                 // Ensure the avatar field is set properly
                 if (resp.data.details) {
                                 let detail = resp.data.details;  // Single related detail object
@@ -594,7 +603,7 @@ function editMedicine(id) {
                                 $('#generic_name').val(resp.data.generic_name);
                                 $('#dosage').val(detail.dosage);
                                 $('#unit').val(detail.unit);
-                                
+
                             } else {
                                 // If no details, set defaults
                                 $('#quantity').val(0);
@@ -602,7 +611,7 @@ function editMedicine(id) {
                                 $('#form').val('');
                                 $('#price').val('');
                                 $('#dosage').val(detail.dosage);
-                                $('#unit').val(detail.unit);                             
+                                $('#unit').val(detail.unit);
                                 $('#avatar').val(detail.avatar);
                             }
 
@@ -641,7 +650,7 @@ function editMedicine(id) {
             <div class="image-item d-flex flex-shrink-0 w-1/2 mb-4  ">
                 <!-- Add a dropify input field for replacing the image -->
                 <input type="file" name="avatar[]" class="dropify" data-default-file="${imageUrl}" data-height="300" />
-                
+
             </div>
         `);
     });
@@ -653,7 +662,7 @@ function editMedicine(id) {
     $('.dropify').dropify();
 }
 
-                
+
 
 
                 // Open the modal
@@ -674,24 +683,24 @@ function editMedicine(id) {
     // Add new input field when "+" is clicked
     document.getElementById('incrementBtntext').addEventListener('click', function() {
         var container = document.getElementById('inputContainer');
-        
+
         // Create a new input field container
         var newInputContainer = document.createElement('div');
         newInputContainer.classList.add('flex', 'items-center', 'mb-2');
-        
+
         // Create a new input field
         var newInput = document.createElement('input');
         newInput.type = 'text';
         newInput.name = 'feature[]';  // Allow multiple values to be submitted as an array
         newInput.classList.add('form-input', 'w-full');
         newInput.placeholder = 'Add feature';
-        
+
         // Create a new remove button
         var removeButton = document.createElement('button');
         removeButton.type = 'button';
         removeButton.classList.add('ml-2', 'text-xl', 'font-semibold', 'removeBtn');
         removeButton.innerText = '-';  // Set text to "-"
-        
+
         // Add event listener to remove input field when "-" is clicked
         removeButton.addEventListener('click', function() {
             newInputContainer.remove();
@@ -700,7 +709,7 @@ function editMedicine(id) {
         // Append the new input field and remove button to the container
         newInputContainer.appendChild(newInput);
         newInputContainer.appendChild(removeButton);
-        
+
         // Append the new input container to the main container
         container.appendChild(newInputContainer);
     });
@@ -765,15 +774,15 @@ document.addEventListener('DOMContentLoaded', function () {
 //                 success: function(resp) {
 //                     if (resp.success === true) {
 //                         $('#medicene_id').val(resp.data.id);
-//                         $('#title').val(resp.data.title);  
-//                         $('#brand').val(resp.data.brand);  
-//                         $('#quantity').val(resp.data.quantity);  
+//                         $('#title').val(resp.data.title);
+//                         $('#brand').val(resp.data.brand);
+//                         $('#quantity').val(resp.data.quantity);
 //                         $('#stock_quantity').val(resp.data.stock_quantity);
 //                        $('#generic_name').val(resp.data.generic_name);
 //                        $('#description').val(resp.data.description);
 //                        $('#quantity').val(resp.data.quantity);
 //                        $('#price').val(resp.data.price);
-                       
+
 //                        if (resp.data.details) {
 //                                 let detail = resp.data.details;  // Single related detail object
 //                                 $('#quantity').val(detail.quantity);
@@ -790,7 +799,7 @@ document.addEventListener('DOMContentLoaded', function () {
 //                                 $('#form').val('');
 //                                 $('#price').val('');
 //                                 $('#dosage').val(detail.dosage);
-//                                 $('#unit').val(detail.unit);                             
+//                                 $('#unit').val(detail.unit);
 //                                 $('#avatar').val(detail.avatar);
 //                             }
 

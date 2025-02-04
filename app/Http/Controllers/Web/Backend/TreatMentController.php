@@ -27,40 +27,18 @@ class TreatMentController extends Controller
     public function treatmentList(Request $request)
     {
         if ($request->ajax()) {
-            // Retrieve doctor records
-            //$data = User::where('role', 'doctor')->get(); // Fixed with parentheses
-            $data = TreatMent::all();
-            
+            $data = TreatMent::latest()->get();
+
+
             return DataTables::of($data)
                 ->addIndexColumn()
-                // ->addColumn('name', function ($data) {
-                //     return Str::limit($data->name, 50, '...');
-                // })
-                // ->addColumn('status', function ($data) {
-                //     return '<input type="checkbox" class="form-switch" onclick="ShowStatusChangeAlert(' . $data->id . ')" ' . ($data->status == "active" ? 'checked' : '') . '>';
-                // })
                 ->addColumn('avatar', function ($data) {
                     $avatarUrl = $data->avatar ? asset($data->avatar) : asset('uploads/defult-image/default-avatar.png');
-                    return $data->avatar ? 
+                    return $data->avatar ?
                         '<a href="' . $avatarUrl . '" target="_blank"><img src="' . $avatarUrl . '" alt="Avatar" width="50" height="50"></a>' :
                         'No Avatar';
                 })
-                //Display Categories
-                ->addColumn('categories', function ($data) {
-                    return $data->categories->pluck('title')->implode(', '); // List category titles
-                })
-                // Display Details
-                // ->addColumn('details', function ($data) {
-                //     return $data->details->pluck('title')->implode(', '); // List detail titles
-                // })
-                // Display FAQs
-                // ->addColumn('faqs', function ($data) {
-                //     return $data->faqs->pluck('question')->implode(', '); // List FAQ questions
-                // })
-                // Display Assessments
-                // ->addColumn('assessments', function ($data) {
-                //     return $data->assessments->pluck('question')->implode(', '); // List assessment questions
-                // })
+
                 ->addColumn('action', function ($data) {
                     return '<div class="inline-flex gap-1">
                             <a href="javascript:void(0);" onclick="editDoctor(' . $data->id . ')" class="btn bg-success text-white rounded">
@@ -73,7 +51,7 @@ class TreatMentController extends Controller
                 })
                 ->rawColumns(['name', 'avatar','action','status'])
                 ->make(true);
-            
+
         }
 
         return view('backend.layouts.treatment.treatmentlist');

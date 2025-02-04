@@ -69,6 +69,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::controller(OrderManagement::class)->group(function () {
        Route::post('/order-checkout', 'orderCheckout');
        Route::post('/order-prescription/upload/{id}', 'uploadPrescription');
+       Route::get('/order-invoice/{id}', 'orderInvoice');
     });
 
 

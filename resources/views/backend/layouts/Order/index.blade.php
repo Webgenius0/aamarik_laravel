@@ -155,20 +155,17 @@
         </div>
     </main>
 
-
-
     <!-- Order Details Modal -->
     <div id="orderDetailsModal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center transition-opacity duration-300">
-        <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-3xl w-full transform scale-95 transition-transform duration-300" id="modalContent">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-3xl w-full transform scale-95 transition-transform duration-300 relative" id="modalContent">
             <!-- Modal Header -->
             <div class="flex justify-between items-center border-b pb-3">
                 <h2 class="text-2xl font-semibold text-gray-800">Order Details</h2>
                 <button onclick="closeOrderModal()" class="text-gray-600 hover:text-red-500 text-2xl font-bold">&times;</button>
             </div>
 
-            <!-- Order Details -->
-            <div class="order-details mt-4 space-y-4 text-gray-700">
-
+            <!-- Scrollable Content -->
+            <div class="order-details mt-4 space-y-4 text-gray-700 max-h-[70vh] overflow-y-auto p-2">
                 <!-- Order Info -->
                 <h4 class="text-lg font-bold text-gray-900">🛒 Order Information</h4>
                 <div class="grid grid-cols-2 gap-4 text-gray-800">
@@ -178,16 +175,14 @@
                     <p><strong>Delivery Date:</strong> <span id="delivery-date"></span></p>
                 </div>
 
-                <!-- User Info & Billing Address Side-by-Side -->
+                <!-- User Info & Billing Address -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                    <!-- User Info -->
                     <div class="bg-gray-100 p-4 rounded-lg shadow-md">
                         <h4 class="text-lg font-bold text-gray-900">👤 User Information</h4>
                         <p><strong>Name:</strong> <span id="user-name"></span></p>
                         <p><strong>Email:</strong> <span id="user-email"></span></p>
                     </div>
 
-                    <!-- Billing Address -->
                     <div class="bg-gray-100 p-4 rounded-lg shadow-md">
                         <h4 class="text-lg font-bold text-gray-900">🏠 Shipping Address</h4>
                         <p><strong>Name:</strong> <span id="billing-name"></span></p>
@@ -198,7 +193,6 @@
                         <p><strong>Postcode:</strong> <span id="billing-postcode"></span></p>
                         <p><strong>Gp Number:</strong> <span id="billing-gpNumber"></span></p>
                         <p><strong>Gp :</strong> <span id="billing-gpAddress"></span></p>
-
                     </div>
                 </div>
 
@@ -218,15 +212,12 @@
                     </table>
                 </div>
 
-                <!-- Treatment & Pricing Side-by-Side -->
+                <!-- Treatment & Pricing -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                    <!-- Treatment -->
                     <div class="bg-gray-100 p-4 rounded-lg shadow-md">
                         <h4 class="text-lg font-bold text-gray-900">💊 Treatment Information</h4>
                         <p><strong>Name:</strong> <span id="treatment-name"></span></p>
                     </div>
-
-                    <!-- Pricing Summary -->
                     <div class="bg-gray-100 p-4 rounded-lg shadow-md">
                         <h4 class="text-lg font-bold text-gray-900">💰 Pricing Summary</h4>
                         <p><strong>Sub Total:</strong> <span id="sub-total"></span></p>
@@ -242,19 +233,116 @@
                 <p id="order-note" class="italic text-gray-600"></p>
             </div>
 
-            <!-- Close Button -->
+            <!-- Footer Buttons -->
             <div class="mt-5 flex justify-end space-x-3">
-                <!-- Download PDF Invoice Button -->
-                <a href="#"  id="downloadPDF" class="bg-green-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-green-600 transition">
+                <a href="#" id="downloadPDF" class="bg-green-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-green-600 transition">
                     Download Invoice PDF
                 </a>
-
                 <button onclick="closeOrderModal()" class="bg-red-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-red-600 transition">
                     Close
                 </button>
             </div>
         </div>
     </div>
+
+{{--    <!-- Order Details Modal -->--}}
+{{--    <div id="orderDetailsModal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center transition-opacity duration-300">--}}
+{{--        <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-3xl w-full transform scale-95 transition-transform duration-300" id="modalContent">--}}
+{{--            <!-- Modal Header -->--}}
+{{--            <div class="flex justify-between items-center border-b pb-3">--}}
+{{--                <h2 class="text-2xl font-semibold text-gray-800">Order Details</h2>--}}
+{{--                <button onclick="closeOrderModal()" class="text-gray-600 hover:text-red-500 text-2xl font-bold">&times;</button>--}}
+{{--            </div>--}}
+
+{{--            <!-- Order Details -->--}}
+{{--            <div class="order-details mt-4 space-y-4 text-gray-700">--}}
+
+{{--                <!-- Order Info -->--}}
+{{--                <h4 class="text-lg font-bold text-gray-900">🛒 Order Information</h4>--}}
+{{--                <div class="grid grid-cols-2 gap-4 text-gray-800">--}}
+{{--                    <p><strong>Order ID:</strong> <span id="order-id"></span></p>--}}
+{{--                    <p><strong>Status:</strong> <span id="order-status" class="px-3 py-1 rounded-lg bg-gray-200 text-sm"></span></p>--}}
+{{--                    <p><strong>Order Date:</strong> <span id="order-date"></span></p>--}}
+{{--                    <p><strong>Delivery Date:</strong> <span id="delivery-date"></span></p>--}}
+{{--                </div>--}}
+
+{{--                <!-- User Info & Billing Address Side-by-Side -->--}}
+{{--                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">--}}
+{{--                    <!-- User Info -->--}}
+{{--                    <div class="bg-gray-100 p-4 rounded-lg shadow-md">--}}
+{{--                        <h4 class="text-lg font-bold text-gray-900">👤 User Information</h4>--}}
+{{--                        <p><strong>Name:</strong> <span id="user-name"></span></p>--}}
+{{--                        <p><strong>Email:</strong> <span id="user-email"></span></p>--}}
+{{--                    </div>--}}
+
+{{--                    <!-- Billing Address -->--}}
+{{--                    <div class="bg-gray-100 p-4 rounded-lg shadow-md">--}}
+{{--                        <h4 class="text-lg font-bold text-gray-900">🏠 Shipping Address</h4>--}}
+{{--                        <p><strong>Name:</strong> <span id="billing-name"></span></p>--}}
+{{--                        <p><strong>Email:</strong> <span id="billing-email"></span></p>--}}
+{{--                        <p><strong>Address:</strong> <span id="billing-address"></span></p>--}}
+{{--                        <p><strong>Contact:</strong> <span id="billing-contact"></span></p>--}}
+{{--                        <p><strong>City:</strong> <span id="billing-city"></span></p>--}}
+{{--                        <p><strong>Postcode:</strong> <span id="billing-postcode"></span></p>--}}
+{{--                        <p><strong>Gp Number:</strong> <span id="billing-gpNumber"></span></p>--}}
+{{--                        <p><strong>Gp :</strong> <span id="billing-gpAddress"></span></p>--}}
+
+{{--                    </div>--}}
+{{--                </div>--}}
+
+{{--                <!-- Order Items Table -->--}}
+{{--                <h4 class="text-lg font-bold text-gray-900 mt-4">📦 Order Items</h4>--}}
+{{--                <div class="overflow-x-auto">--}}
+{{--                    <table class="w-full border mt-2 rounded-lg shadow-md bg-gray-100">--}}
+{{--                        <thead class="bg-gray-300">--}}
+{{--                        <tr>--}}
+{{--                            <th class="px-4 py-2 border">Medicine</th>--}}
+{{--                            <th class="px-4 py-2 border">Quantity</th>--}}
+{{--                            <th class="px-4 py-2 border">Unit Price</th>--}}
+{{--                            <th class="px-4 py-2 border">Total Price</th>--}}
+{{--                        </tr>--}}
+{{--                        </thead>--}}
+{{--                        <tbody id="order-items"></tbody>--}}
+{{--                    </table>--}}
+{{--                </div>--}}
+
+{{--                <!-- Treatment & Pricing Side-by-Side -->--}}
+{{--                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">--}}
+{{--                    <!-- Treatment -->--}}
+{{--                    <div class="bg-gray-100 p-4 rounded-lg shadow-md">--}}
+{{--                        <h4 class="text-lg font-bold text-gray-900">💊 Treatment Information</h4>--}}
+{{--                        <p><strong>Name:</strong> <span id="treatment-name"></span></p>--}}
+{{--                    </div>--}}
+
+{{--                    <!-- Pricing Summary -->--}}
+{{--                    <div class="bg-gray-100 p-4 rounded-lg shadow-md">--}}
+{{--                        <h4 class="text-lg font-bold text-gray-900">💰 Pricing Summary</h4>--}}
+{{--                        <p><strong>Sub Total:</strong> <span id="sub-total"></span></p>--}}
+{{--                        <p><strong>Discount:</strong> <span id="discount"></span></p>--}}
+{{--                        <p><strong>Shipping Charge:</strong> <span id="shipping_charge"></span></p>--}}
+{{--                        <p><strong>Tax:</strong> <span id="tax"></span></p>--}}
+{{--                        <p><strong>Total Price:</strong> <span id="total-price"></span></p>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+
+{{--                <!-- Order Note -->--}}
+{{--                <h4 class="text-lg font-bold text-gray-900 mt-4">📝 Order Note</h4>--}}
+{{--                <p id="order-note" class="italic text-gray-600"></p>--}}
+{{--            </div>--}}
+
+{{--            <!-- Close Button -->--}}
+{{--            <div class="mt-5 flex justify-end space-x-3">--}}
+{{--                <!-- Download PDF Invoice Button -->--}}
+{{--                <a href="#"  id="downloadPDF" class="bg-green-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-green-600 transition">--}}
+{{--                    Download Invoice PDF--}}
+{{--                </a>--}}
+
+{{--                <button onclick="closeOrderModal()" class="bg-red-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-red-600 transition">--}}
+{{--                    Close--}}
+{{--                </button>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
 
 
 
@@ -553,17 +641,4 @@
         }
 
 
-        // download invoice
-    function downloadPDF() {
-        const { jsPDF } = window.jspdf;
-        html2canvas(document.querySelector("#invoice")).then(canvas => {
-            let pdf = new jsPDF('p', 'mm', 'a4');
-            let imgData = canvas.toDataURL('image/png');
-            let imgWidth = 210;
-            let imgHeight = (canvas.height * imgWidth) / canvas.width;
-            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-            pdf.save("Luxury_Invoice.pdf");
-        });
-    }
-    </script>
 @endpush

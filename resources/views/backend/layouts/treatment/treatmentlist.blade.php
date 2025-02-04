@@ -1,6 +1,6 @@
 @extends('backend.app')
 
-@section('title', 'Medicine| ' . $setting->title ?? 'PrimeCare')
+@section('title', 'Treatment| ' . $setting->title ?? 'PrimeCare')
 
 @push('styles')
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
@@ -104,12 +104,12 @@
     <div class="card bg-white overflow-hidden">
         <div class="card-header">
             <div class="flex justify-between align-middle">
-                <h3 class="card-title">Medicine List</h3>
+                <h3 class="card-title">Treatment List</h3>
                 <div>
                     <button class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md">
                     <a href="{{route('treatment.index')}}">Create Treatment</a>
                     </button>
-                    
+
                 </div>
             </div>
         </div>
@@ -130,16 +130,7 @@
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Avatar
                             </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Category Title
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                About Title
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Stock Quantity
-                            </th>
-                            
+
                             <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Action
                             </th>
@@ -174,7 +165,7 @@
         <div class="px-8 py-4">
             <form id="createUpdateForm" class="max-w-6xl w-full mx-auto space-y-4"
                 enctype="multipart/form-data" >
-              
+
                 <h1 class="flex align-left h1">Create Medicine</h1>
                 <input type="hidden" name="id" id="medicine_id">
 
@@ -449,19 +440,6 @@
                     name: 'avatar'
                 },
                 {
-                    data: 'title',
-                    name: 'title'
-                },
-                {
-                    data: 'title',
-                    name: 'title'
-                },
-                {
-                    data: 'stock_quantity',
-                    name: 'stock_quantity'
-                },
-                
-                {
                     data: 'action',
                     name: 'action',
                     orderable: false,
@@ -478,7 +456,7 @@
     function ShowCreateUpdateModal() {
         $('#createUpdateForm')[0].reset();
         $('#medicine_id').val('');
-        $('#modalTitle').html('Create New Medicine');
+        $('#modalTitle').html('Add New Treatment');
         $('#modalOverlay').show().addClass('modal-open');
     }
 
@@ -494,20 +472,16 @@
 
 // Submit Form
 $('#createUpdateForm').on('submit', function(e) {
-            e.preventDefault();       
-            var faqId = $('#medicine_id').val();            
-            var url = faqId ? "{{ route('medicine.update', ':id') }}".replace(':id', faqId) : "{{ route('medicine.store') }}";   
-            var method = faqId ? "PUT" : "POST"; 
+            e.preventDefault();
+            var faqId = $('#medicine_id').val();
+            var url = faqId ? "{{ route('medicine.update', ':id') }}".replace(':id', faqId) : "{{ route('medicine.store') }}";
+            var method = faqId ? "PUT" : "POST";
             // Make the AJAX request
             $.ajax({
                 type: method,
                 url: url,
                 data: $(this).serialize(),
                 success: function(resp) {
-                    console.log(resp);
-
-                    // Reload DataTable
-                    $('#data-table').DataTable().ajax.reload();
 
                     // Handle response
                     if (resp.success === true) {
@@ -519,6 +493,8 @@ $('#createUpdateForm').on('submit', function(e) {
                         setTimeout(function() {
                             $('#modalOverlay').hide();
                         }, 200);
+                        // Reload DataTable
+                        $('#data-table').DataTable().ajax.reload();
                     } else if (resp.errors) {
                         // Show first error message
                         flasher.error(resp.errors[0]);
@@ -535,7 +511,7 @@ $('#createUpdateForm').on('submit', function(e) {
             });
 
         });
-    
+
 
 
 
@@ -550,7 +526,7 @@ function editMedicine(id) {
                 $('#medicine_id').val(resp.data.id);
                 $('#title').val(resp.data.title); // Ensure these fields are populated
                 $('#brand').val(resp.data.brand);
-               
+
                 $('#description').val(resp.data.description);
                 $('#form').val(resp.data.form);
                 $('#doges').val(resp.data.doges);
@@ -558,7 +534,7 @@ function editMedicine(id) {
                 $('#price').val(resp.data.price);
                 $('#quantity').val(resp.data.quantity);
                 $('#stock_quantity').val(resp.data.stock_quantity);
-                
+
                 // Ensure the avatar field is set properly
                 if (resp.data.details) {
                                 let detail = resp.data.details;  // Single related detail object
@@ -569,7 +545,7 @@ function editMedicine(id) {
                                 $('#generic_name').val(resp.data.generic_name);
                                 $('#dosage').val(detail.dosage);
                                 $('#unit').val(detail.unit);
-                                
+
                             } else {
                                 // If no details, set defaults
                                 $('#quantity').val(0);
@@ -577,7 +553,7 @@ function editMedicine(id) {
                                 $('#form').val('');
                                 $('#price').val('');
                                 $('#dosage').val(detail.dosage);
-                                $('#unit').val(detail.unit);                             
+                                $('#unit').val(detail.unit);
                                 $('#avatar').val(detail.avatar);
                             }
 
@@ -612,24 +588,24 @@ function editMedicine(id) {
     // Add new input field when "+" is clicked
     document.getElementById('incrementBtn').addEventListener('click', function() {
         var container = document.getElementById('inputContainer');
-        
+
         // Create a new input field container
         var newInputContainer = document.createElement('div');
         newInputContainer.classList.add('flex', 'items-center', 'mb-2');
-        
+
         // Create a new input field
         var newInput = document.createElement('input');
         newInput.type = 'text';
         newInput.name = 'feature[]';  // Allow multiple values to be submitted as an array
         newInput.classList.add('form-input', 'w-full');
         newInput.placeholder = 'Add feature';
-        
+
         // Create a new remove button
         var removeButton = document.createElement('button');
         removeButton.type = 'button';
         removeButton.classList.add('ml-2', 'text-xl', 'font-semibold', 'removeBtn');
         removeButton.innerText = '-';  // Set text to "-"
-        
+
         // Add event listener to remove input field when "-" is clicked
         removeButton.addEventListener('click', function() {
             newInputContainer.remove();
@@ -638,7 +614,7 @@ function editMedicine(id) {
         // Append the new input field and remove button to the container
         newInputContainer.appendChild(newInput);
         newInputContainer.appendChild(removeButton);
-        
+
         // Append the new input container to the main container
         container.appendChild(newInputContainer);
     });
@@ -652,62 +628,6 @@ function editMedicine(id) {
             });
         }
     });
-//edit medicine
-// function editMedicine(id) {
-//             let route = '{{ route('medicine.edit', ':id') }}';
-//             route = route.replace(':id', id);
-//             $.ajax({
-//                 type: "GET",
-//                 url: route,
-//                 success: function(resp) {
-//                     if (resp.success === true) {
-//                         $('#medicene_id').val(resp.data.id);
-//                         $('#title').val(resp.data.title);  
-//                         $('#brand').val(resp.data.brand);  
-//                         $('#quantity').val(resp.data.quantity);  
-//                         $('#stock_quantity').val(resp.data.stock_quantity);
-//                        $('#generic_name').val(resp.data.generic_name);
-//                        $('#description').val(resp.data.description);
-//                        $('#quantity').val(resp.data.quantity);
-//                        $('#price').val(resp.data.price);
-                       
-//                        if (resp.data.details) {
-//                                 let detail = resp.data.details;  // Single related detail object
-//                                 $('#quantity').val(detail.quantity);
-//                                 $('#stock_quantity').val(detail.stock_quantity);
-//                                 $('#form').val(detail.form);
-//                                 $('#price').val(detail.price);
-//                                 $('#dosage').val(detail.dosage);
-//                                 $('#unit').val(detail.unit);
-//                                 $('#avatar').val(detail.avatar);
-//                             } else {
-//                                 // If no details, set defaults
-//                                 $('#quantity').val(0);
-//                                 $('#stock_quantity').val(0);
-//                                 $('#form').val('');
-//                                 $('#price').val('');
-//                                 $('#dosage').val(detail.dosage);
-//                                 $('#unit').val(detail.unit);                             
-//                                 $('#avatar').val(detail.avatar);
-//                             }
-
-//                         $('#modalTitle').html('Update Medicine');
-//                         $('#modalOverlay').show().addClass('modal-open');
-//                     } else if (resp.errors) {
-//                         flasher.error(resp.errors[0]);
-//                     } else {
-//                         flasher.warning(resp.message);
-//                     }
-//                 },
-//                 error: function(error) {
-//                     flasher.error('Error while fetching data.');
-//                 }
-//             });
-//             // $('#modalTitle').html('Update FAQ');
-//             // $('#modalOverlay').show().addClass('modal-open');
-//         }
-
-
 
 
 
@@ -757,84 +677,8 @@ function editMedicine(id) {
     }
 
 
-    // Status Change Confirm Alert
-    function ShowStatusChangeAlert(id) {
-        event.preventDefault();
 
-        Swal.fire({
-            title: 'Are you sure?',
-            text: 'You want to update the status?',
-            icon: 'info',
-            showCancelButton: true,
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'No',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                statusChange(id);
-            }
-        });
-    }
 
-    // Status Change
-    function statusChange(id) {
-        var url = '';
-        $.ajax({
-            type: "GET",
-            url: url.replace(':id', id),
-            success: function(resp) {
 
-                console.log(resp);
-                // Reloade DataTable
-                $('#data-table').DataTable().ajax.reload();
-                if (resp.success === true) {
-                    // show toast message
-                    flasher.success(resp.message);
-                } else if (resp.errors) {
-                    flasher.error(resp.errors[0]);
-                } else {
-                    flasher.warning(resp.message);
-                }
-            }, // success end
-            error: function(error) {
-                flasher.error(error);
-            }
-        })
-    }
-
-    // //store medicine
-
-    // $(document).ready(function() {
-    //     $('#createUpdateForm').on('submit', function(e) {
-    //         e.preventDefault();
-    //         $.ajax({
-    //             url: "{{route('medicine.store')}}",
-    //             type: "POST",
-    //             headers: {
-    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    //             },
-    //             processData: false,
-    //             contentType: false,
-    //             data: new FormData(this),
-    //             success: function(resp) {
-    //                 console.log(resp);
-    //                 if (resp.success === true) {
-    //                     $('#modalOverlay').removeClass('modal-open');
-    //                     setTimeout(function() {
-    //                         $('#modalOverlay').hide();
-    //                     }, 200);
-    //                     $('#data-table').DataTable().ajax.reload();
-    //                     flasher.success(resp.message);
-    //                 } else if (resp.errors) {
-    //                     flasher.error(resp.errors[0]);
-    //                 } else {
-    //                     flasher.warning(resp.message);
-    //                 }
-    //             },
-    //             error: function(error) {
-    //                 flasher.error(error);
-    //             }
-    //         });
-    //     });
-    // });
 </script>
 @endpush
