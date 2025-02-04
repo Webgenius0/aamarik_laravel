@@ -49,10 +49,10 @@ class OrderManagement extends Controller
         // Validate incoming request
         $validator = Validator::make($request->all(), [
             'treatment_id' => 'required|integer',
-            'royal_maill_tracked_price' => 'nullable|numeric',
+            'royal_mail_tracked_price' => 'nullable|numeric',
             'code' => 'nullable|string|exists:coupons,code', // coupons code
             'subscription' => 'required|boolean',
-            'prescription' => 'nullable|nullable|file|mimes:jpg,jpeg,png,pdf|max:10240',
+            'prescription' => 'nullable|nullable|file|mimes:jpg,jpeg,png,pdf|max:30240',
             'payment_method_id' => 'required|string',
 
             //amount
@@ -150,11 +150,12 @@ class OrderManagement extends Controller
             }
 
             //sub total price
-            $sub_total  = $totalPrice + ($validatedData['royal_maill_tracked_price'] ?? 0);
+            $sub_total  = $totalPrice ;
+
 
 
             // Apply the discount
-            $discountedAmount = $coupon->applyDiscount($sub_total);
+            $discountedAmount = $coupon->applyDiscount($sub_total); //after discount
 
 
             // Create the order
@@ -179,7 +180,7 @@ class OrderManagement extends Controller
             // Commit transaction
             DB::commit();
 
-            return  $this->sendResponse((object)[],'Your order has been successfully placed and is currently being processed.',200);
+            return  $this->sendResponse([],'Your order has been successfully placed and is currently being processed.',200);
         }catch (\Exception $exception){
             DB::rollBack();
             return $this->sendError('Something went wrong while processing your order. Please try again later.',$exception->getMessage(),422);
@@ -208,29 +209,45 @@ class OrderManagement extends Controller
     /**
      * Calculate total amount
      */
+
     private function storeOrderData($validatedData,$sub_total,$discountedAmount,$request)
     {
-       $coupon = Coupon::where('code', $validatedData['code'])->first();
+        $coupon = Coupon::where('code', $validatedData['code'])->first();
+
+        // Calculate the discounted subtotal
+        $discountedSubTotal = $sub_total - ($discountedAmount ?? 0);
 
 
-         $order =  Order::create([
-            'uuid'         => substr((string) Str::uuid(), 0, 8),
-            'user_id'      => auth()->id(),
-            'treatment_id' => $validatedData['treatment_id'],
-            'coupon_id'    => $coupon->id ?? null,
-            'tracked'      => !empty($validatedData['royal_maill_tracked_price']),
-            'royal_mail_tracked_price' => $validatedData['royal_maill_tracked_price'],
-            'sub_total'    => $sub_total, //sub total
-            'discount'     => $sub_total - ($discountedAmount ?? 0) ,
-            'total_price'  => $discountedAmount ?? null,
-            'subscription' => $validatedData['subscription'],
-            'prescription' => $this->uploadPrescription($request),
-            'status'       => 'pending',
-            'created_at'   => now(),
+        // Calculate the shipping charge (2% of the discounted subtotal)
+        $shippingCharge = $discountedSubTotal * 0.02;
+
+        // Calculate tax (10% of the discounted subtotal + shipping charge + royal mail tracked price)
+        $tax = ($discountedSubTotal + $shippingCharge + $validatedData['royal_mail_tracked_price'] ) * 0.10;
+
+        dd($discountedSubTotal);
+        // Calculate the total price (discounted subtotal + shipping charge + tax)
+        $totalPrice = $discountedSubTotal + $shippingCharge + $tax;
+
+        // Create the order
+        $order = Order::create([
+            'uuid'                     => substr((string) Str::uuid(), 0, 8),
+            'user_id'                  => auth()->id(),
+            'treatment_id'             => $validatedData['treatment_id'],
+            'coupon_id'                => $coupon->id ?? null,
+            'tracked'                  => !empty($validatedData['royal_mail_tracked_price']),
+            'royal_mail_tracked_price' => $validatedData['royal_mail_tracked_price'],
+            'sub_total'                => $sub_total, // Subtotal before discount
+            'discount'                 => $discountedSubTotal ?? 0, // Discount amount
+            'shipping_charge'          => $shippingCharge, // Shipping charge (2% of discounted subtotal)
+            'tax'                      => $tax, // Tax (10% of discounted subtotal + shipping charge + royal mail tracked price)
+            'total_price'              => $totalPrice, // Total amount
+            'subscription'             => $validatedData['subscription'],
+            'prescription'             => $this->uploadPrescription($request),
+            'status'                   => 'pending',
+            'created_at'               => now(),
         ]);
 
-
-       //generate qr code
+        //generate qr code
         $fileName = $this->generateOrderQRcode($order);
 
         // Update order with QR code path
@@ -238,11 +255,10 @@ class OrderManagement extends Controller
             'qr_code' => 'uploads/qr-code/' . $fileName
         ]);
 
-
-
         //return order
         return $order;
     }
+
 
     /*
      * Generate qr code

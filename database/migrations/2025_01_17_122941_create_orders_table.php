@@ -19,9 +19,9 @@ return new class extends Migration
             $table->unsignedBigInteger('coupon_id')->nullable();
             $table->boolean('tracked')->default(false);
             $table->decimal('royal_mail_tracked_price',8,2)->default(0);
-            $table->decimal('sub_total', 8, 2)->default(0);
-            $table->decimal('discount', 8, 2)->default(0);
-            $table->decimal('total_price', 8, 2)->default(0);
+            $table->decimal('sub_total', 8, 2)->default(0);//only total product total amount
+            $table->decimal('discount', 8, 2)->default(0); //only discount amount
+            $table->decimal('total_price', 8, 2)->default(0); //total amount ->  $total = ($sub_total - $discount_amount) + $royal_mail_track_amount + $shipping_charge + $tax;
             $table->decimal('pay_amount', 8, 2)->default(0);
             $table->decimal('due_amount', 8, 2)->default(0);
             $table->string('stripe_payment_id')->unique()->nullable();

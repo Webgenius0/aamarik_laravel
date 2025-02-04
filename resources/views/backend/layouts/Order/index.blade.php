@@ -243,7 +243,7 @@
             <!-- Close Button -->
             <div class="mt-5 flex justify-end space-x-3">
                 <!-- Download PDF Invoice Button -->
-                <a href="#" id="downloadPDF" class="bg-green-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-green-600 transition">
+                <a href="#"  id="downloadPDF" class="bg-green-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-green-600 transition">
                     Download Invoice PDF
                 </a>
 
@@ -269,7 +269,10 @@
     <script src="{{ asset('Backend/plugins/tinymc/tinymce.min.js') }}"></script>
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <!-- Define orderDetailsRoute here -->
     <script>
@@ -546,5 +549,17 @@
         }
 
 
+        // download invoice
+    function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        html2canvas(document.querySelector("#invoice")).then(canvas => {
+            let pdf = new jsPDF('p', 'mm', 'a4');
+            let imgData = canvas.toDataURL('image/png');
+            let imgWidth = 210;
+            let imgHeight = (canvas.height * imgWidth) / canvas.width;
+            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+            pdf.save("Luxury_Invoice.pdf");
+        });
+    }
     </script>
 @endpush

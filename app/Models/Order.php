@@ -19,6 +19,7 @@ class Order extends Model
         'sub_total',
         'discount',
         'tax',
+        'shipping_charge',
         'total_price',
         'pay_amount',
         'due_amount',
@@ -28,7 +29,6 @@ class Order extends Model
         'subscription_id',
         'note',
         'qr_code',
-
         'status',
     ];
 
@@ -46,6 +46,7 @@ class Order extends Model
             'sub_total'    => 'decimal:2',  //total amount
             'discount'     => 'decimal:2', //discount amount
             'tax'          => 'decimal:2',
+            'shipping_charge' => 'decimal:2',
             'total_price'  => 'decimal:2', //after discount
             'pay_amount'   => 'decimal:2',
             'due_amount'   => 'decimal:2',

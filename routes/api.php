@@ -82,7 +82,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::delete('/remove/stripe/customer/payment-method/{paymentMethodID}', 'removeCustomerPaymentMethod');
   });
 
-  //! Route for user controlller
+  //! Route for user controller
     Route::controller(BackendUserController::class)->group(function () {
         Route::get('/auth-review', 'getAuthReview');
 

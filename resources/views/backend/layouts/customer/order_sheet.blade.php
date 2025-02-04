@@ -10,8 +10,51 @@
 @section('content')
     <main class="p-6">
         <div class="card bg-white overflow-hidden">
+
+
+            <!---user information-->
+            <div class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
+                <!-- Avatar and User Information Centered -->
+                <div class="flex flex-col items-center text-center gap-1">
+                    <!-- User Avatar -->
+                    <div class="w-20 h-20 rounded-full overflow-hidden border-4 border-gray-200 shadow-lg transform transition duration-300 ease-in-out hover:scale-110">
+                        <img id="avatar" src="{{ $customer->avatar ?? asset('uploads/defult-image/user.png') }}" alt="User Avatar" class="w-full h-full object-cover">
+                    </div>
+
+                    <!-- User Info -->
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md dark:bg-gray-700 dark:border-gray-600 w-full max-w-md mt-4">
+                        <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">👤 User Information</h4>
+                        <div class="space-y-1">
+                            <div class="flex justify-between">
+                                <p class="font-medium text-gray-700 dark:text-gray-300"><strong>Name:</strong></p>
+                                <span class="text-gray-600 dark:text-gray-400">{{ $customer->name }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <p class="font-medium text-gray-700 dark:text-gray-300"><strong>Email:</strong></p>
+                                <span class="text-gray-600 dark:text-gray-400">{{ $customer->email }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <p class="font-medium text-gray-700 dark:text-gray-300"><strong>Phone:</strong></p>
+                                <span class="text-gray-600 dark:text-gray-400">{{ $customer->phone }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <p class="font-medium text-gray-700 dark:text-gray-300"><strong>Gender:</strong></p>
+                                <span class="text-gray-600 dark:text-gray-400">{{ $customer->gender }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <p class="font-medium text-gray-700 dark:text-gray-300"><strong>Address:</strong></p>
+                                <span class="text-gray-600 dark:text-gray-400">{{ $customer->address }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
             <div class="p-4">
-                <h2 class="text-xl font-semibold text-gray-800">Orders for {{ $customer->name }}</h2>
+                <h2 class="text-xl font-semibold text-gray-800">Orders </h2>
                 <div class="overflow-x-auto custom-scroll">
                     <table id="orders-table" class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
