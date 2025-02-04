@@ -1,4 +1,4 @@
-name: Deploy Private GitHub repository to Our server cpanel
+name: Deploy Private GitHub repository to client server cpanel
 on:
   push:
     branches:
