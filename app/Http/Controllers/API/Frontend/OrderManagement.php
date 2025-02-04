@@ -224,7 +224,6 @@ class OrderManagement extends Controller
         // Calculate tax (10% of the discounted subtotal + shipping charge + royal mail tracked price)
         $tax = ($discountedSubTotal + $shippingCharge + $validatedData['royal_mail_tracked_price'] ) * 0.10;
 
-        dd($discountedSubTotal);
         // Calculate the total price (discounted subtotal + shipping charge + tax)
         $totalPrice = $discountedSubTotal + $shippingCharge + $tax;
 
