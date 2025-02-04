@@ -52,7 +52,6 @@ class OrderManagement extends Controller
             'royal_mail_tracked_price' => 'nullable|numeric',
             'code' => 'nullable|string|exists:coupons,code', // coupons code
             'subscription' => 'required|boolean',
-            'prescription' => 'nullable|nullable|file|mimes:jpg,jpeg,png,pdf|max:30240',
             'payment_method_id' => 'required|string',
 
             //amount
@@ -180,7 +179,7 @@ class OrderManagement extends Controller
             // Commit transaction
             DB::commit();
 
-            return  $this->sendResponse([],'Your order has been successfully placed and is currently being processed.',200);
+            return  $this->sendResponse($order->uuid,'Your order has been successfully placed and is currently being processed.',200);
         }catch (\Exception $exception){
             DB::rollBack();
             return $this->sendError('Something went wrong while processing your order. Please try again later.',$exception->getMessage(),422);
@@ -191,22 +190,6 @@ class OrderManagement extends Controller
 
 
     /**
-     *  Prescription file upload
-     */
-    private function uploadPrescription(Request $request)
-    {
-        if ($request->hasFile('prescription')) {
-            $file = $request->file('prescription');
-            $folder = 'prescriptions';
-            $name = 'prescription_' . time() .Str::uuid();
-
-            // Call the fileUpload method
-           return  Helper::fileUpload($file, $folder, $name);
-        }
-        return null;
-    }
-
-    /**
      * Calculate total amount
      */
 
@@ -214,9 +197,13 @@ class OrderManagement extends Controller
     {
         $coupon = Coupon::where('code', $validatedData['code'])->first();
 
-        // Calculate the discounted subtotal
-        $discountedSubTotal = $sub_total - ($discountedAmount ?? 0);
 
+        // Calculate the discounted subtotal
+        $discountedAmount = $sub_total - ($discountedAmount ?? 0);
+
+
+        //calculate the discountedSubTotal = $sub_total - $discountedAmount
+        $discountedSubTotal = $sub_total - $discountedAmount;
 
         // Calculate the shipping charge (2% of the discounted subtotal)
         $shippingCharge = $discountedSubTotal * 0.02;
@@ -225,7 +212,8 @@ class OrderManagement extends Controller
         $tax = ($discountedSubTotal + $shippingCharge + $validatedData['royal_mail_tracked_price'] ) * 0.10;
 
         // Calculate the total price (discounted subtotal + shipping charge + tax)
-        $totalPrice = $discountedSubTotal + $shippingCharge + $tax;
+        $totalPrice = $discountedSubTotal + $shippingCharge + $tax + $validatedData['royal_mail_tracked_price'];
+
 
         // Create the order
         $order = Order::create([
@@ -236,15 +224,15 @@ class OrderManagement extends Controller
             'tracked'                  => !empty($validatedData['royal_mail_tracked_price']),
             'royal_mail_tracked_price' => $validatedData['royal_mail_tracked_price'],
             'sub_total'                => $sub_total, // Subtotal before discount
-            'discount'                 => $discountedSubTotal ?? 0, // Discount amount
+            'discount'                 => $discountedAmount ?? 0, // Discount amount
             'shipping_charge'          => $shippingCharge, // Shipping charge (2% of discounted subtotal)
             'tax'                      => $tax, // Tax (10% of discounted subtotal + shipping charge + royal mail tracked price)
             'total_price'              => $totalPrice, // Total amount
             'subscription'             => $validatedData['subscription'],
-            'prescription'             => $this->uploadPrescription($request),
             'status'                   => 'pending',
             'created_at'               => now(),
         ]);
+
 
         //generate qr code
         $fileName = $this->generateOrderQRcode($order);
@@ -258,6 +246,64 @@ class OrderManagement extends Controller
         return $order;
     }
 
+
+    /**
+     *  Prescription file upload
+     */
+    public function uploadPrescription(Request $request,$orderID)
+    {
+        // Validate incoming request
+        $validator = Validator::make($request->all(), [
+            'prescription' => 'nullable|nullable|file|mimes:jpg,jpeg,png,pdf|max:30240',
+        ]);
+        // If validation fails, return error message
+        if ($validator->fails()) {
+            return $this->sendError('Validation failed. Please check the provided details and try again.',$validator->errors()->toArray(), 422); // Change the HTTP code if needed
+        }
+
+        // Start a transaction to ensure atomicity
+        DB::beginTransaction();
+
+        try {
+            // Retrieve validated data
+            $validatedData = $validator->validated();
+
+            //get current user
+            $user = auth()->user();
+
+            //find id
+            $order = Order::where('uuid',$orderID)->where('user_id',$user->id)->first();
+            if (!$order) {
+                return $this->sendError('Order not found.', [], 404);
+            }
+
+            $fileName = $order->prescription;
+            if ($request->hasFile('prescription')) {
+                //old image delete
+                if ($order->prescription && file_exists($order->prescription)) {
+                    unlink($order->prescription);
+                }
+                $file = $request->file('prescription');
+                $folder = 'prescriptions';
+                $name = 'prescription_' . time() .Str::uuid();
+
+                // Call the fileUpload method
+                $fileName =  Helper::fileUpload($file, $folder, $name);
+            }
+
+            $order->prescription = $fileName;
+            $order->save();
+
+            // Commit transaction
+            DB::commit();
+
+            return  $this->sendResponse([],'prescription uploaded successfully!',200);
+        }catch (\Exception $exception){
+            DB::rollBack();
+            return $this->sendError('Something went wrong while processing your order. Please try again later.',$exception->getMessage(),422);
+        }
+
+    }
 
     /*
      * Generate qr code
