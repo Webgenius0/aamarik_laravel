@@ -48,48 +48,46 @@ class OrderManagement extends Controller
     {
         // Validate incoming request
         $validator = Validator::make($request->all(), [
-//            'treatment_id' => 'required|integer',
-//            'royal_mail_tracked_price' => 'nullable|numeric',
-//            'code' => 'nullable|string|exists:coupons,code', // coupons code
-//            'subscription' => 'required|boolean',
+            'treatment_id' => 'required|integer',
+            'royal_mail_tracked_price' => 'nullable|numeric',
+            'code' => 'nullable|string|exists:coupons,code', // coupons code
+            'subscription' => 'required|boolean',
             'prescription' => 'nullable|nullable|file|mimes:jpg,jpeg,png,pdf|max:30240',
-//            'payment_method_id' => 'required|string',
-//
-//            //amount
-//            'sub_total' => 'nullable|numeric',
-//            'discount'  => 'nullable|numeric',
-//            'total'     => 'nullable|numeric',
-//
-//            // Medicines array
-//            'medicines' => 'required|array',
-//            'medicines.*.medicine_id' => 'required|integer|exists:medicines,id', // assuming medicine_id exists in the medicines table
-//            'medicines.*.quantity' => 'required|integer|min:1',
-//            'medicines.*.unit_price' => 'nullable|numeric',
-//            'medicines.*.total_price' => 'nullable|numeric',
-//
-//            // Assessments array
-//            'assessments' => 'required|array',
-//            'assessments.*.assessment_id' => 'required|integer|exists:assessments,id',
-//            'assessments.*.selected_option' => 'nullable|string|max:255',
-//            'assessments.*.result' => 'nullable|string|max:255',
-//            'assessments.*.notes' => 'nullable|string|max:255',
-//
-//            // Billing address fields (nullable)
-//            'name' => 'nullable|string|max:255',
-//            'email' => 'nullable|email|max:255',
-//            'address' => 'nullable|string|max:255',
-//            'contact' => 'nullable|string|max:15',
-//            'city' => 'nullable|string|max:255',
-//            'postcode' => 'nullable|string|max:20',
-//            'gp_number' => 'nullable|string|max:255',
-//            'gp_address' => 'nullable|string|max:255',
+            'payment_method_id' => 'required|string',
+
+            //amount
+            'sub_total' => 'nullable|numeric',
+            'discount'  => 'nullable|numeric',
+            'total'     => 'nullable|numeric',
+
+            // Medicines array
+            'medicines' => 'required|array',
+            'medicines.*.medicine_id' => 'required|integer|exists:medicines,id', // assuming medicine_id exists in the medicines table
+            'medicines.*.quantity' => 'required|integer|min:1',
+            'medicines.*.unit_price' => 'nullable|numeric',
+            'medicines.*.total_price' => 'nullable|numeric',
+
+            // Assessments array
+            'assessments' => 'required|array',
+            'assessments.*.assessment_id' => 'required|integer|exists:assessments,id',
+            'assessments.*.selected_option' => 'nullable|string|max:255',
+            'assessments.*.result' => 'nullable|string|max:255',
+            'assessments.*.notes' => 'nullable|string|max:255',
+
+            // Billing address fields (nullable)
+            'name' => 'nullable|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'address' => 'nullable|string|max:255',
+            'contact' => 'nullable|string|max:15',
+            'city' => 'nullable|string|max:255',
+            'postcode' => 'nullable|string|max:20',
+            'gp_number' => 'nullable|string|max:255',
+            'gp_address' => 'nullable|string|max:255',
         ]);
         // If validation fails, return error message
         if ($validator->fails()) {
             return $this->sendError('Validation failed. Please check the provided details and try again.',$validator->errors()->toArray(), 422); // Change the HTTP code if needed
         }
-
-        dd($this->uploadPrescription($request));
 
         // Start a transaction to ensure atomicity
       DB::beginTransaction();
