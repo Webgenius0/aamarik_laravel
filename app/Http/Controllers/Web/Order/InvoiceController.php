@@ -13,6 +13,17 @@ class InvoiceController extends Controller
     {
         // Fetch order details from the database
         $order = Order::with(['user', 'treatment', 'orderItems', 'billingAddress'])->where('uuid',$id)->first();
+        if (!$order) {
+            abort(404);
+        }
+        // Fetch setting (logo & company info)
+        $setting = Setting::first();
+
+        $logoPath = $setting->logo ;
+        $totalPrice = $order->sub_total - $order->discount + $order->royal_mail_tracked_price + $order->shipping_charge + $order->tax;
+
+
+        return view('backend.layouts.Order.show_invoice_details',compact('order','setting','totalPrice','logoPath'));
 
     }
     /**

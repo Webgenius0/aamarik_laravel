@@ -279,6 +279,25 @@
         </div>
     </div>
 
+
+    <!-- Step 5: Treatment Medicine -->
+    <div class="step step-5 hidden">
+        <div class="card m-5 p-5">
+            <div class="flex items-center justify-center">
+                <h1 class="h1">Assign Treatment Medicine</h1>
+            </div>
+            <div class="flex flex-col">
+                <label for="medicines" class="text-lg font-medium mb-2">Select Medicines</label>
+                <select name="medicines[]" id="medicines" class="form-input w-full select2" multiple="multiple">
+                    <option value="medicine1">Medicine 1</option>
+                    <option value="medicine2">Medicine 2</option>
+                    <option value="medicine3">Medicine 3</option>
+                    <option value="medicine4">Medicine 4</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
     <!-- Buttons -->
     <div class="flex justify-between mt-4">
         <button type="button" id="prevBtn" class="btn bg-gray-500 text-white py-2 px-4 rounded-lg font-semibold hidden">Previous</button>
@@ -299,7 +318,7 @@
 <script>
     $(document).ready(function() {
         $('.dropify').dropify({
-            
+
         });
 
         let currentStep = 1; // Start from step 1
@@ -320,7 +339,7 @@
                 $('#prevBtn').removeClass('hidden');
                 $('#nextBtn').removeClass('hidden');
                 $('#submitBtn').addClass('hidden');
-            } else if (step === 4) {
+            } else if (step === 5) {
                 $('#prevBtn').removeClass('hidden');
                 $('#nextBtn').addClass('hidden');
                 $('#submitBtn').removeClass('hidden');
@@ -337,9 +356,9 @@
         // Go to the next step
         $('#nextBtn').click(function() {
             // Ensure we are not going beyond step 8
-            if (currentStep < 4) {
+            if (currentStep < 5) {
                 currentStep++;
-                if (currentStep === 3) {
+                if (currentStep === 4) {
                     // If it's the final step, hide "Next" and show "Submit"
                     $('#nextBtn').addClass('hidden');
                     $('#submitBtn').removeClass('hidden');
@@ -528,7 +547,7 @@ document.getElementById('add-title-field').addEventListener('click', function() 
         <label for="detail_items[][title]" class="text-lg font-medium mb-2">Title</label>
         <textarea name="detail_items[][title]" class="form-input w-full" placeholder="Title"></textarea>
     `;
-    
+
     // Append the new title field to the container
     container.insertBefore(newTitleField, container.querySelector('.flex.items-center'));
 
