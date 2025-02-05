@@ -361,8 +361,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <!-- Define orderDetailsRoute here -->
     <script>
@@ -370,25 +368,6 @@
     </script>
 
     <script>
-
-
-    function ShowCreateUpdateModal() {
-            $('#createUpdateForm')[0].reset();
-            $('#medicine_id').val('');
-            $('#modalTitle').html('Create New Medicine');
-            $('#modalOverlay').show().addClass('modal-open');
-        }
-
-        $('#close').click(function() {
-            var modal = $('#modalOverlay');
-            modal.removeClass('modal-open');
-            setTimeout(function() {
-                modal.hide();
-            }, 200);
-        });
-
-
-
         $(document).ready(function() {
             $('#data-table').DataTable({
                 order: [],
@@ -447,6 +426,25 @@
                 ],
             });
         });
+
+
+    function ShowCreateUpdateModal() {
+            $('#createUpdateForm')[0].reset();
+            $('#medicine_id').val('');
+            $('#modalTitle').html('Create New Medicine');
+            $('#modalOverlay').show().addClass('modal-open');
+        }
+
+        $('#close').click(function() {
+            var modal = $('#modalOverlay');
+            modal.removeClass('modal-open');
+            setTimeout(function() {
+                modal.hide();
+            }, 200);
+        });
+
+
+
 
         $(document).ready(function() {
             const flasher = new Flasher({
