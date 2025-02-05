@@ -21,7 +21,8 @@ return [
 
     'allowed_origins' => [
         'https://myhealthneeds.co.uk',
-        'http://localhost:5173'
+        'http://localhost:5173',
+        'https://dev.myhealthneeds.co.uk'
     ],
 
     'allowed_origins_patterns' => [],

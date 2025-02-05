@@ -22,17 +22,17 @@ class CMSController extends Controller
         $personalize = CMS::where('type','personalized')->first();
         return view('backend.layouts.cms.index',compact('cms','personalize'));
     }
-    
+
     public function showPersonalized()
     {
         $personalize = CMS::where('type','personalized')->first();
-        return view('backend.layouts.cms.personalized',compact('personalize3'));
+        return view('backend.layouts.cms.personalized',compact('personalize'));
 
     }
-  
+
     public function update(Request $request)
     {
-     
+
         $request->validate([
             'title' => 'required|string|max:255',
             'sub_title' => 'required|string|max:1000',
@@ -116,9 +116,9 @@ public function homeSection(Request $request)
 $sections = Section::with('sectionCards')->where('type', 'healthcare')->get();
 $workingProcess = Section::with('sectionCards')->where('type', 'process')->get();
 //dd($workingProcess);
-    
+
     return view('backend.layouts.cms.home-section', compact( 'sections','workingProcess'));
-    
+
 }
 
 
@@ -126,7 +126,7 @@ $workingProcess = Section::with('sectionCards')->where('type', 'process')->get()
 public function updateSection(Request $request)
 {
     $request->validate([
-        
+
         'title' => 'array',
         'title.*' => 'nullable|string|max:255',
         'sub_title' => 'array',
@@ -135,10 +135,10 @@ public function updateSection(Request $request)
         'avatar.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:2048',
     ]);
 
-   
+
     foreach ($request->title as $cardId => $title) {
         try {
-            
+
             $card = SectionCard::findOrFail($cardId);
 
             // Update title and sub_title
@@ -147,7 +147,7 @@ public function updateSection(Request $request)
 
             // Handle avatar upload if present
             if ($request->hasFile('avatar') && isset($request->file('avatar')[$cardId])) {
-               
+
                 if ($card->avatar) {
                     $oldAvatarPath = public_path( $card->avatar);
                     if (file_exists($oldAvatarPath)) {
@@ -214,7 +214,7 @@ public function updateWorkingProcess(Request $request)
 
             // Handle avatar upload if present
             if ($request->hasFile('avatar') && isset($request->file('avatar')[$cardId])) {
-               
+
                 if ($card->avatar) {
                     $oldAvatarPath = public_path( $card->avatar);
                     if (file_exists($oldAvatarPath)) {
