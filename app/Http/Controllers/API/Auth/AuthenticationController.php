@@ -45,7 +45,6 @@ class AuthenticationController extends Controller
 
         // If validation fails, return error message
         if ($validator->fails()) {
-            Log::error('Failed to update user info', $validator->errors()->toArray());
             return $this->sendError($validator->errors()->first(), [], 422);
         }
 
