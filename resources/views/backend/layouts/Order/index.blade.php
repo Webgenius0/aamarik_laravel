@@ -349,14 +349,13 @@
 @endsection
 
 @push('scripts')
-
     <script src="https://unpkg.com/tailwindcss-jit-cdn@2.2.19/dist/tailwind.min.js"></script>
     {{-- Dropify --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"></script>
     {{--Flashar--}}
     <script defer src="https://cdn.jsdelivr.net/npm/@flasher/flasher@1.2.4/dist/flasher.min.js"></script>
     {{-- Ck Editor --}}
-    <script src="{{ asset('Backend/plugins/tinymc/tinymce.min.js') }}"></script>
+{{--    <script src="{{ asset('Backend/plugins/tinymc/tinymce.min.js') }}"></script>--}}
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -365,10 +364,13 @@
     <!-- Define orderDetailsRoute here -->
     <script>
         var orderDetailsRoute = @json(route('order.details', ':id'));
+
     </script>
 
     <script>
+        console.log('working.')
         $(document).ready(function() {
+
             $('#data-table').DataTable({
                 order: [],
                 lengthMenu: [
@@ -637,6 +639,6 @@
                 } // Error
             })
         }
-
+        </script>
 
 @endpush
