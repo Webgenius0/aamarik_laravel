@@ -94,7 +94,12 @@ class MedicineSeeder extends Seeder
                     'price' => 15.99,
                     'quantity' => 120,
                     'stock_quantity' => 80,
-                ]
+                ],
+                'features' => [
+                    'Prevents blood clots',
+                    'Effective for headaches',
+                    'Relieves minor pain',
+                ],
             ],
             [
                 'title' => 'Ciprofloxacin',
@@ -110,7 +115,12 @@ class MedicineSeeder extends Seeder
                     'price' => 14.50,
                     'quantity' => 60,
                     'stock_quantity' => 130,
-                ]
+                ],
+                'features' => [
+                    'Prevents blood clots',
+                    'Effective for headaches',
+                    'Relieves minor pain',
+                ],
             ],
         ];
 

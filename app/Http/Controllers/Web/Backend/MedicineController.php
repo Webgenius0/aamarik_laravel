@@ -21,7 +21,7 @@ use Yajra\DataTables\Facades\DataTables;
 class MedicineController extends Controller
 {
     public function index(Request $request){
-       
+
         if ($request->ajax()) {
             // Group by type
             $data = Medicine::with('details')->get();
@@ -44,7 +44,7 @@ class MedicineController extends Controller
                     return '<input type="checkbox" class="form-switch" onclick="ShowStatusChangeAlert(' . $data->id . ')" ' . ($data->status == "active" ? 'checked' : '') . '>';
                 })
 
-                
+
                 ->addColumn('action', function ($data) {
                     return '<div class="inline-flex gap-1">
                         <a href="javascript:void(0);" onclick="editMedicine(' . $data->id . ')" class="btn bg-success text-white rounded">
@@ -79,9 +79,9 @@ class MedicineController extends Controller
             'feature' => 'nullable|array',
             'feature.*' => 'nullable|string',
         ]);
-    
+
         DB::beginTransaction();
-    
+
         try {
             // Create the medicine entry
             $medicine = Medicine::create([
@@ -91,24 +91,24 @@ class MedicineController extends Controller
                 'description' => $request->input('description'),
                 'status' => 'active', // Adjust the status if needed
             ]);
-    
+
             // Initialize an array to store avatar paths
             $avatarPaths = [];
-    
+
             // Check if 'avatar' files are provided and store them in 'medicine_images' table
             if ($request->hasFile('avatar')) {
                 foreach ($request->file('avatar') as $file) {
                     // Store each image and save it in 'medicine_images' table
-                    $uniqueName = uniqid() . '-' . $file->getClientOriginalName(); 
+                    $uniqueName = uniqid() . '-' . $file->getClientOriginalName();
                     $path = Helper::fileUpload($file, 'medicine', $uniqueName);
-                    
+
                     MedicineImages::create([
                         'medicine_id' => $medicine->id,  // Link the image to the medicine ID
                         'image' => $path,  // Store the image path
                     ]);
                 }
             }
-    
+
             // Create the medicine detail entry without avatar since we're saving images in the medicine_images table
             $medicineDetail = MedicineDetails::create([
                 'medicine_id' => $medicine->id,
@@ -119,7 +119,7 @@ class MedicineController extends Controller
                 'quantity' => $request->input('quantity'),
                 'stock_quantity' => $request->input('stock_quantity'),
             ]);
-    
+
             // Store features if provided
             if ($request->has('feature')) {
                 foreach ($request->input('feature') as $feature) {
@@ -129,9 +129,9 @@ class MedicineController extends Controller
                     ]);
                 }
             }
-    
+
             DB::commit();
-    
+
             return response()->json(['success' => true, 'message' => 'Medicine created successfully!']);
         } catch (Exception $e) {
             DB::rollBack();
@@ -139,14 +139,14 @@ class MedicineController extends Controller
             return response()->json(['success' => false, 'message' => 'Medicine creation failed!']);
         }
     }
-    
+
     //edit medicine
     public function edit($id)
     {
         $medicine = Medicine::with('details')->find($id);
         $features = MedicineFeature::where('medicine_id', $id)->pluck('feature')->toArray();
         $images=MedicineImages::where('medicine_id',$id)->pluck('image')->toArray();
-       
+
         if ($medicine) {
             return response()->json(['success' => true, 'data'=>$medicine,'features'=>$features,'images'=>$images]); // Make sure the FAQ object is returned properly
         }
@@ -159,10 +159,6 @@ class MedicineController extends Controller
 
     public function update(Request $request, $id)
     {
-        
-        // Log the incoming request data to help with debugging
-       
-        
         // Validate the incoming request data
         $request->validate([
             'title' => 'required|string|max:255',
@@ -181,17 +177,18 @@ class MedicineController extends Controller
             'feature' => 'nullable|array',
             'feature.*' => 'nullable|string|max:255',
         ]);
-        
+
+
         DB::beginTransaction();
-        
+
         try {
             // Find the medicine by ID, including related details
             $medicine = Medicine::find($id);
-            
+
             if (!$medicine) {
                 return response()->json(['success' => false, 'message' => 'Medicine not found'], 404);
             }
-    
+
             // Update the medicine entry
             $medicine->update([
                 'title' => $request->input('title'),
@@ -200,7 +197,7 @@ class MedicineController extends Controller
                 'description' => $request->input('description'),
                 'status' => $request->input('status', 'active'), // Default to 'active' if not provided
             ]);
-    
+
             // Handle the avatar upload (if present)
             $avatarPaths = [];
             if ($request->hasFile('avatar')) {
@@ -211,12 +208,12 @@ class MedicineController extends Controller
                         unlink($oldImagePath); // Delete the old avatar file
                     }
                 }
-                
+
                 // Upload the new avatar files and store their paths
                 foreach ($request->file('avatar') as $file) {
                     $uniqueName = uniqid() . '-' . $file->getClientOriginalName();
                     $path = Helper::fileUpload($file, 'medicine', $uniqueName);
-                    
+
                     // Store the image in the database
                     MedicineImages::create([
                         'medicine_id' => $medicine->id, // Link the image to the medicine ID
@@ -224,7 +221,7 @@ class MedicineController extends Controller
                     ]);
                 }
             }
-    
+
             // Update or create the medicine details
             $medicineDetail = $medicine->details;
             if ($medicineDetail) {
@@ -247,12 +244,12 @@ class MedicineController extends Controller
                     'stock_quantity' => $request->input('stock_quantity'),
                 ]);
             }
-    
+
             // Update the medicine features (if provided)
             if ($request->has('feature')) {
                 // First, delete the existing features
                 MedicineFeature::where('medicine_id', $medicine->id)->delete();
-                
+
                 // Add the new features
                 foreach ($request->input('feature') as $feature) {
                     MedicineFeature::create([
@@ -261,19 +258,19 @@ class MedicineController extends Controller
                     ]);
                 }
             }
-    
+
             // Commit the transaction
             DB::commit();
-            
+
             return response()->json(['success' => true, 'message' => 'Medicine updated successfully!']);
         } catch (Exception $e) {
             // Rollback the transaction if anything goes wrong
             DB::rollBack();
             Log::error('Error updating medicine: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Medicine update failed!']);
+            return response()->json(['success' => false, 'message' => 'Medicine update failed!'.$e->getMessage()]);
         }
     }
-    
+
 
     //status update
     public function updateStatus($id)
