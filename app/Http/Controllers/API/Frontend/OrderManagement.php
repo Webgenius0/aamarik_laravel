@@ -96,6 +96,7 @@ class OrderManagement extends Controller
             // Retrieve validated data
             $validatedData = $validator->validated();
 
+
             //get current user
             $user = auth()->user();
 
@@ -110,6 +111,7 @@ class OrderManagement extends Controller
             if (!$customer || empty($customer->id)) {
                 return $this->sendError( 'Stripe customer not found. Please ensure your payment details are up-to-date.',[]);
             }
+
 
 
 
@@ -155,7 +157,7 @@ class OrderManagement extends Controller
 
 
             // Apply the discount
-            $discountedAmount = $coupon->applyDiscount($sub_total); //after discount
+            $discountedAmount = $validatedData['code'] ? $coupon->applyDiscount($sub_total) : 0; //after discount
 
 
             // Create the order
@@ -173,12 +175,12 @@ class OrderManagement extends Controller
 
            //create payment intent
             $this->createPaymentIntent($validatedData,$order);
-
             //notify to user
 //            $user->notify(new OrderNotificationToUser($order));
 
             // Commit transaction
             DB::commit();
+
 
             return  $this->sendResponse($order->uuid,'Your order has been successfully placed and is currently being processed.',200);
         }catch (\Exception $exception){
@@ -194,38 +196,32 @@ class OrderManagement extends Controller
      * Calculate total amount
      */
 
-    private function storeOrderData($validatedData,$sub_total,$discountedAmount,$request)
+    private function storeOrderData($validatedData,$sub_total,$discountedAmount ,$request)
     {
+
         $coupon = Coupon::where('code', $validatedData['code'])->first();
 
 
-        // Calculate the discounted subtotal
-        $discountedAmount = $sub_total - ($discountedAmount ?? 0);
-
-
-        //calculate the discountedSubTotal = $sub_total - $discountedAmount
+        // Ensure discount does not exceed subtotal
+        $discountedAmount = min($discountedAmount, $sub_total); // Prevent negative amounts
         $discountedSubTotal = $sub_total - $discountedAmount;
 
-        // Calculate the shipping charge (2% of the discounted subtotal)
+        // Ensure the total is at least Stripe's minimum charge amount
         $shippingCharge = $discountedSubTotal * 0.02;
+        $royalMailTrackedPrice = $validatedData['royal_mail_tracked_price'] ?? 0;
+        $tax = ($discountedSubTotal + $shippingCharge + $royalMailTrackedPrice) * 0.10;
 
-        // Calculate tax (10% of the discounted subtotal + shipping charge + royal mail tracked price)
-        $tax = ($discountedSubTotal + $shippingCharge + $validatedData['royal_mail_tracked_price'] ) * 0.10;
-
-        // Calculate the total price (discounted subtotal + shipping charge + tax)
-        $totalPrice = $discountedSubTotal + $shippingCharge + $tax + $validatedData['royal_mail_tracked_price'];
-
-
+        $totalPrice = max($discountedSubTotal + $shippingCharge + $tax + $royalMailTrackedPrice, 0.50); // Ensure it's at least $0.50
         // Create the order
         $order = Order::create([
             'uuid'                     => substr((string) Str::uuid(), 0, 8),
             'user_id'                  => auth()->id(),
             'treatment_id'             => $validatedData['treatment_id'],
-            'coupon_id'                => $coupon->id ?? null,
-            'tracked'                  => !empty($validatedData['royal_mail_tracked_price']),
-            'royal_mail_tracked_price' => $validatedData['royal_mail_tracked_price'],
+            'coupon_id'                => $coupon ? $coupon->id :  null,
+            'tracked'                  => $validatedData['royal_mail_tracked_price'] ? 1 : 0,
+            'royal_mail_tracked_price' => $validatedData['royal_mail_tracked_price'] ?? 0,
             'sub_total'                => $sub_total, // Subtotal before discount
-            'discount'                 => $discountedAmount ?? 0, // Discount amount
+            'discount'                 => $discounted ?? 0, // Discount amount
             'shipping_charge'          => $shippingCharge, // Shipping charge (2% of discounted subtotal)
             'tax'                      => $tax, // Tax (10% of discounted subtotal + shipping charge + royal mail tracked price)
             'total_price'              => $totalPrice, // Total amount
@@ -233,7 +229,6 @@ class OrderManagement extends Controller
             'status'                   => 'pending',
             'created_at'               => now(),
         ]);
-
 
 
         //generate qr code
