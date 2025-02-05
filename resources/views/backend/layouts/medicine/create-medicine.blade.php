@@ -520,15 +520,13 @@ $('#createUpdateForm').on('submit', function(e) {
     e.preventDefault();
 
     var faqId = $('#medicine_id').val();
-    console.log(faqId);
+
     var url = faqId ? "{{ route('medicine.update', ':id') }}".replace(':id', faqId) : "{{ route('medicine.store') }}";
 
-    var method = faqId ? "PUT" : "POST";
-    console.log('Request URL:', method);
+    var method = faqId ? "POST" : "POST";
 
     // Create a FormData object to handle file uploads
     var formData = new FormData(this);
-    console.log(formData.medicine_id);
 
     // Make the AJAX request
     $.ajax({
