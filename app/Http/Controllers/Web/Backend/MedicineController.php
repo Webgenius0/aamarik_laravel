@@ -71,7 +71,7 @@ class MedicineController extends Controller
             'avatar' => 'nullable|array',
             'avatar.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,webp,bmp,svg', // Array of images
             'form' => 'nullable|in:tablet,liquid,capsule,inhaler,syrup,ointment',
-            'doges' => 'nullable|string',
+            'dosage' => 'nullable|string',
             'unit' => 'nullable|string|max:50',
             'price' => 'nullable|numeric',
             'quantity' => 'nullable|integer',
@@ -113,7 +113,7 @@ class MedicineController extends Controller
             $medicineDetail = MedicineDetails::create([
                 'medicine_id' => $medicine->id,
                 'form' => $request->input('form'),
-                'dosage' => $request->input('doges'),
+                'dosage' => $request->input('dosage'),
                 'unit' => $request->input('unit'),
                 'price' => $request->input('price'),
                 'quantity' => $request->input('quantity'),
@@ -167,7 +167,7 @@ class MedicineController extends Controller
             'description' => 'nullable|string|max:1000',
             'status' => 'nullable|string|in:active,inactive',
             'form' => 'nullable|string|max:255',
-            'doges' => 'nullable|string|max:255',
+            'dosage' => 'nullable|string|max:255',
             'unit' => 'nullable|string|max:50',
             'price' => 'nullable|numeric',
             'quantity' => 'nullable|integer',
@@ -227,7 +227,7 @@ class MedicineController extends Controller
             if ($medicineDetail) {
                 $medicineDetail->update([
                     'form' => $request->input('form'),
-                    'dosage' => $request->input('doges'),
+                    'dosage' => $request->input('dosage'),
                     'unit' => $request->input('unit'),
                     'price' => $request->input('price'),
                     'quantity' => $request->input('quantity'),
@@ -237,7 +237,7 @@ class MedicineController extends Controller
                 MedicineDetails::create([
                     'medicine_id' => $medicine->id,
                     'form' => $request->input('form'),
-                    'dosage' => $request->input('doges'),
+                    'dosage' => $request->input('dosage'),
                     'unit' => $request->input('unit'),
                     'price' => $request->input('price'),
                     'quantity' => $request->input('quantity'),
@@ -296,3 +296,23 @@ class MedicineController extends Controller
         return response()->json(['success' => true, 'message' => 'Medicine deleted successfully']);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
