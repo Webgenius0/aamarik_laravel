@@ -64,6 +64,8 @@ class AuthenticationController extends Controller
 
             return $this->sendResponse(new UserResource($user), 'User successfully registered.', 200, $token);
         } catch (\Throwable $th) {
+
+            dd($th);
             //throw $th;
             Log::error('Failed to register user'.$th->getMessage());
             return $this->sendError('Failed to register user.', [], 500);
