@@ -14,6 +14,7 @@ class Coupon extends Model
         'code',
         'discount_type',
         'discount_amount',
+        'treatment_id',
         'usage_limit',
         'used_count',
         'start_date',
@@ -27,6 +28,7 @@ class Coupon extends Model
             'code'            => 'string', // Cast as string
             'discount_type'   => 'string', // Fixed or percentage
             'discount_amount' => 'decimal:2',
+            'treatment_id'    => 'integer',
             'usage_limit'     => 'integer', // Maximum usage count
             'used_count'      => 'integer', // How many times the coupon has been used
             'start_date'      => 'datetime', // Start date as Carbon instance

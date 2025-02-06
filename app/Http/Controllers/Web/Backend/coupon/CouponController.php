@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\Backend\coupon;
 
 use App\Http\Controllers\Controller;
 use App\Models\Coupon;
+use App\Models\Treatment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
@@ -30,6 +31,18 @@ class CouponController extends Controller
                     }
                     return $discount;
                 })
+                ->addColumn('treatment', function ($data) {
+                    $treatment_name = '';
+                    if ($data->treatment_id) {
+                        $treatment = Treatment::find($data->treatment_id);
+                        if ($treatment) {
+                            $treatment_name = $treatment->name ;
+                        }
+                    }else{
+                        $treatment_name = "None";
+                    }
+                    return $treatment_name;
+                })
                 ->addColumn('start_date', function ($data) {
                     return $data->start_date->format('d-m-Y h:i A');
                 })
@@ -54,7 +67,7 @@ class CouponController extends Controller
                     </a>
                 </div>';
                 })
-                ->rawColumns(['discount', 'brand', 'quantity', 'stock_quantity', 'status', 'action', 'avatar'])
+                ->rawColumns(['discount','treatment', 'brand', 'quantity', 'stock_quantity', 'status', 'action', 'avatar'])
                 ->make(true);
         } {
             return view('backend.layouts.coupons.index');
@@ -72,7 +85,7 @@ class CouponController extends Controller
             'usage_limit' => 'required|integer|min:1',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
-
+            'treatment_id' => 'nullable|exists:treatments,id',
         ]);
 
         // Create a new coupon in the database
@@ -80,11 +93,11 @@ class CouponController extends Controller
             'code' => $validatedData['code'],
             'discount_type' => $validatedData['discount_type'],
             'discount_amount' => $validatedData['discount_amount'],
+            'treatment_id' => $validatedData['treatment_id'] ?? null,
             'usage_limit' => $validatedData['usage_limit'],
             'used_count' => 0,
             'start_date' => $validatedData['start_date'] ?? null,
             'end_date' => $validatedData['end_date'] ?? null,
-
         ]);
 
         // Return a response, or you can redirect as needed
@@ -119,6 +132,7 @@ class CouponController extends Controller
             'usage_limit' => $request->usage_limit ?? $coupon->usage_limit,
             'start_date' => $request->start_date ?? $coupon->start_date,
             'end_date' => $request->end_date ?? $coupon->end_date,
+            'treatment_id' => $request->treatment_id ?? $coupon->treatment_id,
         ]);
 
         return response()->json(['success' => true, 'message' => 'Coupon updated successfully']);

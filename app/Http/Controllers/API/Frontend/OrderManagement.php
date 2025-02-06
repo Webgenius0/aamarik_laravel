@@ -123,6 +123,11 @@ class OrderManagement extends Controller
                 if ($coupon && !$coupon->isValid()) {
                     return $this->sendError('The coupon is invalid or expired.', [], 410);
                 }
+
+                // Check treatment ID validity
+                if ($coupon->treatment_id !== null && (!isset($validatedData['treatment_id']) || $coupon->treatment_id != $validatedData['treatment_id'])) {
+                    return $this->sendError('The coupon treatment ID is not valid.', [], 410);
+                }
             }
 
 

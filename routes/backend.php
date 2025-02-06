@@ -153,6 +153,7 @@ Route::controller(\App\Http\Controllers\Web\Backend\Order\OrderManagementControl
     Route::post('/order/status/update/{id}', 'updateStatus')->name('order.status.update');
     Route::get('/order/details/{id}', 'show')->name('order.details');
     Route::delete('/order/delete/{id}', 'destroy')->name('order.delete');
+    Route::post('/order/note/update/{id}', 'updateNote')->name('order.note.update');
 });
 
 //! Route for customer Management

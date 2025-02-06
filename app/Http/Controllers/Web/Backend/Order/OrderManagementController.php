@@ -87,6 +87,10 @@ class OrderManagementController extends Controller
         $order->status = $request->status;
         $order->save();
 
+        if($request->status == 'delivered'){
+            $order->touch();
+        }
+
         return response()->json(['success' => true, 'message' => 'Order status updated successfully.']);
     }
 
@@ -108,8 +112,8 @@ class OrderManagementController extends Controller
             'data' => [
                 'uuid' => $order->uuid,
                 'status' => $order->status,
-                'order_date' => $order->created_at->format('Y-m-d'),
-                'delivery_date' => $order->delivery_date ?? 'Not Assigned',
+                'order_date' => $order->created_at->format('Y-m-d  h:i A'),
+                'delivery_date' => $order->updated_at->format('Y-m-d  h:i A') ?? 'Not Assigned',
                 'user' => [
                     'id' => $order->user->id,
                     'name' => $order->user->name,
@@ -222,6 +226,25 @@ class OrderManagementController extends Controller
 
 
 
+
+    /**
+     * update order note
+     */
+    public function updateNote(Request $request, $id)
+    {
+        $request->validate([
+            'note' => 'nullable|string|max:1500',
+        ]);
+        
+        $order = Order::where('uuid', 'a962968a')->first();
+
+        if (!$order) {
+            return response()->json(['success' => false, 'message' => 'Order not found']);
+        }
+        $order->note = $request->note;
+        $order->save();
+        return response()->json(['success' => true, 'message' => 'Order updated successfully.']);
+    }
 
 
 

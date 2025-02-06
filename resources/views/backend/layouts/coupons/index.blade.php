@@ -139,6 +139,10 @@
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Treatment Name
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Usage Limit
                                     </th>
                                     <th scope="col"
@@ -263,6 +267,30 @@
 
                 </div>
 
+                <div class="flex flex-col md:flex-row items-center md:space-x-4">
+                    <div class="flex flex-col md:w-1/2">
+                        <label for="treatment_id" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Selected Treatment</label>
+                        <select name="treatment_id" id="treatment_id" class="form-input w-full">
+
+                            <?php
+                                $treatments = \App\Models\Treatment::latest()->pluck('name', 'id')->toArray();
+                            ?>
+                            <option value="" disabled {{ old('discount_type') ? '' : 'selected' }}>Select discount type...</option>
+
+                            <!-- Loop through the treatments and create the option elements -->
+                            @foreach($treatments as $id => $name)
+                                <option value="{{ $id }}" {{ old('treatment_id') == $id ? 'selected' : '' }}>{{ $name }}</option>
+                            @endforeach
+                        </select>
+                        @error('discount_type')
+                        <span class="text-red-500 block mt-1 text-sm">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+
+                </div>
+
                 <div class="flex justify-end mt-4 space-x-4"> <!-- Added space-x-4 for spacing -->
                     <button type="button" id="close" class="btn bg-red-600 text-white rounded-lg font-semibold flex items-center justify-center">Close</button>
                     <button type="submit" class="btn bg-blue-500 text-white rounded-lg font-semibold flex items-center justify-center">Save</button>
@@ -341,6 +369,10 @@
                 {
                     data: 'discount',
                     name: 'discount'
+                },
+                {
+                    data: 'treatment',
+                    name: 'treatment'
                 },
                 {
                     data: 'usage_limit',
@@ -545,6 +577,7 @@
                 $('#discount_type').val(resp.data.discount_type); // Set discount type dropdown
                 $('#discount_amount').val(resp.data.discount_amount); // Set discount amount
                 $('#usage_limit').val(resp.data.usage_limit); // Set usage limit
+                $('#treatment_id').val(resp.data.treatment_id); // Set usage limit
 
                 // Convert the date format from 'YYYY-MM-DDTHH:mm:ss.sssZ' to 'YYYY-MM-DD'
                 const startDate = resp.data.start_date.split('T')[0]; // Take the date part only
