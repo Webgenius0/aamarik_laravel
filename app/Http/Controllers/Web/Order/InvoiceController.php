@@ -22,7 +22,6 @@ class InvoiceController extends Controller
         $logoPath = $setting->logo ;
         $totalPrice = $order->sub_total - $order->discount + $order->royal_mail_tracked_price + $order->shipping_charge + $order->tax;
 
-
         return view('backend.layouts.Order.show_invoice_details',compact('order','setting','totalPrice','logoPath'));
 
     }

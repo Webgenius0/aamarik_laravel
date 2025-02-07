@@ -117,8 +117,8 @@
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Status
                                     </th>
-                                    
-                                    
+
+
                                     <th scope="col"
                                         class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Action
@@ -136,54 +136,43 @@
     </div>
 </main>
 
-<!-- Edit Doctor Form Modal -->
-<div id="modalOverlay" style="display:none;">
-    <div id="modal" class="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+<!-- Edit Department Modal -->
+<div id="editDepartmentModal" style="display:none;">
+    <div class="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
         <div class="flex py-2 w-full justify-between border-b">
-            <button id="close" class="m-4 absolute top-0 right-1 hover:bg-gray-200 rounded-full p-1 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-black" type="button">
+            <h3 class="text-lg font-semibold">Edit Department</h3>
+            <button id="closeDepartmentModal" class="hover:bg-gray-200 rounded-full p-1 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-black">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
-        <form id="update-doctor-form" method="POST" enctype="multipart/form-data">
-    @csrf
-    @method('PUT')
-    <input type="hidden" id="doctor_id" name="doctor_id">
+        <form id="update-department-form">
+            @csrf
+            @method('PUT')
+            <input type="hidden" id="department_id" name="department_id">
 
-    <!-- Name -->
-    <div class="mb-4">
-        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-        <input type="text" id="name" name="name" class="form-input mt-1 block w-full">
-    </div>
+            <!-- Department Name -->
+            <div class="mb-4">
+                <label for="edit_department_name" class="block text-sm font-medium text-gray-700">Department Name</label>
+                <input type="text" id="edit_department_name" name="department_name" class="form-input mt-1 block w-full" required>
+            </div>
 
-    <!-- Email -->
-    <div class="mb-4">
-        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-        <input type="email" id="email" name="email" class="form-input mt-1 block w-full">
-    </div>
+            <!-- Status -->
+            <div class="mb-4">
+                <label for="edit_department_status" class="block text-sm font-medium text-gray-700">Status</label>
+                <select id="edit_department_status" name="status" class="form-input mt-1 block w-full">
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+            </div>
 
-    <!-- Department -->
-    <div class="mb-4">
-        <label for="department" class="block text-sm font-medium text-gray-700">Department</label>
-        <select id="department" name="department" class="form-input mt-1 block w-full">
-            <option value="" disabled selected>Select Department</option>
-            <!-- Options will be populated by AJAX -->
-        </select>
-    </div>
-
-    <!-- Avatar -->
-    <div class="mb-4">
-        <label for="avatar" class="block text-sm font-medium text-gray-700">Avatar</label>
-        <input type="file" id="avatar" name="avatar" class="dropify form-input mt-1 block w-full" class="form-input w-full dropify dropify-wrapper1 .dropify-preview dropify-render img" >
-    </div>
-
-    <!-- Submit Button -->
-    <button type="submit" class="btn bg-success text-white py-2 px-5 rounded-md">Update</button>
-</form>
-
+            <!-- Submit Button -->
+            <button type="submit" class="btn bg-success text-white py-2 px-5 rounded-md">Update</button>
+        </form>
     </div>
 </div>
+
 
 @endsection
 
@@ -244,8 +233,8 @@ $(document).ready(function() {
                     data: 'status',
                     name: 'status'
                 },
-               
-                
+
+
                 {
                     data: 'action',
                     name: 'action',
@@ -266,48 +255,10 @@ $(document).ready(function() {
         });
     });
 
-   
-    // Edit Doctor Function
-    function editDoctor(id) {
-    let url = '{{ route("doctor.edit", ":id") }}';
-    url = url.replace(':id', id);
-
-    $.ajax({
-        url: url,
-        method: 'GET',
-        success: function(response) {
-            if (response.success) {
-                const doctor = response.data;
-
-                // Populate the form with fetched data
-                $('#name').val(doctor.name);
-                $('#email').val(doctor.email);
-                $('#department').val(doctor.department);
-                $('#doctor_id').val(doctor.id);
-
-                
-                const avatarPath = response.avatar_url ? response.avatar_url : '';  
-                if (avatarPath) {
-                    
-                    const avatarUrl =  avatarPath;                   
-                    $('#avatar').attr('data-default-file', avatarUrl);                 
-                    $('#avatar').dropify('destroy').dropify();  
-                }
-
-                // Show the modal
-                $('#modalOverlay').show().addClass('modal-open');
-            } else {
-                alert(response.message);
-            }
-        },
-        error: function(xhr, status, error) {
-            alert('An error occurred. Please try again later.');
-        }
-    });
-}
 
 
-    
+
+
     $('#close').click(function() {
         $('#modalOverlay').removeClass('modal-open');
         setTimeout(function() {
@@ -315,163 +266,40 @@ $(document).ready(function() {
         }, 200);
     });
 
-  
-    $(document).ready(function() {
-    
-    $.ajax({
-        url: "{{ route('doctor.department') }}",  
-        method: 'GET',
-        success: function(response) {
-        if (response && response.length > 0) {
-            const departmentSelect = $('#department');          
-            departmentSelect.empty();
-                       
-            departmentSelect.append(new Option('Select Department', '', false, false));
 
-           
-            response.forEach(function(department) {
-                const option = new Option(department.department_name, department.department_name);
-                departmentSelect.append(option);
-            });        
-            const doctorDepartmentName = $('#doctor_department_name').val();  
-            if (doctorDepartmentName) {              
-                departmentSelect.val(doctorDepartmentName).trigger('change');
-            }
-        }
-    },
-    error: function(xhr, status, error) {
-        console.error('Failed to fetch departments:', error);
-    }
-    });
 
-   
-
-    // Form Submission
-    $('#update-doctor-form').submit(function(event) {
-        event.preventDefault();  
-
-        var formData = new FormData(this);
-        var url = '{{ route("doctor.update", ":id") }}'.replace(':id', $('#doctor_id').val()); 
+    // Open Edit Department Modal
+    function editDepartment(id) {
+        let url = '{{ route("department.edit", ":id") }}'.replace(':id', id);
 
         $.ajax({
             url: url,
-            method: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
+            type: 'GET',
             success: function(response) {
+
                 if (response.success) {
-                    // Close modal or perform any necessary action
-                    flasher.success(response.message || 'Doctor updated successfully');
-                    location.reload();
+                    $('#department_id').val(response.data.id);
+                    $('#edit_department_name').val(response.data.department_name);
+                    $('#edit_department_status').val(response.data.status);
+
+                    $('#editDepartmentModal').show();
                 } else {
-                    flasher.error('Error updating doctor');
+                    alert(response.message);
                 }
             },
-            error: function(xhr, status, error) {
-                console.error('Error submitting form:', error);
-                alert('An error occurred while updating the doctor.');
+            error: function(xhr) {
+                alert('An error occurred while fetching the department data.');
             }
         });
+    }
+
+    // Close Modal
+    $('#closeDepartmentModal').click(function() {
+        $('#editDepartmentModal').hide();
     });
-});
 
 
 
- // delete Confirm
- function showDeleteConfirm(id) {
-            event.preventDefault();
-            Swal.fire({
-                title: 'Are you sure you want to delete this record?',
-                text: 'If you delete this, it will be gone forever.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    deleteItem(id);
-                }
-            });
-        };
 
-
-        // Delete Button
-        function deleteItem(id) {
-            var url = "{{ route('doctor.destroy.category', ':id') }}";
-            $.ajax({
-                type: "DELETE",
-                url: url.replace(':id', id),
-                headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                         },
-
-                success: function(resp) {
-                    console.log(resp);
-                    
-                    $('#data-table').DataTable().ajax.reload();
-                    if (resp.success === true) {
-                        
-                        flasher.success(resp.message);
-
-                    } else if (resp.errors) {
-                        flasher.error(resp.errors[0]);
-                    } else {
-                        flasher.error(resp.message);
-                    }
-                }, 
-                error: function(error) {
-                   
-                } 
-            })
-        }
-
-
-
-         // Status Change Confirm Alert
-         function ShowStatusChangeAlert(id) {
-            event.preventDefault();
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'You want to update the status?',
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'No',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    statusChange(id);
-                }
-            });
-        }
-
-        // Status Change
-        function statusChange(id) {
-            var url = '{{ route('doctor.status.update', ':id') }}';
-            $.ajax({
-                type: "GET",
-                url: url.replace(':id', id),
-                success: function(resp) {
-
-                    console.log(resp);
-                    // Reloade DataTable
-                    $('#data-table').DataTable().ajax.reload();
-                    if (resp.success === true) {
-                        // show toast message
-                        flasher.success(resp.message);
-                    } else if (resp.errors) {
-                        flasher.error(resp.errors[0]);
-                    } else {
-                        flasher.warning(resp.message);
-                    }
-                }, // success end
-                error: function(error) {
-                    flasher.error(error);
-                }
-            })
-        }
- 
 </script>
 @endpush

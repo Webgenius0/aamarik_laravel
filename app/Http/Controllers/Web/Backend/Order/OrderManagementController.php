@@ -113,7 +113,7 @@ class OrderManagementController extends Controller
                 'uuid' => $order->uuid,
                 'status' => $order->status,
                 'order_date' => $order->created_at->format('Y-m-d  h:i A'),
-                'delivery_date' => $order->updated_at->format('Y-m-d  h:i A') ?? 'Not Assigned',
+                'delivery_date' => $order->status == 'delivered' ? $order->updated_at->format('Y-m-d  h:i A') : 'Not Delivered',
                 'user' => [
                     'id' => $order->user->id,
                     'name' => $order->user->name,
@@ -148,6 +148,7 @@ class OrderManagementController extends Controller
                 'tax' => $order->tax,
                 'total_price' =>   number_format($order->sub_total - $order->discount + $order->royal_mail_tracked_price + $order->shipping_charge + $order->tax, 2, '.', ''),
                 'note' => $order->note ?? null,
+                'prescription' => asset($order->prescription) ?? null,
             ]
         ]);
     }
@@ -235,7 +236,7 @@ class OrderManagementController extends Controller
         $request->validate([
             'note' => 'nullable|string|max:1500',
         ]);
-        
+
         $order = Order::where('uuid', 'a962968a')->first();
 
         if (!$order) {
@@ -244,6 +245,30 @@ class OrderManagementController extends Controller
         $order->note = $request->note;
         $order->save();
         return response()->json(['success' => true, 'message' => 'Order updated successfully.']);
+    }
+
+    /**
+     * Update order shipping address
+     */
+    public function updateAddress(Request $request, $id)
+    {
+        $order = Order::with('billingAddress')->where('uuid', $id)->first();
+
+        if (!$order) {
+            return response()->json(['success' => false, 'message' => 'Error updating shipping address.']);
+        }
+        $order->billingAddress->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'address' => $request->address,
+            'contact' => $request->contact,
+            'city' => $request->city,
+            'postcode' => $request->postcode,
+            'gp_number' => $request->gp_number,
+            'gp_address' => $request->gp_address,
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Shipping address updated successfully.']);
     }
 
 

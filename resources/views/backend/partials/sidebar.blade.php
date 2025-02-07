@@ -78,14 +78,14 @@
 
                 <ul id="doctorlevel" class="sub-menu hidden">
                 <li class="menu-item">
-                        <a href="{{route('doctors.department')}}" class="menu-link {{Request::RouteIs('doctors.department') ? 'active' : ''}}">
+                        <a href="{{ route('department.index') }}" class="menu-link {{ Request::RouteIs('department.index') ? 'active' : ''}}">
                             <span class="menu-dot"></span>
                             <span class="menu-text">Create Department</span>
                         </a>
                     </li>
 
                     <li class="menu-item">
-                        <a href="{{route('doctor.index')}}" class="menu-link {{Request::RouteIs('doctor.index') ? 'active' : ''}}">
+                        <a href="{{ route('doctor.index') }}" class="menu-link {{Request::RouteIs('doctor.index') ? 'active' : ''}}">
                             <span class="menu-dot"></span>
                             <span class="menu-text">Doctor List</span>
                         </a>

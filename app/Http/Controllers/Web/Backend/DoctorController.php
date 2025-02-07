@@ -30,17 +30,17 @@ class DoctorController extends Controller
                     return '<input type="checkbox" class="form-switch" onclick="ShowStatusChangeAlert(' . $data->id . ')" ' . ($data->status == "active" ? 'checked' : '') . '>';
                 })
                 ->addColumn('avatar', function ($data) {
-                    $avatarUrl = $data->avatar ? asset($data->avatar) : asset('uploads/defult-image/default-avatar.png');
+                    $avatarUrl = $data->avatar ? asset($data->avatar) : asset('/uploads/default-image/default-avatar.png');
                     return $data->avatar ?
-                        '<a href="' . $avatarUrl . '" target="_blank"><img src="' . $avatarUrl . '" alt="Avatar" width="50" height="50"></a>' :
+                        '<img src="' . $avatarUrl . '" alt="Avatar" width="50" height="50">' :
                         'No Avatar';
                 })
 
 
                 ->addColumn('action', function ($data) {
-                    $viewRoute = route('doctor.edit', ['doctor' => $data->id]);
+
                     return '<div class="inline-flex gap-1">
-                            <a href="javascript:void(0);" href="' . $viewRoute . '" class="btn bg-success text-white rounded">
+                            <a href="javascript:void(0);" onclick="editDoctor(' . $data->id . ')" class="btn bg-success text-white rounded">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
                             <a href="javascript:void(0);" onclick="showDeleteConfirm(' . $data->id . ')" class="btn bg-danger text-white rounded" title="Delete">
@@ -54,20 +54,24 @@ class DoctorController extends Controller
 
         return view('backend.layouts.doctor.index');
     }
-    //doctor image show 
-    // public function show($id)
-    // {
-    //     $doctor = User::where('type', 'doctor')->first($id);
-    //     return view('backend.layouts.doctor.index', compact('doctor'));
-    // }
 
     //doctor Edit
 
-    public function edit(User $doctor)
+    public function edit($id)
     {
-        Log::info('Editing doctor with ID: ' . $doctor->id);
-        return view('backend.layout.doctor.editdoctor', compact('docotor'));
+        try {
+            $doctor = User::findOrFail($id); // Fetch doctor by ID
+            return response()->json([
+                'success' => true,
+                'data' => $doctor,
+                'avatar_url' => $doctor->avatar ? asset($doctor->avatar) : null, // Handle avatar URL properly
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 400);
+        }
     }
+
+
 
     //create-doctor
     public function create()
@@ -84,8 +88,8 @@ class DoctorController extends Controller
     public function department(Request $request)
     {
         if ($request->ajax()) {
-            
-            $data = Department::all(); 
+
+            $data = Department::all();
 
             return DataTables::of($data)
                 ->addIndexColumn()
@@ -95,51 +99,27 @@ class DoctorController extends Controller
                 ->addColumn('status', function ($data) {
                     return '<input type="checkbox" class="form-switch" onclick="ShowStatusChangeAlert(' . $data->id . ')" ' . ($data->status == "active" ? 'checked' : '') . '>';
                 })
-                
+
 
 
                 ->addColumn('action', function ($data) {
-                    $viewRoute = route('doctor.edit', ['doctor' => $data->id]);
                     return '<div class="inline-flex gap-1">
-                             <a class="btn btn-sm btn-primary" href="' . $viewRoute . '">
-                             <i class="fa-solid fa-pen"></i>
-                         </a>
+                            <a href="javascript:void(0);" onclick="editDepartment(' . $data->id . ')" class="btn bg-danger text-white rounded" title="Delete">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
                             <a href="javascript:void(0);" onclick="showDeleteConfirm(' . $data->id . ')" class="btn bg-danger text-white rounded" title="Delete">
                                 <i class="fa-solid fa-trash"></i>
                             </a>
                         </div>';
                 })
                 ->rawColumns(['name', 'avatar', 'status', 'action'])
-                ->make(true); 
+                ->make(true);
         }
 
         return view('backend.layouts.doctor.departament');
     }
     //department status update
 
-    public function updateDepartmentStatus($id)
-    {
-        $dept = Department::find($id);
-        if (!$dept) {
-            return response()->json(['success' => false, 'message' => 'Not found']);
-        }
-        $dept->status = $dept->status == 'active' ? 'inactive' : 'active';
-        $dept->save();
-        return response()->json(['success' => true, 'message' => 'FAQ Status update successfully']);
-    }
-
-
-    //delete -departments
-    public function DestroyCategory($id)
-    {
-        $doctor = Department::find($id);
-        if (!$doctor) {
-            return response()->json(['success' => false, 'message' => 'Department Not found']);
-        }
-        $doctor->delete();
-
-        return response()->json(['success' => true, 'message' => 'Department deleted successfully']);
-    }
 
 
     //retribe department-for doctor updateAnd create
@@ -147,29 +127,6 @@ class DoctorController extends Controller
     {
         $deparment = Department::all();
         return response()->json($deparment);
-    }
-
-
-    //department Store
-    public function departmentStore(Request $request)
-    {
-
-        $request->validate([
-            'department_name' => 'required',
-        ]);
-
-        try {
-
-            $department = new Department();
-            $department->department_name = $request->department_name;
-            $department->status = 'active';
-            $department->save();
-
-            return response()->json(['success' => true]);
-        } catch (Exception $e) {
-
-            return response()->json(['success' => false, 'message' => $e->getMessage()]);
-        }
     }
 
 
@@ -191,9 +148,9 @@ class DoctorController extends Controller
             $user->role = 'doctor';
             $user->department = $request->department;
             if ($request->hasFile('avatar')) {
-                
+
                 $avatarPath = Helper::fileUpload($request->file('avatar'), 'users', 'avatar');
-                $user->avatar = $avatarPath; 
+                $user->avatar = $avatarPath;
             }
             $user->save();
             return response()->json([
@@ -205,28 +162,6 @@ class DoctorController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 400);
         }
     }
-    //doctor edit
-    // public function edit($id)
-    // {
-
-    //     $user = User::find($id);
-
-    //     if ($user) {
-
-    //         $avatarUrl = $user->avatar ? asset($user->avatar) : asset('uploads/users/avatar/default-avatar.png');
-
-    //         return response()->json([
-    //             'success' => true,
-    //             'data' => $user,
-    //             'avatar_url' => $avatarUrl
-    //         ]);
-    //     }
-
-    //     return response()->json([
-    //         'success' => false,
-    //         'message' => 'Doctor not found'
-    //     ]);
-    // }
 
 
     //doctor delete
@@ -235,6 +170,9 @@ class DoctorController extends Controller
         $doctor = User::find($id);
         if (!$doctor) {
             return response()->json(['success' => false, 'message' => 'Doctor Not found']);
+        }
+        if ($doctor->avatar && file_exists(public_path($doctor->avatar))) {
+            unlink(public_path($doctor->avatar));
         }
         $doctor->delete();
 
@@ -260,26 +198,26 @@ class DoctorController extends Controller
             $doctor->department = $department->department_name;
         }
 
-       
+
         if ($request->hasFile('avatar')) {
-            
+
             if ($doctor->avatar && file_exists(public_path($doctor->avatar))) {
                 unlink(public_path($doctor->avatar));
             }
-          
+
             $avatar = $request->file('avatar');
-          
+
             $uniqueName = time() . '_' . uniqid() . '.' . $avatar->getClientOriginalExtension();
-         
+
             $path = public_path('uploads/users/avatar');
-        
+
             if (!file_exists($path)) {
-                mkdir($path, 0777, true); 
+                mkdir($path, 0777, true);
             }
-            
+
             $avatar->move($path, $uniqueName);
 
-            
+
             $doctor->avatar = 'uploads/users/avatar/' . $uniqueName;
         }
 

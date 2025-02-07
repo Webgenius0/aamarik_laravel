@@ -183,17 +183,45 @@
                         <p><strong>Email:</strong> <span id="user-email"></span></p>
                     </div>
 
-                    <div class="bg-gray-100 p-4 rounded-lg shadow-md">
+
+                    <div class="bg-gray-100 p-4 rounded-lg shadow-md relative">
                         <h4 class="text-lg font-bold text-gray-900">🏠 Shipping Address</h4>
-                        <p><strong>Name:</strong> <span id="billing-name"></span></p>
-                        <p><strong>Email:</strong> <span id="billing-email"></span></p>
-                        <p><strong>Address:</strong> <span id="billing-address"></span></p>
-                        <p><strong>Contact:</strong> <span id="billing-contact"></span></p>
-                        <p><strong>City:</strong> <span id="billing-city"></span></p>
-                        <p><strong>Postcode:</strong> <span id="billing-postcode"></span></p>
-                        <p><strong>Gp Number:</strong> <span id="billing-gpNumber"></span></p>
-                        <p><strong>Gp :</strong> <span id="billing-gpAddress"></span></p>
+
+                        <!-- Display Address -->
+                        <div id="shipping-address-display">
+                            <p><strong>Name:</strong> <span id="billing-name">{{ $order->billing_address->name ?? '' }}</span></p>
+                            <p><strong>Email:</strong> <span id="billing-email">{{ $order->billing_address->email ?? '' }}</span></p>
+                            <p><strong>Address:</strong> <span id="billing-address">{{ $order->billing_address->address ?? '' }}</span></p>
+                            <p><strong>Contact:</strong> <span id="billing-contact">{{ $order->billing_address->contact ?? '' }}</span></p>
+                            <p><strong>City:</strong> <span id="billing-city">{{ $order->billing_address->city ?? '' }}</span></p>
+                            <p><strong>Postcode:</strong> <span id="billing-postcode">{{ $order->billing_address->postcode ?? '' }}</span></p>
+                            <p><strong>Gp Number:</strong> <span id="billing-gpNumber">{{ $order->billing_address->gp_number ?? '' }}</span></p>
+                            <p><strong>Gp :</strong> <span id="billing-gpAddress">{{ $order->billing_address->gp_address ?? '' }}</span></p>
+                        </div>
+
+                        <!-- Editable Form (Hidden Initially) -->
+                        <form id="edit-shipping-address-form" class="hidden">
+                            <input type="text" id="edit-billing-name" class="w-full p-2 border rounded-lg my-2" placeholder="Name">
+                            <input type="email" id="edit-billing-email" class="w-full p-2 border rounded-lg my-2" placeholder="Email">
+                            <input type="text" id="edit-billing-address" class="w-full p-2 border rounded-lg my-2" placeholder="Address">
+                            <input type="text" id="edit-billing-contact" class="w-full p-2 border rounded-lg my-2" placeholder="Contact">
+                            <input type="text" id="edit-billing-city" class="w-full p-2 border rounded-lg my-2" placeholder="City">
+                            <input type="text" id="edit-billing-postcode" class="w-full p-2 border rounded-lg my-2" placeholder="Postcode">
+                            <input type="text" id="edit-billing-gpNumber" class="w-full p-2 border rounded-lg my-2" placeholder="Gp Number">
+                            <input type="text" id="edit-billing-gpAddress" class="w-full p-2 border rounded-lg my-2" placeholder="Gp Address">
+
+                            <!-- Save Button -->
+                            <button type="button" id="save-shipping-address" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">
+                                Save Address
+                            </button>
+                        </form>
+
+                        <!-- Edit Button -->
+                        <button id="edit-shipping-button" class="absolute top-2 right-2 text-blue-600 hover:text-blue-800">
+                            ✏️ Edit
+                        </button>
                     </div>
+
                 </div>
 
                 <!-- Order Items Table -->
@@ -232,6 +260,23 @@
                 <h4 class="text-lg font-bold text-gray-900 mt-4">📝 Order Note</h4>
                 <textarea id="order-note" class="italic text-gray-600 w-full p-2 border rounded-lg"></textarea>
                 <button id="save-order-note" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">Save Note</button>
+
+                <!-- Order Prescription Section -->
+                <h4 class="text-lg font-bold text-gray-900 mt-4">📝 Order Prescription</h4>
+                <div class="flex items-center space-x-3">
+                    <button id="toggle-prescription" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">
+                        See Prescription
+                    </button>
+                    <span id="toggle-prescription-icon" class="cursor-pointer text-blue-500 hover:text-blue-700 text-xl">
+                        👁️
+                    </span>
+                </div>
+
+                <!-- Prescription Image or PDF (Initially Hidden) -->
+                <div id="prescription-container" class="hidden mt-4">
+                    <iframe id="prescription-file" src="" class="rounded-lg shadow-lg max-w-full h-auto" style="width:100%; height:500px; display:none;"></iframe>
+                    <img id="prescription-image" src="" alt="Prescription Image" class="rounded-lg shadow-lg max-w-full h-auto" style="display:none;">
+                </div>
             </div>
 
             <!-- Footer Buttons -->
@@ -452,6 +497,10 @@
                         $('#tax').text('$' + data.tax);
                         $('#total-price').text('$' + data.total_price);
 
+                        // Set Prescription Image
+                        setPrescriptionImage(data.prescription);
+
+
                         // Fill Order Note
                         $('#order-note').text(data.note || 'No notes available');
 
@@ -468,6 +517,8 @@
                         });
                         $('#order-items').html(orderItemsHTML);
 
+
+
                         // Show Modal
                         $('#orderDetailsModal').removeClass('hidden');
                         $('#modalContent').removeClass('scale-95').addClass('scale-100');
@@ -480,6 +531,48 @@
                 }
             });
         }
+
+
+        //see order prescription image ----start
+        document.addEventListener("DOMContentLoaded", function() {
+            // Event listener for button click
+            document.getElementById("toggle-prescription").addEventListener("click", function() {
+                document.getElementById("prescription-container").classList.toggle("hidden");
+            });
+
+            // Event listener for eye icon click
+            document.getElementById("toggle-prescription-icon").addEventListener("click", function() {
+                document.getElementById("prescription-container").classList.toggle("hidden");
+            });
+        });
+
+        // Function to set the prescription image or PDF dynamically
+        function setPrescriptionImage(imageUrl) {
+            if (imageUrl) {
+                let fileExtension = imageUrl.split('.').pop().toLowerCase();
+                let imageElement = document.getElementById("prescription-image");
+                let iframeElement = document.getElementById("prescription-file");
+
+                if (['pdf'].includes(fileExtension)) {
+                    iframeElement.src = imageUrl;
+                    iframeElement.style.display = "block";
+                    imageElement.style.display = "none";
+                } else if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(fileExtension)) {
+                    imageElement.src = imageUrl;
+                    imageElement.style.display = "block";
+                    iframeElement.style.display = "none";
+                } else {
+                    imageElement.style.display = "none";
+                    iframeElement.style.display = "none";
+                }
+
+                document.getElementById("prescription-container").classList.remove("hidden");
+            } else {
+                document.getElementById("prescription-container").classList.add("hidden");
+            }
+        }
+
+        //see order prescription image ----end
 
         // Close the modal
         function closeOrderModal() {
@@ -576,6 +669,85 @@
                 }
             });
         });
-        </script>
+
+
+
+        //edit shipping address
+        $(document).ready(function() {
+            // Toggle edit form and populate old data
+            $('#edit-shipping-button').click(function() {
+                // Get current values from displayed fields
+                $('#edit-billing-name').val($('#billing-name').text());
+                $('#edit-billing-email').val($('#billing-email').text());
+                $('#edit-billing-address').val($('#billing-address').text());
+                $('#edit-billing-contact').val($('#billing-contact').text());
+                $('#edit-billing-city').val($('#billing-city').text());
+                $('#edit-billing-postcode').val($('#billing-postcode').text());
+                $('#edit-billing-gpNumber').val($('#billing-gpNumber').text());
+                $('#edit-billing-gpAddress').val($('#billing-gpAddress').text());
+
+                // Toggle form visibility
+                $('#shipping-address-display').toggleClass('hidden');
+                $('#edit-shipping-address-form').toggleClass('hidden');
+            });
+
+            // Save Updated Shipping Address with AJAX
+            $('#save-shipping-address').click(function() {
+                var orderId = $('#order-id').text().trim(); // Get Order ID
+                var updatedData = {
+                    name: $('#edit-billing-name').val(),
+                    email: $('#edit-billing-email').val(),
+                    address: $('#edit-billing-address').val(),
+                    contact: $('#edit-billing-contact').val(),
+                    city: $('#edit-billing-city').val(),
+                    postcode: $('#edit-billing-postcode').val(),
+                    gp_number: $('#edit-billing-gpNumber').val(),
+                    gp_address: $('#edit-billing-gpAddress').val(),
+                };
+
+                if (!orderId) {
+                    alert("Order ID not found!");
+                    return;
+                }
+
+                var route = "{{ route('order.address.update', ':id') }}".replace(':id', orderId);
+
+                $.ajax({
+                    url: route,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: updatedData,
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire('Updated!', 'Shipping address has been updated.', 'success');
+
+                            // Update displayed address with new values
+                            $('#billing-name').text(updatedData.name);
+                            $('#billing-email').text(updatedData.email);
+                            $('#billing-address').text(updatedData.address);
+                            $('#billing-contact').text(updatedData.contact);
+                            $('#billing-city').text(updatedData.city);
+                            $('#billing-postcode').text(updatedData.postcode);
+                            $('#billing-gpNumber').text(updatedData.gp_number);
+                            $('#billing-gpAddress').text(updatedData.gp_address);
+
+                            // Hide edit form & show updated address
+                            $('#shipping-address-display').removeClass('hidden');
+                            $('#edit-shipping-address-form').addClass('hidden');
+                        } else {
+                            Swal.fire('Error!', 'Failed to update shipping address.', 'error');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Error!', 'Something went wrong.', 'error');
+                    }
+                });
+            });
+        });
+
+
+    </script>
 
 @endpush

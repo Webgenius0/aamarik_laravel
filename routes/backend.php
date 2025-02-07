@@ -106,15 +106,29 @@ Route::get('/doctor-edit/{doctor}', [DoctorController::class, 'edit'])->name('do
 Route::put('/doctor-update/{id}', [DoctorController::class, 'update'])->name('doctor.update');
 Route::delete('/doctor-delete/{id}', [DoctorController::class, 'destroy'])->name('doctor.delete');
 
-//deprtment
-Route::get('/department-form', [DoctorController::class, 'departmentCreateForm'])->name('department.create.form');
-Route::get('/status-update/{id}', [DoctorController::class, 'updateDepartmentStatus'])->name('doctor.status.update');
-Route::get('/department/show', [DoctorController::class, 'department'])->name('doctors.department');
-Route::post('/department-add', [DoctorController::class, 'departmentStore'])->name('doctor.department.store');
-Route::delete('/department-delete/{id}', [DoctorController::class, 'DestroyCategory'])->name('doctor.destroy.category');
-//department for show Departmentlist
+//department
+//Route::get('/department-form', [DoctorController::class, 'departmentCreateForm'])->name('department.create.form');
+//Route::get('/status-update/{id}', [DoctorController::class, 'updateDepartmentStatus'])->name('doctor.status.update');
+//Route::get('/department/show', [DoctorController::class, 'department'])->name('doctors.department');
+//Route::post('/department-add', [DoctorController::class, 'departmentStore'])->name('doctor.department.store');
+//Route::delete('/department-delete/{id}', [DoctorController::class, 'DestroyCategory'])->name('doctor.destroy.category');
+//Route::get('/department-edit/{id}', [DoctorController::class, 'editDepartment'])->name('department.edit');
+//department for show Departmental
 
 Route::get('/department', [DoctorController::class, 'getDeparments'])->name('doctor.department');
+
+
+
+//Department
+Route::controller(\App\Http\Controllers\Web\Backend\DepartmentController::class)->group(function (){
+    Route::get('/departments','index')->name('department.index');
+    Route::get('/department/create', 'create')->name('department.create');
+    Route::post('/department/store', 'store')->name('department.store');
+    Route::get('/department/edit/{id}', 'edit')->name('department.edit');
+    Route::post('/department/update/{id}', 'update')->name('department.update');
+    Route::delete('/department/delete/{id}', 'destroy')->name('department.delete');
+});
+
 
 //Medicine section
 Route::controller(MedicineController::class)->group(function () {
@@ -154,6 +168,7 @@ Route::controller(\App\Http\Controllers\Web\Backend\Order\OrderManagementControl
     Route::get('/order/details/{id}', 'show')->name('order.details');
     Route::delete('/order/delete/{id}', 'destroy')->name('order.delete');
     Route::post('/order/note/update/{id}', 'updateNote')->name('order.note.update');
+    Route::post('/order/billing-address/update/{id}', 'updateAddress')->name('order.address.update');
 });
 
 //! Route for customer Management

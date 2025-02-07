@@ -153,43 +153,43 @@
             </button>
         </div>
         <form id="update-doctor-form" method="POST" enctype="multipart/form-data">
-    @csrf
-    @method('PUT')
-    <input type="hidden" id="doctor_id" name="doctor_id">
+            @csrf
+            @method('PUT')
+            <input type="hidden" id="doctor_id" name="doctor_id">
 
-    <!-- Name -->
-    <div class="mb-4">
-        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-        <input type="text" id="name" name="name" class="form-input mt-1 block w-full">
-    </div>
+            <!-- Name -->
+            <div class="mb-4">
+                <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                <input type="text" id="name" name="name" class="form-input mt-1 block w-full">
+            </div>
 
-    <!-- Email -->
-    <div class="mb-4">
-        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-        <input type="email" id="email" name="email" class="form-input mt-1 block w-full">
-    </div>
+            <!-- Email -->
+            <div class="mb-4">
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" id="email" name="email" class="form-input mt-1 block w-full">
+            </div>
 
-    <!-- Department -->
-    <div class="mb-4">
-        <label for="department" class="block text-sm font-medium text-gray-700">Department</label>
-        <select id="department" name="department" class="form-input mt-1 block w-full">
-            <option value="" disabled selected>Select Department</option>
-            <!-- Options will be populated by AJAX -->
-        </select>
-    </div>
+            <!-- Department -->
+            <div class="mb-4">
+                <label for="department" class="block text-sm font-medium text-gray-700">Department</label>
+                <select id="department" name="department" class="form-input mt-1 block w-full">
+                    <option value="" disabled selected>Select Department</option>
+                    <!-- Department options will be populated dynamically -->
+                </select>
+            </div>
 
-    <!-- Avatar -->
-    <div class="mb-4">
-        <label for="avatar" class="block text-sm font-medium text-gray-700">Avatar</label>
-        <input type="file" id="avatar" name="avatar" class="dropify form-input mt-1 block w-full" class="form-input w-full dropify dropify-wrapper1 .dropify-preview dropify-render img" >
-    </div>
+            <!-- Avatar -->
+            <div class="mb-4">
+                <label for="avatar" class="block text-sm font-medium text-gray-700">Avatar</label>
+                <input type="file" id="avatar" name="avatar" class="dropify form-input mt-1 block w-full" />
+            </div>
 
-    <!-- Submit Button -->
-    <button type="submit" class="btn bg-success text-white py-2 px-5 rounded-md">Update</button>
-</form>
-
+            <!-- Submit Button -->
+            <button type="submit" class="btn bg-success text-white py-2 px-5 rounded-md">Update</button>
+        </form>
     </div>
 </div>
+
 
 @endsection
 
@@ -280,7 +280,7 @@ $(document).ready(function() {
 
 
     // Edit Doctor Function
-    function editDoctor(id) {
+function editDoctor(id) {
     let url = '{{ route("doctor.edit", ":id") }}';
     url = url.replace(':id', id);
 
@@ -297,14 +297,22 @@ $(document).ready(function() {
                 $('#department').val(doctor.department);
                 $('#doctor_id').val(doctor.id);
 
-
+// Set avatar if exists
                 const avatarPath = response.avatar_url ? response.avatar_url : '';
-                if (avatarPath) {
+                console.log(avatarPath);  // Log the path to ensure it's correct
 
-                    const avatarUrl =  avatarPath;
-                    $('#avatar').attr('data-default-file', avatarUrl);
+                if (avatarPath) {
+                    $('#avatar').attr('data-default-file', avatarPath);
+
+                    // Destroy and reinitialize Dropify to ensure the new image is set
                     $('#avatar').dropify('destroy').dropify();
+
+                    // Or manually reinitialize after the DOM update
+                    setTimeout(function() {
+                        $('#avatar').dropify(); // Reinitialize Dropify
+                    }, 100);
                 }
+
 
                 // Show the modal
                 $('#modalOverlay').show().addClass('modal-open');
@@ -442,6 +450,10 @@ $(document).ready(function() {
                 } // Error
             })
         }
+
+
+
+
 
 </script>
 @endpush

@@ -89,16 +89,58 @@ class CustomerManagementController extends Controller
     /**
      * Customer order sheet
      */
-    public function orderSheet($id)
+    public function orderSheet(Request $request,$id)
     {
-
         // Fetch the customer
         $customer = User::findOrFail($id);
+//
+//        // Fetch all orders related to this customer
+//        $orders = Order::where('user_id', $id)->get();
+//
+//        return view('backend.layouts.customer.order_sheet', compact('customer', 'orders'));
 
-        // Fetch all orders related to this customer
-        $orders = Order::where('user_id', $id)->get();
+        if ($request->ajax()) {
+            // Group by type
+            $data = Order::where('user_id', $id)->get();
 
-        return view('backend.layouts.customer.order_sheet', compact('customer', 'orders'));
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('order_code', function ($data) {
+                    return '#' . $data->uuid;
+                })
+                ->addColumn('sub_total', function ($data) {
+                    return $data->sub_total;
+                })
+                ->addColumn('discount', function ($data) {
+                    return $data->discount;
+                })
+                ->addColumn('total', function ($data) {
+                    return $data->total_price;
+                })
+                ->addColumn('pay_amount', function ($data) {
+                    return $data->pay_amount;
+                })
+                ->addColumn('order_date', function ($data) {
+                     return $data->created_at->format('d-m-Y');
+                })
+                ->addColumn('delivery_date', function ($data) {
+                    return $data->status == 'delivered' ? $data->updated_at->format('d-m-Y') : 'Not Delivered';
+                })
+                ->addColumn('status', function ($data) {
+                    return $data->status;
+                })
+                ->addColumn('action', function ($data) {
+                    return '<div class="inline-flex gap-1">
+                            <a href="javascript:void(0);" onclick="viewOrderDetails(' . $data->id . ')" class="btn bg-info text-white rounded">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+
+                    </div>';
+                })
+                ->rawColumns(['order_code','order_date','order_status', 'action'])
+                ->make(true);
+        }
+        return view('backend.layouts.customer.order_sheet',compact('customer'));
     }
 
 }

@@ -61,7 +61,7 @@
             <h3>Order Details:</h3>
             <p><strong>Order ID:</strong> #{{ $order->uuid ?? ''  }}</p>
             <p><strong>Order Date:</strong>  {{ $order->created_at->format('Y-m-d h:i A') }}</p>
-            <p><strong>Delivery Date:</strong> 2024-02-10</p>
+            <p><strong>Delivery Date:</strong> {{ $order->status == 'delivered' ? $order->updated_at->format('Y-m-d  h:i A') : 'Not Delivered' }}</p>
             <p><strong>Status:</strong> {{ $order->status  }}</p>
         </div>
     </div>
