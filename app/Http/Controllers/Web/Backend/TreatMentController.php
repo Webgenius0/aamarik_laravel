@@ -21,7 +21,9 @@ class TreatMentController extends Controller
 {
     public function index()
     {
-        return view('backend.layouts.treatment.index');
+        //get medicines
+        $medicines = Medicine::with('details')->where('status','active')->get();
+        return view('backend.layouts.treatment.create',compact('medicines'));
     }
 //
     public function treatmentList(Request $request)
@@ -57,9 +59,8 @@ class TreatMentController extends Controller
         return view('backend.layouts.treatment.treatmentlist');
     }
     public function store(Request $request)
-{
-    // Log the entire request to see what is being submitted
-    Log::info('Received Treatment Data:', ['request_data' => $request->all(), 'files' => $request->files]);
+    {
+
 
     // Validate incoming request data
     $validated = $request->validate([
@@ -70,11 +71,13 @@ class TreatMentController extends Controller
         'detail_items.*.title' => 'nullable|string|max:255',
         'details.*.title' => 'nullable|string|max:255',
         'details.*.avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:2048',
-        // Add more validation rules here as needed...
+        'medicines' => 'required|array', // Ensure at least one medicine is selected
+        'medicines.*' => 'exists:medicines,id', // Validate medicine IDs
     ]);
+    dd($validated);
 
     // Collect the treatment data
-    $treatmentData = $request->all();
+    $treatmentData = $request->validate();
 
     // Handle the avatar upload for Treatment
     $avatarPath = null;
