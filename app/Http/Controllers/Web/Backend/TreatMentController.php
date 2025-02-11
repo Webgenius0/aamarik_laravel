@@ -44,8 +44,10 @@ class TreatMentController extends Controller
                 })
 
                 ->addColumn('action', function ($data) {
+                    $editUrl = route('treatment.edit', $data->id);
+
                     return '<div class="inline-flex gap-1">
-                            <a href="javascript:void(0);" onclick="editTreatment(' . $data->id . ')" class="btn bg-success text-white rounded">
+                            <a href="' . $editUrl . '" class="btn bg-success text-white rounded">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
                             <a href="javascript:void(0);" onclick="showDeleteConfirm(' . $data->id . ')" class="btn bg-danger text-white rounded" title="Delete">
@@ -195,6 +197,34 @@ class TreatMentController extends Controller
         }
 
     }
+
+    /**
+     * Edit treatment and related data
+     */
+    public function edit($treatmentId)
+    {
+        // Retrieve the treatment with all related data
+        $data = Treatment::with([
+            'categories',
+            'detail',
+            'detailItems',
+            'about',
+            'faqs',
+            'assessments',
+            'medicines'
+        ])->find($treatmentId);
+
+        // Check if the treatment was found
+        if (!$data) {
+            return redirect()->route('treatment.list')->with('error', 'Treatment not found!');
+        }
+
+        // Fetch all active medicines
+        $medicines = Medicine::where('status', 'active')->get();
+
+        return view('backend.layouts.treatment.edit', compact('data', 'medicines'));
+    }
+
 
 
     /**
