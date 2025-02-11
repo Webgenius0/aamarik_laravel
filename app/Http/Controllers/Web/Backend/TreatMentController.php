@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Web\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreTreatmentRequest;
 use App\Models\AboutTreatment;
 use App\Models\Assessment;
+use App\Models\AssessmentResult;
 use App\Models\DetailsItems;
 use App\Models\Medicine;
 use App\Models\Treatment;
@@ -37,13 +39,13 @@ class TreatMentController extends Controller
                 ->addColumn('avatar', function ($data) {
                     $avatarUrl = $data->avatar ? asset($data->avatar) : asset('uploads/defult-image/default-avatar.png');
                     return $data->avatar ?
-                        '<a href="' . $avatarUrl . '" target="_blank"><img src="' . $avatarUrl . '" alt="Avatar" width="50" height="50"></a>' :
+                        '<img src="' . $avatarUrl . '" alt="Avatar" width="50" height="50">' :
                         'No Avatar';
                 })
 
                 ->addColumn('action', function ($data) {
                     return '<div class="inline-flex gap-1">
-                            <a href="javascript:void(0);" onclick="editDoctor(' . $data->id . ')" class="btn bg-success text-white rounded">
+                            <a href="javascript:void(0);" onclick="editTreatment(' . $data->id . ')" class="btn bg-success text-white rounded">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
                             <a href="javascript:void(0);" onclick="showDeleteConfirm(' . $data->id . ')" class="btn bg-danger text-white rounded" title="Delete">
@@ -56,29 +58,16 @@ class TreatMentController extends Controller
 
         }
 
-        return view('backend.layouts.treatment.treatmentlist');
+        return view('backend.layouts.treatment.index');
     }
-    public function store(Request $request)
+    public function store(StoreTreatmentRequest $request)
     {
-
-    // Validate incoming request data
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:2048',
-        'categories.*.title' => 'nullable|string|max:255',
-        'categories.*.icon' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:2048',
-        'detail_items.*.title' => 'nullable|string|max:255',
-        'details.*.title' => 'nullable|string|max:255',
-        'details.*.avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico,bmp,svg|max:2048',
-        'medicines' => 'required|array', // Ensure at least one medicine is selected
-        'medicines.*' => 'exists:medicines,id', // Validate medicine IDs
-    ]);
 
         // Start a database transaction
         DB::beginTransaction();
         try {
             // Collect the treatment data
-            $treatmentData = $validated;
+            $treatmentData = $request->validated();
 
             // Handle the avatar upload for Treatment
             $avatarPath = null;
@@ -138,8 +127,8 @@ class TreatMentController extends Controller
             }
 
             // Process About Treatment (if any)
-            if (isset($request->about) && is_array($request->about)) {
-                foreach ($request->about as $about) {
+            if (isset( $treatmentData['about']) && is_array($treatmentData['about'])) {
+                foreach ($treatmentData['about'] as $about) {
 
                     $avatarPath = null;
                     if (isset($about['avatar']) && $about['avatar']) {
@@ -157,8 +146,8 @@ class TreatMentController extends Controller
 
             // Process FAQs (if any)
 
-            if (isset($request->faqs) && is_array($request->faqs)) {
-                foreach ($request->faqs as $faq) {
+            if (isset($treatmentData['faqs']) && is_array($treatmentData['faqs'])) {
+                foreach ($treatmentData['faqs'] as $faq) {
                     TreatmentFaq::create([
                         'treatment_id' => $treatment->id,
                         'question' => $faq['question'],
@@ -168,7 +157,7 @@ class TreatMentController extends Controller
             }
 
             // Attach medicines for treatment
-            foreach ($request->medicines as $medicine) {
+            foreach ($treatmentData['medicines'] as $medicine) {
                 TreatmentMedicines::create([
                     'treatment_id' => $treatment->id,
                     'medicine_id' => $medicine,
@@ -177,8 +166,8 @@ class TreatMentController extends Controller
 
             // Process Assessments (if any)
 
-            if (isset($request->assessments) && is_array($request->assessments)) {
-                foreach ($request->assessments as $assessment) {
+            if (isset($treatmentData['assessments']) && is_array($treatmentData['assessments'])) {
+                foreach ($treatmentData['assessments'] as $assessment) {
                     Assessment::create([
                         'question' => $assessment['question'],
                         'option1' => $assessment['option1'],
@@ -194,11 +183,106 @@ class TreatMentController extends Controller
 
             DB::commit();
             // Return success message
-            return response()->json(['success' => true, 'message' => 'Treatment created successfully!']);
+            return response()->json([
+                'success' => true,
+                'message' => 'Treatment created successfully!',
+                'redirect' => route('treatment.list') // Redirect URL
+            ]);
+
         }catch (\Exception $exception){
             DB::rollBack();
             return response()->json(['success' => false, 'message' => 'Failed to create Treatment!']);
         }
 
     }
+
+
+    /**
+     * delete treatment and related data
+     */
+    public function destroy($id)
+    {
+        $treatment = Treatment::with([
+            'categories',
+            'detail',
+            'detailItems',
+            'about',
+            'faqs',
+            'assessments',
+            'medicines',
+        ])->find($id);
+
+        if (!$treatment) {
+            return response()->json(['success' => false, 'message' => 'Treatment not found']);
+        }
+
+        DB::beginTransaction();
+        try {
+            // Delete categories and associated icons
+            $categories = TreatmentCategory::where('treatment_id', $treatment->id)->get();
+            foreach ($categories as $category) {
+                if (!empty($category->icon) && file_exists(public_path($category->icon))) {
+                    unlink(public_path($category->icon));
+                }
+                $category->delete();
+            }
+
+            // Delete treatment details and avatars
+            $details = TreatmentDetails::where('treatment_id', $treatment->id)->get();
+            foreach ($details as $detail) {
+                if (!empty($detail->avatar) && file_exists(public_path($detail->avatar))) {
+                    unlink(public_path($detail->avatar));
+                }
+                $detail->delete();
+            }
+
+            // Delete details items
+            DetailsItems::where('treatment_id', $treatment->id)->delete();
+
+            // Delete about treatment and avatars
+            $aboutItems = AboutTreatment::where('treatment_id', $treatment->id)->get();
+            foreach ($aboutItems as $about) {
+                if (!empty($about->avatar) && file_exists(public_path($about->avatar))) {
+                    unlink(public_path($about->avatar));
+                }
+                $about->delete();
+            }
+
+            // Delete FAQs
+            TreatmentFaq::where('treatment_id', $treatment->id)->delete();
+
+            // Delete assessments and assessment results
+            $assessments = Assessment::where('treatment_id', $treatment->id)->get();
+            foreach ($assessments as $assessment) {
+                AssessmentResult::where('treatment_id', $treatment->id)->delete();
+                $assessment->delete();
+            }
+
+            // Delete treatment medicines
+            TreatmentMedicines::where('treatment_id', $treatment->id)->delete();
+
+            // Delete treatment avatar if exists
+            if (!empty($treatment->avatar) && file_exists(public_path($treatment->avatar))) {
+                unlink(public_path($treatment->avatar));
+            }
+
+            // Finally, delete the treatment record
+            $treatment->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Treatment deleted successfully!'
+            ]);
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete treatment. Please try again.'
+            ]);
+        }
+    }
+
+
 }
