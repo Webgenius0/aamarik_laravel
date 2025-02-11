@@ -3,19 +3,19 @@
 namespace App\Http\Controllers\Web\Backend;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\TreatMent;
-use App\Models\TreatMentCategory;
-use App\Models\TreatmentDetails;
-use App\Models\TreatMentFaq;
-use App\Models\DetailsItems;
-use App\Models\TreatMentMedicines;
-use App\Models\Medicine;
-use App\Models\Assessment;
-use Illuminate\Support\Facades\Log;
-use App\Helper\Helper;
 use App\Models\AboutTreatment;
-use Illuminate\Support\Str;
+use App\Models\Assessment;
+use App\Models\DetailsItems;
+use App\Models\Medicine;
+use App\Models\Treatment;
+use App\Models\TreatmentCategory;
+use App\Models\TreatmentDetails;
+use App\Models\TreatmentFaq;
+use App\Models\TreatmentMedicines;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Helper\Helper;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 class TreatMentController extends Controller
 {
@@ -29,7 +29,7 @@ class TreatMentController extends Controller
     public function treatmentList(Request $request)
     {
         if ($request->ajax()) {
-            $data = TreatMent::latest()->get();
+            $data = Treatment::latest()->get();
 
 
             return DataTables::of($data)
@@ -61,7 +61,6 @@ class TreatMentController extends Controller
     public function store(Request $request)
     {
 
-
     // Validate incoming request data
     $validated = $request->validate([
         'name' => 'required|string|max:255',
@@ -74,122 +73,132 @@ class TreatMentController extends Controller
         'medicines' => 'required|array', // Ensure at least one medicine is selected
         'medicines.*' => 'exists:medicines,id', // Validate medicine IDs
     ]);
-    dd($validated);
 
-    // Collect the treatment data
-    $treatmentData = $request->validate();
+        // Start a database transaction
+        DB::beginTransaction();
+        try {
+            // Collect the treatment data
+            $treatmentData = $validated;
 
-    // Handle the avatar upload for Treatment
-    $avatarPath = null;
-    if (isset($treatmentData['avatar']) && $treatmentData['avatar']) {
-        $avatarPath = Helper::fileUpload($treatmentData['avatar'], 'treatments', 'avatar');
-    }
-
-    // Create Treatment
-    $treatment = TreatMent::create([
-        'name' => $treatmentData['name'],
-        'avatar' => $avatarPath,
-    ]);
-
-    // Process Categories (if any)
-    if (isset($treatmentData['categories']) && is_array($treatmentData['categories'])) {
-        foreach ($treatmentData['categories'] as $category) {
-            $iconPath = null;
-            if (isset($category['icon']) && $category['icon']) {
-                $iconPath = Helper::fileUpload($category['icon'], 'categories', 'icon');
-            }
-
-            TreatMentCategory::create([
-                'treatment_id' => $treatment->id,
-                'icon' => $iconPath,
-                'title' => $category['title'],
-            ]);
-        }
-    }
-
-    // Process Treatment Details (if any)
-    if (isset($treatmentData['details']) && is_array($treatmentData['details'])) {
-        foreach ($treatmentData['details'] as $detail) {
-            $detailAvatarPath = null;
-            if (isset($detail['avatar']) && $detail['avatar']) {
-                $detailAvatarPath = Helper::fileUpload($detail['avatar'], 'details', 'detail_avatar');
-            }
-
-            TreatmentDetails::create([
-                'treatment_id' => $treatment->id,
-                'title' => $detail['title'],
-                'avatar' => $detailAvatarPath,
-            ]);
-        }
-    }
-
-    // Process Detail Items (if any)
-    if (isset($treatmentData['detail_items']) && is_array($treatmentData['detail_items'])) {
-        foreach ($treatmentData['detail_items'] as $item) {
-            DetailsItems::create([
-                'treatment_id' => $treatment->id,
-                'title' => $item['title'],
-            ]);
-        }
-    }
-
-    // Process About Treatment (if any)
-    if (isset($treatmentData['about']) && is_array($treatmentData['about'])) {
-        foreach ($treatmentData['about'] as $about) {
+            // Handle the avatar upload for Treatment
             $avatarPath = null;
-            if (isset($about['avatar']) && $about['avatar']) {
-                $avatarPath = Helper::fileUpload($about['avatar'], 'about_treatments', 'avatar');
+            if (isset($treatmentData['avatar']) && $treatmentData['avatar']) {
+                $avatarPath = Helper::fileUpload($treatmentData['avatar'], 'treatments', 'avatar');
             }
 
-            AboutTreatment::create([
-                'treatment_id' => $treatment->id,
-                'title' => $about['title'],
+            // Create Treatment
+            $treatment = Treatment::create([
+                'name' => $treatmentData['name'],
                 'avatar' => $avatarPath,
-                'short_description' => $about['short_description'] ?? '',
             ]);
+
+            // Process Categories (if any)
+            if (isset($treatmentData['categories']) && is_array($treatmentData['categories'])) {
+                foreach ($treatmentData['categories'] as $category) {
+                    $iconPath = null;
+                    if (isset($category['icon']) && $category['icon']) {
+                        $iconPath = Helper::fileUpload($category['icon'], 'categories', 'icon');
+                    }
+
+                    TreatmentCategory::create([
+                        'treatment_id' => $treatment->id,
+                        'icon' => $iconPath,
+                        'title' => $category['title'],
+                    ]);
+                }
+            }
+
+            // Process Treatment Details (if any)
+
+            if (isset($treatmentData['details']) && is_array($treatmentData['details'])) {
+
+                foreach ($treatmentData['details'] as $detail) {
+                    $detailAvatarPath = null;
+                    if (isset($detail['avatar']) && $detail['avatar']) {
+                        $detailAvatarPath = Helper::fileUpload($detail['avatar'], 'details', 'detail_avatar');
+                    }
+
+                    TreatmentDetails::create([
+                        'treatment_id' => $treatment->id,
+                        'title' => $detail['title'],
+                        'avatar' => $detailAvatarPath,
+                    ]);
+                }
+            }
+
+            // Process Detail Items (if any)
+
+            if (isset($treatmentData['detail_items']) && is_array($treatmentData['detail_items'])) {
+                foreach ($treatmentData['detail_items'] as $item) {
+                    DetailsItems::create([
+                        'treatment_id' => $treatment->id,
+                        'title' => $item['title'],
+                    ]);
+                }
+            }
+
+            // Process About Treatment (if any)
+            if (isset($request->about) && is_array($request->about)) {
+                foreach ($request->about as $about) {
+
+                    $avatarPath = null;
+                    if (isset($about['avatar']) && $about['avatar']) {
+                        $avatarPath = Helper::fileUpload($about['avatar'], 'about_treatments', 'avatar');
+                    }
+
+                    AboutTreatment::create([
+                        'treatment_id' => $treatment->id,
+                        'title' => $about['title'],
+                        'avatar' => $avatarPath,
+                        'short_description' => $about['short_description'] ?? '',
+                    ]);
+                }
+            }
+
+            // Process FAQs (if any)
+
+            if (isset($request->faqs) && is_array($request->faqs)) {
+                foreach ($request->faqs as $faq) {
+                    TreatmentFaq::create([
+                        'treatment_id' => $treatment->id,
+                        'question' => $faq['question'],
+                        'answer' => $faq['answer'],
+                    ]);
+                }
+            }
+
+            // Attach medicines for treatment
+            foreach ($request->medicines as $medicine) {
+                TreatmentMedicines::create([
+                    'treatment_id' => $treatment->id,
+                    'medicine_id' => $medicine,
+                ]);
+            }
+
+            // Process Assessments (if any)
+
+            if (isset($request->assessments) && is_array($request->assessments)) {
+                foreach ($request->assessments as $assessment) {
+                    Assessment::create([
+                        'question' => $assessment['question'],
+                        'option1' => $assessment['option1'],
+                        'option2' => $assessment['option2'],
+                        'option3' => $assessment['option3'] ?? null,
+                        'option4' => $assessment['option4'] ?? null,
+                        'answer' => $assessment['answer'] ?? null,
+                        'note' => $assessment['note'] ?? null,
+                        'treatment_id' => $treatment->id,
+                    ]);
+                }
+            }
+
+            DB::commit();
+            // Return success message
+            return response()->json(['success' => true, 'message' => 'Treatment created successfully!']);
+        }catch (\Exception $exception){
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => 'Failed to create Treatment!']);
         }
-    }
 
-    // Process FAQs (if any)
-    if (isset($treatmentData['faqs']) && is_array($treatmentData['faqs'])) {
-        foreach ($treatmentData['faqs'] as $faq) {
-            TreatmentFaq::create([
-                'treatment_id' => $treatment->id,
-                'question' => $faq['question'],
-                'answer' => $faq['answer'],
-            ]);
-        }
     }
-
-    // Attach random medicines (4 active medicines)
-    $medicines = Medicine::where('status', 'active')->inRandomOrder()->take(4)->get();
-    foreach ($medicines as $medicine) {
-        TreatmentMedicines::create([
-            'treatment_id' => $treatment->id,
-            'medicine_id' => $medicine->id,
-        ]);
-    }
-
-    // Process Assessments (if any)
-    if (isset($treatmentData['assessments']) && is_array($treatmentData['assessments'])) {
-        foreach ($treatmentData['assessments'] as $assessment) {
-            Assessment::create([
-                'question' => $assessment['question'],
-                'option1' => $assessment['option1'],
-                'option2' => $assessment['option2'],
-                'option3' => $assessment['option3'] ?? null,
-                'option4' => $assessment['option4'] ?? null,
-                'answer' => $assessment['answer'] ?? null,
-                'note' => $assessment['note'] ?? null,
-                'treatment_id' => $treatment->id,
-            ]);
-        }
-    }
-
-    // Return success message
-    return response()->json([
-        'message' => 'Treatment created successfully!',
-        'data' => $treatment,
-    ]);
-}
 }

@@ -314,10 +314,13 @@
     <!-- Select2 JS CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
+
     <script>
+
         $(document).ready(function() {
             $('.dropify').dropify({
             });
+
 
 
             let currentStep = 1; // Start from step 1
@@ -397,16 +400,38 @@
                     data: formData,
                     processData: false,
                     contentType: false,
+                    // success: function(resp) {
+                    //     // Handle success response
+                    //     alert(resp.message);
+                    //     $('#createUpdateForm')[0].reset();
+                    //     showStep(1); // Reset to step 1
+                    // },
                     success: function(resp) {
-                        // Handle success response
-                        alert(resp.message);
-                        $('#createUpdateForm')[0].reset();
-                        showStep(1); // Reset to step 1
-                    },
-                    error: function(error) {
-                        // Handle error
-                        alert('An error occurred. Please try again.');
+                        if (resp.success === true) {
+                            // Show success message
+                            Flasher.success(resp.message);
+
+                            // Optionally reset the form or do other actions
+                            $('#createUpdateForm')[0].reset();
+                            showStep(1); // Reset to step 1
+                            setTimeout(function() {
+                                $('#modalOverlay').hide();
+                            }, 200);
+                        } else if (resp.errors) {
+                            // Show first error message
+                            Flasher.error(resp.errors[0]);
+                        } else {
+                            // Show a general warning message
+                            Flasher.warning(resp.message);
+                        }
+                    },error: function(error) {
+                        // Show error message
+                        Flasher.error('An error occurred. Please try again.');
                     }
+                    // error: function(error) {
+                    //     // Handle error
+                    //     alert('An error occurred. Please try again.');
+                    // }
                 });
             });
 

@@ -541,7 +541,6 @@
                 processData: false,  // Prevent jQuery from automatically processing the data
                 contentType: false,  // Prevent jQuery from setting the content type
                 success: function(resp) {
-                    console.log(resp);
 
                     // Reload DataTable
                     $('#data-table').DataTable().ajax.reload();
