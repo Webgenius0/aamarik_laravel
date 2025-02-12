@@ -50,27 +50,153 @@
             </div>
 
 
-{{--            <!-- Step 3: Treatment Details -->--}}
-{{--            <div class="step step-3 hidden">--}}
-{{--                <h2 class="text-xl font-semibold text-center mb-4">Treatment Details</h2>--}}
-{{--                <div id="details-container">--}}
-{{--                    @foreach($data->detail as $index => $detail)--}}
-{{--                        <div class="card mb-4 p-4 border rounded-lg detail-card">--}}
-{{--                            <input type="hidden" name="details[{{ $index }}][id]" value="{{ $detail->id }}">--}}
-{{--                            <label class="font-semibold">Avatar</label>--}}
-{{--                            <input name="details[{{ $index }}][avatar]" type="file" class="dropify"--}}
-{{--                                   data-default-file="{{ asset($detail->avatar) }}" accept="image/*">--}}
-{{--                            <label class="font-semibold mt-2">Title</label>--}}
-{{--                            <textarea name="details[{{ $index }}][title]" class="form-input w-full">{{ $detail->title }}</textarea>--}}
-{{--                            <button type="button" class="mt-2 bg-red-500 text-white px-3 py-1 rounded remove-detail-btn">Remove</button>--}}
-{{--                        </div>--}}
-{{--                    @endforeach--}}
-{{--                </div>--}}
-{{--                <button type="button" id="add-detail-btn" class="mt-2 bg-green-500 text-white px-4 py-2 rounded">Add Detail</button>--}}
-{{--            </div>--}}
+            <!-- Step 3: Category Details -->
+            <div class="step step-3 hidden">
+                <div class="flex items-center justify-center">
+                    <h1 class="h1">Category Details</h1>
+                </div>
+                <div class="card m-5 p-5">
+                    <div class="flex flex-wrap md:flex-nowrap">
+                        <div class="flex flex-col md:w-1/2 mr-4">
+                            <label for="details[0][avatar]" class="text-lg font-medium mb-2">Avatar</label>
+                            <input name="details[0][avatar]" type="file" class="form-input w-full dropify" data-default-file="{{ asset($data->detail->avatar) }}" accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg">
+                        </div>
 
-            <!-- Step 4: Medicines -->
+                        <div class="flex flex-col md:w-1/2">
+                            <label for="details[0][title]" class="text-lg font-medium mb-2">Title</label>
+                            <textarea name="details[0][title]" class="form-input w-full" placeholder="Title">{{ $data->detail->title  }}</textarea>
+                        </div>
+                    </div>
+
+                    <div id="array-title-container" class="flex flex-wrap items-center">
+                        @foreach($data->detailItems as $itemIndex => $item )
+                            <div class="flex flex-col md:w-full mr-4" id="aray_title">
+                                <label for="detail_items[{{ $itemIndex }}][title]" class="text-lg font-medium mb-2">Title</label>
+                                <textarea name="detail_items[{{$itemIndex }}][title]" class="form-input w-full" placeholder="Title">{{  $item->title }}</textarea>
+                            </div>
+                        @endforeach
+
+
+                        <div class="flex items-center space-x-4 mt-4">
+                            <button type="button" id="add-title-field" class="btn bg-green-500 text-white py-2 px-4 rounded-lg font-semibold">+</button>
+                            <button type="button" id="remove-title-field" class="btn bg-red-500 text-white py-2 px-4 rounded-lg font-semibold hidden">-</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-center">
+                    <h1 class="h1">About Section</h1>
+                </div>
+                <div class="card m-5 p-5">
+                    <div class="flex flex-col md:w-full">
+                        <label for="about[0][avatar]" class="text-lg font-medium mb-2">Avatar</label>
+                        <input name="about[0][avatar]" type="file" class="form-input w-full dropify" data-default-file="{{ asset($data->about->avatar) }}" accept=".jpeg, .png, .jpg, .gif, .ico, .bmp, .svg">
+                    </div>
+                    <div class="flex flex-wrap md:flex-nowrap">
+                        <div class="flex flex-col md:w-1/2">
+                            <label for="about[0][title]" class="text-lg font-medium mb-2">Title</label>
+                            <input name="about[0][title]" class="form-input w-full" placeholder="Title" value="{{ old('about[0][title]', $data->about->title) }}">
+                        </div>
+                        <div class="flex flex-col md:w-1/2 ml-4">
+                            <label for="about[0][short_description]" class="text-lg font-medium mb-2">Description</label>
+                            <textarea name="about[0][short_description]" class="form-input w-full" placeholder="Description">{{ $data->about->short_description }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div id="array-question-answer">
+                    @foreach($data->faqs as $faqIndex => $faq)
+                        <div class="card m-5 p-5 faq-item">
+                            <div class="flex flex-wrap md:flex-nowrap">
+                                <div class="flex flex-col md:w-1/2">
+                                    <label for="faqs[{{ $faqIndex }}][question]" class="text-lg font-medium mb-2">Question</label>
+                                    <input name="faqs[{{ $faqIndex }}][question]" class="form-input w-full" placeholder="Question" value="{{ old("faqs.$faqIndex.question", $faq->question) }}">
+                                </div>
+
+                                <div class="flex flex-col md:w-1/2 ml-4">
+                                    <label for="faqs[{{ $faqIndex }}][answer]" class="text-lg font-medium mb-2">Answer</label>
+                                    <textarea name="faqs[{{ $faqIndex }}][answer]" class="form-input w-full" placeholder="Answer">{{ old("faqs.$faqIndex.answer", $faq->answer) }}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end mt-4">
+                                <button type="button" class="btn bg-red-500 text-white py-1 px-3 rounded-lg font-semibold remove-array-question-btn">Remove</button>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="flex justify-end mt-4">
+                    <button type="button" id="add-array-question" class="btn bg-green-500 text-white py-2 px-4 rounded-lg font-semibold">Add New Card</button>
+                </div>
+
+            </div>
+
+
+            <!-- Step 4: Assessment -->
             <div class="step step-4 hidden">
+                <div class="card m-5 p-5">
+                    <div class="flex items-center justify-center">
+                        <h1 class="h1">Assessment</h1>
+                    </div>
+
+                    <div id="cards-container">
+                        @foreach($data->assessments as $assessmentIndex => $assessment)
+                            <div class="dynamic-card card m-5 p-5">
+                                <div class="flex flex-col md:w-full">
+                                    <label for="assessments[{{ $assessmentIndex }}][question]" class="text-lg font-medium mb-2">Question</label>
+                                    <input name="assessments[{{ $assessmentIndex }}][question]" class="form-input w-full" placeholder="Question" value="{{ old("assessments.$assessmentIndex.question", $assessment->question) }}">
+                                </div>
+
+                                <div class="flex flex-wrap md:flex-nowrap">
+                                    <div class="flex flex-col md:w-1/2">
+                                        <label for="assessments[{{ $assessmentIndex }}][option1]" class="text-lg font-medium mb-2">Option 1</label>
+                                        <input name="assessments[{{ $assessmentIndex }}][option1]" class="form-input w-full" placeholder="Option 1" value="{{ old("assessments.$assessmentIndex.option1", $assessment->option1) }}">
+                                    </div>
+                                    <div class="flex flex-col md:w-1/2 ml-4">
+                                        <label for="assessments[{{ $assessmentIndex }}][option2]" class="text-lg font-medium mb-2">Option 2</label>
+                                        <input name="assessments[{{ $assessmentIndex }}][option2]" class="form-input w-full" placeholder="Option 2" value="{{ old("assessments.$assessmentIndex.option2", $assessment->option2) }}">
+                                    </div>
+                                    <div class="flex flex-col md:w-1/2 ml-4">
+                                        <label for="assessments[{{ $assessmentIndex }}][option3]" class="text-lg font-medium mb-2">Option 3</label>
+                                        <input name="assessments[{{ $assessmentIndex }}][option3]" class="form-input w-full" placeholder="Option 3" value="{{ old("assessments.$assessmentIndex.option3", $assessment->option3) }}">
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-wrap md:flex-nowrap">
+                                    <div class="flex flex-col md:w-1/2">
+                                        <label for="assessments[{{ $assessmentIndex }}][option4]" class="text-lg font-medium mb-2">Option 4</label>
+                                        <input name="assessments[{{ $assessmentIndex }}][option4]" class="form-input w-full" placeholder="Option 4" value="{{ old("assessments.$assessmentIndex.option4", $assessment->option4) }}">
+                                    </div>
+                                    <div class="flex flex-col md:w-1/2 ml-4">
+                                        <label for="assessments[{{ $assessmentIndex }}][answer]" class="text-lg font-medium mb-2">Answer</label>
+                                        <input name="assessments[{{ $assessmentIndex }}][answer]" class="form-input w-full" placeholder="Answer" value="{{ old("assessments.$assessmentIndex.answer", $assessment->answer) }}">
+                                    </div>
+                                    <div class="flex flex-col md:w-1/2 ml-4">
+                                        <label for="assessments[{{ $assessmentIndex }}][note]" class="text-lg font-medium mb-2">Note</label>
+                                        <textarea name="assessments[{{ $assessmentIndex }}][note]" class="form-input w-full" placeholder="Note">{{ old("assessments.$assessmentIndex.note", $assessment->note) }}</textarea>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-end mt-4">
+                                    <button type="button" class="btn bg-red-500 text-white py-1 px-3 rounded-lg font-semibold remove-assessment-btn">Remove</button>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <div class="flex justify-end mt-4">
+                        <button type="button" id="add-assessment-btn" class="btn bg-green-500 text-white py-2 px-4 rounded-lg font-semibold">Add New Assessment</button>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- Step 5: Medicines -->
+            <div class="step step-5 hidden">
                 <h2 class="text-xl font-semibold text-center mb-4">Select Medicines</h2>
                 <select name="medicines[]" id="medicines" class="form-input w-full" multiple>
                     @foreach($medicines as $medicine)
@@ -80,6 +206,7 @@
                     @endforeach
                 </select>
             </div>
+
 
             <!-- Navigation Buttons -->
             <div class="flex justify-between mt-4">
@@ -94,7 +221,19 @@
 @push('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    {{--Flashar--}}
+    <script defer src="https://cdn.jsdelivr.net/npm/@flasher/flasher@1.2.4/dist/flasher.min.js"></script>
+
     <script>
+        $(document).ready(function() {
+            const flasher = new Flasher({
+                selector: '[data-flasher]',
+                duration: 3000,
+                options: {
+                    position: 'top-center',
+                },
+            });
+        });
         $(document).ready(function() {
             $('.dropify').dropify();
             $('#medicines').select2();
@@ -109,19 +248,19 @@
                     $('#prevBtn').addClass('hidden');
                     $('#nextBtn').removeClass('hidden');
                     $('#submitBtn').addClass('hidden');
-                } else if (step === 4) {
-                    $('#prevBtn').removeClass('hidden');
-                    $('#nextBtn').addClass('hidden');
-                    $('#submitBtn').removeClass('hidden');
-                } else {
+                } else if (step >= 2 && step <= 4) {
                     $('#prevBtn').removeClass('hidden');
                     $('#nextBtn').removeClass('hidden');
                     $('#submitBtn').addClass('hidden');
+                } else if (step === 5) {
+                    $('#prevBtn').removeClass('hidden');
+                    $('#nextBtn').addClass('hidden');
+                    $('#submitBtn').removeClass('hidden');
                 }
             }
 
             $('#nextBtn').click(() => {
-                if (currentStep < 4) {
+                if (currentStep < 5) {
                     currentStep++;
                     showStep(currentStep);
                 }
@@ -163,26 +302,158 @@
             });
 
 
-            $('#editTreatmentForm').submit(function(e) {
-                e.preventDefault();
-                let formData = new FormData(this);
-                $.ajax({
-                    url: "{{ route('treatment.update', $data->id) }}",
-                    type: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        alert("Treatment Updated Successfully");
-                        window.location.href = response.redirect;
-                    },
-                    error: function(error) {
-                        console.log(error);
-                    }
+
+            //JavaScript to Handle Adding/Removing detailItems Dynamically
+            $(document).ready(function () {
+                let itemIndex = {{ count($data->detailItems) }}; // Keep track of the latest index
+
+                // Add new Detail Item
+                $('#add-title-field').click(function () {
+                    let newItem = `
+            <div class="flex flex-col md:w-full mr-4 detail-item">
+                <label for="detail_items[${itemIndex}][title]" class="text-lg font-medium mb-2">Title</label>
+                <textarea name="detail_items[${itemIndex}][title]" class="form-input w-full" placeholder="Title"></textarea>
+                <button type="button" class="mt-2 bg-red-500 text-white px-3 py-1 rounded remove-title-field">Remove</button>
+            </div>`;
+
+                    $('#array-title-container').append(newItem);
+                    itemIndex++;
+                });
+
+                // Remove Detail Item
+                $(document).on('click', '.remove-title-field', function () {
+                    $(this).closest('.detail-item').remove();
                 });
             });
 
+
+            // JavaScript to Handle Adding & Removing FAQs Dynamically
+            $(document).ready(function () {
+                let faqIndex = {{ count($data->faqs) }}; // Start with existing count
+
+                // Add new FAQ
+                $('#add-array-question').click(function () {
+                    let newFaq = `
+                <div class="card m-5 p-5 faq-item">
+                    <div class="flex flex-wrap md:flex-nowrap">
+                        <div class="flex flex-col md:w-1/2">
+                            <label for="faqs[${faqIndex}][question]" class="text-lg font-medium mb-2">Question</label>
+                            <input name="faqs[${faqIndex}][question]" class="form-input w-full" placeholder="Question">
+                        </div>
+                        <div class="flex flex-col md:w-1/2 ml-4">
+                            <label for="faqs[${faqIndex}][answer]" class="text-lg font-medium mb-2">Answer</label>
+                            <textarea name="faqs[${faqIndex}][answer]" class="form-input w-full" placeholder="Answer"></textarea>
+                        </div>
+                    </div>
+                    <div class="flex justify-end mt-4">
+                        <button type="button" class="btn bg-red-500 text-white py-1 px-3 rounded-lg font-semibold remove-array-question-btn">Remove</button>
+                    </div>
+                </div>`;
+
+                    $('#array-question-answer').append(newFaq);
+                    faqIndex++;
+                });
+
+                // Remove FAQ
+                $(document).on('click', '.remove-array-question-btn', function () {
+                    $(this).closest('.faq-item').remove();
+                });
+            });
+
+
+            //JavaScript to Handle Adding & Removing Assessments Dynamically
+            $(document).ready(function () {
+                let assessmentIndex = {{ count($data->assessments) }}; // Start index from existing assessments
+
+                // Add new Assessment
+                $('#add-assessment-btn').click(function () {
+                    let newAssessment = `
+                    <div class="dynamic-card card m-5 p-5">
+                        <div class="flex flex-col md:w-full">
+                            <label for="assessments[${assessmentIndex}][question]" class="text-lg font-medium mb-2">Question</label>
+                            <input name="assessments[${assessmentIndex}][question]" class="form-input w-full" placeholder="Question">
+                        </div>
+
+                        <div class="flex flex-wrap md:flex-nowrap">
+                            <div class="flex flex-col md:w-1/2">
+                                <label for="assessments[${assessmentIndex}][option1]" class="text-lg font-medium mb-2">Option 1</label>
+                                <input name="assessments[${assessmentIndex}][option1]" class="form-input w-full" placeholder="Option 1">
+                            </div>
+                            <div class="flex flex-col md:w-1/2 ml-4">
+                                <label for="assessments[${assessmentIndex}][option2]" class="text-lg font-medium mb-2">Option 2</label>
+                                <input name="assessments[${assessmentIndex}][option2]" class="form-input w-full" placeholder="Option 2">
+                            </div>
+                            <div class="flex flex-col md:w-1/2 ml-4">
+                                <label for="assessments[${assessmentIndex}][option3]" class="text-lg font-medium mb-2">Option 3</label>
+                                <input name="assessments[${assessmentIndex}][option3]" class="form-input w-full" placeholder="Option 3">
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap md:flex-nowrap">
+                            <div class="flex flex-col md:w-1/2">
+                                <label for="assessments[${assessmentIndex}][option4]" class="text-lg font-medium mb-2">Option 4</label>
+                                <input name="assessments[${assessmentIndex}][option4]" class="form-input w-full" placeholder="Option 4">
+                            </div>
+                            <div class="flex flex-col md:w-1/2 ml-4">
+                                <label for="assessments[${assessmentIndex}][answer]" class="text-lg font-medium mb-2">Answer</label>
+                                <input name="assessments[${assessmentIndex}][answer]" class="form-input w-full" placeholder="Answer">
+                            </div>
+                            <div class="flex flex-col md:w-1/2 ml-4">
+                                <label for="assessments[${assessmentIndex}][note]" class="text-lg font-medium mb-2">Note</label>
+                                <textarea name="assessments[${assessmentIndex}][note]" class="form-input w-full" placeholder="Note"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end mt-4">
+                            <button type="button" class="btn bg-red-500 text-white py-1 px-3 rounded-lg font-semibold remove-assessment-btn">Remove</button>
+                        </div>
+                    </div>`;
+
+                    $('#cards-container').append(newAssessment);
+                    assessmentIndex++;
+                });
+
+                // Remove Assessment
+                $(document).on('click', '.remove-assessment-btn', function () {
+                    $(this).closest('.dynamic-card').remove();
+                });
+            });
+
+
+
             showStep(currentStep);
         });
+
+        $(document).ready(function () {
+            // Set CSRF token globally for all AJAX requests
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $('#editTreatmentForm').submit(function (e) {
+                e.preventDefault();
+
+                let formData = new FormData(this);
+                $.ajax({
+                    url: "{{ route('treatment.update', $data->id) }}",
+                    type: "POST", // Laravel only allows POST for file uploads
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        flasher.success("Treatment Updated Successfully");
+
+                        window.location.href = response.redirect;
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert("Error updating treatment.");
+                    }
+                });
+            });
+        });
+
     </script>
 @endpush

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTreatmentRequest;
+use App\Http\Requests\UpdateTreatmentRequest;
 use App\Models\AboutTreatment;
 use App\Models\Assessment;
 use App\Models\AssessmentResult;
@@ -214,6 +215,7 @@ class TreatMentController extends Controller
             'medicines'
         ])->find($treatmentId);
 
+
         // Check if the treatment was found
         if (!$data) {
             return redirect()->route('treatment.list')->with('error', 'Treatment not found!');
@@ -225,6 +227,171 @@ class TreatMentController extends Controller
         return view('backend.layouts.treatment.edit', compact('data', 'medicines'));
     }
 
+
+    /**
+     * Update treatment and related data
+     */
+    public function update(UpdateTreatmentRequest $request, $treatmentId)
+    {
+        DB::beginTransaction();
+        try {
+            $id = $treatmentId;
+            // Find the treatment record
+            $treatment = Treatment::findOrFail($id);
+
+            // Handle avatar update
+            if ($request->hasFile('avatar')) {
+                //delete old image
+                if($treatment->avatar && file_exists(public_path($treatment->avatar))) {
+                    unlink(public_path($treatment->avatar));
+                }
+                $avatarPath = Helper::fileUpload($request->file('avatar'), 'treatments', 'avatar');
+                $treatment->avatar = $avatarPath;
+            }
+
+
+            // Update Treatment Data
+            $treatment->name = $request->input('name');
+            $treatment->save();
+
+            // ✅ **Update Categories**
+            if ($request->has('categories')) {
+                foreach ($request->categories as $categoryData) {
+                    if (!empty($categoryData['id'])) {
+                        $category = TreatmentCategory::find($categoryData['id']);
+                    } else {
+                        $category = new TreatmentCategory();
+                        $category->treatment_id = $treatment->id;
+                    }
+
+                    if (isset($categoryData['icon']) && $categoryData['icon']) {
+                        //delete old image
+                        if ($category->icon && file_exists(public_path($category->icon))) {
+                            unlink(public_path($category->icon));
+                        }
+                        $category->icon = Helper::fileUpload($categoryData['icon'], 'categories', 'icon');
+                    }
+                    $category->title = $categoryData['title'];
+                    $category->save();
+                }
+            }
+
+            // ✅ Update or Create Treatment Details
+            if ($request->has('details')) {
+                foreach ($request->details as $detailData) {
+                    // Check if ID exists to update, otherwise create a new one
+                    $detail = TreatmentDetails::updateOrCreate(
+                        [
+                            'id' => $detailData['id'] ?? null, // Update if ID exists
+                            'treatment_id' => $treatment->id,
+                        ],
+                        [
+                            'title' => $detailData['title'],
+                            'avatar' => isset($detailData['avatar'])
+                                ? Helper::fileUpload($detailData['avatar'], 'details', 'detail_avatar')
+                                : (isset($detailData['id']) ? TreatmentDetails::find($detailData['id'])->avatar ?? null : null),
+                        ]
+                    );
+
+                    // Handle avatar removal if a new one is uploaded
+                    if (isset($detailData['avatar']) && $detailData['avatar']) {
+                        $oldDetail = TreatmentDetails::find($detailData['id']);
+                        if ($oldDetail && file_exists(public_path($oldDetail->avatar))) {
+                            unlink(public_path($oldDetail->avatar));
+                        }
+                        $detail->avatar = Helper::fileUpload($detailData['avatar'], 'details', 'detail_avatar');
+                        $detail->save();
+                    }
+                }
+            }
+
+
+            // ✅ **Update Detail Items**
+            if ($request->has('detail_items')) {
+                foreach ($request->detail_items as $itemData) {
+                    DetailsItems::updateOrCreate(
+                        ['treatment_id' => $treatment->id, 'title' => $itemData['title']],
+                        ['title' => $itemData['title']]
+                    );
+                }
+            }
+
+
+            // ✅ Update About Section
+            if ($request->has('about')) {
+                foreach ($request->about as $aboutData) {
+                    // Find existing AboutTreatment record (if exists)
+                    $about = AboutTreatment::where('treatment_id', $treatment->id)->first();
+
+                    // Handle avatar update and delete old file
+                    if (isset($aboutData['avatar']) && $aboutData['avatar']) {
+                        if ($about && file_exists(public_path($about->avatar))) {
+                            unlink(public_path($about->avatar)); // ✅ Delete old avatar
+                        }
+                        $avatarPath = Helper::fileUpload($aboutData['avatar'], 'about_treatments', 'avatar');
+                    } else {
+                        $avatarPath = $about->avatar ?? null; // Keep old avatar if no new one is uploaded
+                    }
+
+                    // ✅ Update or Create AboutTreatment
+                    AboutTreatment::updateOrCreate(
+                        ['treatment_id' => $treatment->id], // Find by treatment_id
+                        [
+                            'title' => $aboutData['title'],
+                            'avatar' => $avatarPath,
+                            'short_description' => $aboutData['short_description'],
+                        ]
+                    );
+                }
+            }
+
+
+
+            // ✅ **Update FAQs**
+            if ($request->has('faqs')) {
+                foreach ($request->faqs as $faqData) {
+                    TreatmentFaq::updateOrCreate(
+                        ['treatment_id' => $treatment->id, 'question' => $faqData['question']],
+                        ['answer' => $faqData['answer']]
+                    );
+                }
+            }
+
+            // ✅ **Update Medicines**
+            if ($request->has('medicines')) {
+                $treatment->medicines()->sync($request->medicines);
+            }
+
+            // ✅ **Update Assessments**
+            if ($request->has('assessments')) {
+                foreach ($request->assessments as $assessmentData) {
+                    Assessment::updateOrCreate(
+                        ['treatment_id' => $treatment->id, 'question' => $assessmentData['question']],
+                        [
+                            'option1' => $assessmentData['option1'],
+                            'option2' => $assessmentData['option2'],
+                            'option3' => $assessmentData['option3'] ?? null,
+                            'option4' => $assessmentData['option4'] ?? null,
+                            'answer' => $assessmentData['answer'] ?? null,
+                            'note' => $assessmentData['note'] ?? null,
+                        ]
+                    );
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Treatment updated successfully!',
+                'redirect' => route('treatment.list'),
+            ]);
+
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => 'Failed to update Treatment!', 'error' => $exception->getMessage()]);
+        }
+    }
 
 
     /**
