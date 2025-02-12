@@ -254,29 +254,10 @@ class TreatMentController extends Controller
             $treatment->name = $request->input('name');
             $treatment->save();
 
-            // ✅ **Update Categories**
-            if ($request->has('categories')) {
-                foreach ($request->categories as $categoryData) {
-                    if (!empty($categoryData['id'])) {
-                        $category = TreatmentCategory::find($categoryData['id']);
-                    } else {
-                        $category = new TreatmentCategory();
-                        $category->treatment_id = $treatment->id;
-                    }
+            //handel update old data and add new category
+            $this->handelUpdateAndAddNewCategory($request, $treatment);
 
-                    if (isset($categoryData['icon']) && $categoryData['icon']) {
-                        //delete old image
-                        if ($category->icon && file_exists(public_path($category->icon))) {
-                            unlink(public_path($category->icon));
-                        }
-                        $category->icon = Helper::fileUpload($categoryData['icon'], 'categories', 'icon');
-                    }
-                    $category->title = $categoryData['title'];
-                    $category->save();
-                }
-            }
-
-            // ✅ Update or Create Treatment Details
+            //   Update or Create Treatment Details
             if ($request->has('details')) {
                 foreach ($request->details as $detailData) {
                     // Check if ID exists to update, otherwise create a new one
@@ -306,7 +287,7 @@ class TreatMentController extends Controller
             }
 
 
-            // ✅ **Update Detail Items**
+            //   **Update Detail Items**
             if ($request->has('detail_items')) {
                 foreach ($request->detail_items as $itemData) {
                     DetailsItems::updateOrCreate(
@@ -317,7 +298,7 @@ class TreatMentController extends Controller
             }
 
 
-            // ✅ Update About Section
+            //   Update About Section
             if ($request->has('about')) {
                 foreach ($request->about as $aboutData) {
                     // Find existing AboutTreatment record (if exists)
@@ -326,14 +307,14 @@ class TreatMentController extends Controller
                     // Handle avatar update and delete old file
                     if (isset($aboutData['avatar']) && $aboutData['avatar']) {
                         if ($about && file_exists(public_path($about->avatar))) {
-                            unlink(public_path($about->avatar)); // ✅ Delete old avatar
+                            unlink(public_path($about->avatar)); //   Delete old avatar
                         }
                         $avatarPath = Helper::fileUpload($aboutData['avatar'], 'about_treatments', 'avatar');
                     } else {
                         $avatarPath = $about->avatar ?? null; // Keep old avatar if no new one is uploaded
                     }
 
-                    // ✅ Update or Create AboutTreatment
+                    //   Update or Create AboutTreatment
                     AboutTreatment::updateOrCreate(
                         ['treatment_id' => $treatment->id], // Find by treatment_id
                         [
@@ -347,7 +328,7 @@ class TreatMentController extends Controller
 
 
 
-            // ✅ **Update FAQs**
+            //   **Update FAQs**
             if ($request->has('faqs')) {
                 foreach ($request->faqs as $faqData) {
                     TreatmentFaq::updateOrCreate(
@@ -357,12 +338,12 @@ class TreatMentController extends Controller
                 }
             }
 
-            // ✅ **Update Medicines**
+            //   **Update Medicines**
             if ($request->has('medicines')) {
                 $treatment->medicines()->sync($request->medicines);
             }
 
-            // ✅ **Update Assessments**
+            //   **Update Assessments**
             if ($request->has('assessments')) {
                 foreach ($request->assessments as $assessmentData) {
                     Assessment::updateOrCreate(
@@ -390,6 +371,60 @@ class TreatMentController extends Controller
         } catch (\Exception $exception) {
             DB::rollBack();
             return response()->json(['success' => false, 'message' => 'Failed to update Treatment!', 'error' => $exception->getMessage()]);
+        }
+    }
+
+
+    /**
+     * Handel update and add new category
+     */
+    private function handelUpdateAndAddNewCategory($request, $treatment): void
+    {
+        //  Update Categories
+        if ($request->has('categories')) {
+
+            $existingCategoryIds = $treatment->categories->pluck('id')->toArray();
+
+            $incomingCategoryIds = collect($request->categories)
+                ->filter(fn($category) => !empty($category['id']))
+                ->pluck('id')
+                ->toArray();
+
+
+            //  Identify and Delete Removed Categories & Their Images
+            $categoriesToDelete = array_diff($existingCategoryIds, $incomingCategoryIds);
+
+            $categories = TreatmentCategory::whereIn('id', $categoriesToDelete)->get();
+
+            foreach ($categories as $category) {
+                //  Delete category image if it exists
+                if ($category->icon && file_exists(public_path($category->icon))) {
+                    unlink(public_path($category->icon));
+                }
+
+                //   Now delete the category
+                $category->delete();
+            }
+
+            foreach ($request->categories as $categoryData) {
+                if (!empty($categoryData['id'])) {
+                    $category = TreatmentCategory::find($categoryData['id']);
+                    dd($category);
+                } else {
+                    $category = new TreatmentCategory();
+                    $category->treatment_id = $treatment->id;
+                }
+
+                if (isset($categoryData['icon']) && $categoryData['icon']) {
+                    //delete old image
+                    if ($category->icon && file_exists(public_path($category->icon))) {
+                        unlink(public_path($category->icon));
+                    }
+                    $category->icon = Helper::fileUpload($categoryData['icon'], 'categories', 'icon');
+                }
+                $category->title = $categoryData['title'];
+                $category->save();
+            }
         }
     }
 

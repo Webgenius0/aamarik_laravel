@@ -62,12 +62,12 @@ class UpdateTreatmentRequest extends FormRequest
             // Validation for assessments
             'assessments' => 'nullable|array',
             'assessments.*.id' => 'nullable|exists:assessments,id',
-            'assessments.*.question' => 'sometimes|required|string|max:500',
-            'assessments.*.option1' => 'sometimes|required|string|max:255',
-            'assessments.*.option2' => 'sometimes|required|string|max:255',
+            'assessments.*.question' => 'nullable|string|max:500',
+            'assessments.*.option1' => 'nullable|string|max:255',
+            'assessments.*.option2' => 'nullable|string|max:255',
             'assessments.*.option3' => 'nullable|string|max:255',
             'assessments.*.option4' => 'nullable|string|max:255',
-            'assessments.*.answer' => 'sometimes|required|string|max:255',
+            'assessments.*.answer' => 'nullable|string|max:255',
             'assessments.*.note' => 'nullable|string|max:1000',
         ];
     }

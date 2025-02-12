@@ -90,11 +90,9 @@
             top: 50%;
         }
 
-        #modal .modal-content {
-            max-height: 70vh;
-
+        #modalContent {
+            max-height: 80vh;
             overflow-y: auto;
-
         }
     </style>
 @endpush
@@ -105,6 +103,8 @@
 
             <!---user information-->
             <div class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
+                <button class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700" onclick="window.location.href='{{ route('customer.index') }}'">Back</button>
+
                 <!-- Avatar and User Information Centered -->
                 <div class="flex flex-col items-center text-center gap-1">
                     <!-- User Avatar -->

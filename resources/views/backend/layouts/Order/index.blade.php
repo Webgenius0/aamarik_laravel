@@ -90,11 +90,9 @@
             top: 50%;
         }
 
-        #modal .modal-content {
-            max-height: 70vh;
-
+        #modalContent {
+            max-height: 80vh;
             overflow-y: auto;
-
         }
     </style>
 @endpush
