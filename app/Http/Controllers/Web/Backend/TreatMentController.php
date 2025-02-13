@@ -15,6 +15,7 @@ use App\Models\TreatmentCategory;
 use App\Models\TreatmentDetails;
 use App\Models\TreatmentFaq;
 use App\Models\TreatmentMedicines;
+use FontLib\Table\Type\loca;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Helper\Helper;
@@ -239,16 +240,17 @@ class TreatMentController extends Controller
             // Find the treatment record
             $treatment = Treatment::findOrFail($id);
 
+            $avatarPath = $treatment->avatar ?? null;
             // Handle avatar update
             if ($request->hasFile('avatar')) {
+
                 //delete old image
                 if($treatment->avatar && file_exists(public_path($treatment->avatar))) {
                     unlink(public_path($treatment->avatar));
                 }
                 $avatarPath = Helper::fileUpload($request->file('avatar'), 'treatments', 'avatar');
-                $treatment->avatar = $avatarPath;
             }
-
+            $treatment->avatar = $avatarPath;
 
             // Update Treatment Data
             $treatment->name = $request->input('name');
@@ -363,13 +365,15 @@ class TreatMentController extends Controller
                     $category->treatment_id = $treatment->id;
                 }
 
+                $avatarPath = $category->icon ?? null;
                 if (isset($categoryData['icon']) && $categoryData['icon']) {
                     //delete old image
                     if ($category->icon && file_exists(public_path($category->icon))) {
                         unlink(public_path($category->icon));
                     }
-                    $category->icon = Helper::fileUpload($categoryData['icon'], 'categories', 'icon');
+                    $avatarPath = Helper::fileUpload($categoryData['icon'], 'categories', 'icon');
                 }
+                $category->icon  = $avatarPath;
                 $category->title = $categoryData['title'];
                 $category->save();
             }
@@ -385,18 +389,21 @@ class TreatMentController extends Controller
             foreach ($request->details as $detailData) {
 
                 $detail = TreatmentDetails::where('treatment_id', $treatment->id)->first();
-                $detail->title = $detailData['title'];
 
                 $imagePath = $detail->avatar ?? null;
+
                 // Handle avatar removal if a new one is uploaded
                 if (isset($detailData['avatar']) && $detailData['avatar']) {
-                    $oldDetail = TreatmentDetails::find($detailData['id']);
-                    if ($oldDetail && file_exists(public_path($oldDetail->avatar))) {
-                        unlink(public_path($oldDetail->avatar));
+                    if ($detail->avatar && file_exists(public_path($detail->avatar))) {
+                        unlink(public_path($detail->avatar));
                     }
                     $imagePath = Helper::fileUpload($detailData['avatar'], 'details', 'detail_avatar');
                 }
-                $detail->save();
+                //update
+                $detail->update([
+                    'title' => $detailData['title'],
+                    'avatar' => $imagePath,
+                ]);
 
             }
         }
@@ -418,7 +425,7 @@ class TreatMentController extends Controller
                 $imagePath = $about->avatar ?? null;
                 // Handle avatar update and delete old file
                 if (isset($aboutData['avatar']) && $aboutData['avatar']) {
-                    if ($about && file_exists(public_path($about->avatar))) {
+                    if ($about->avatar && file_exists(public_path($about->avatar))) {
                         unlink(public_path($about->avatar)); //   Delete old avatar
                     }
                     $imagePath = Helper::fileUpload($aboutData['avatar'], 'about_treatments', 'avatar');
