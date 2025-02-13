@@ -69,19 +69,20 @@
                     </div>
 
                     <div id="array-title-container" class="flex flex-wrap items-center">
-                        @foreach($data->detailItems as $itemIndex => $item )
-                            <div class="flex flex-col md:w-full mr-4" id="aray_title">
-                                <label for="detail_items[{{ $itemIndex }}][title]" class="text-lg font-medium mb-2">Title</label>
-                                <textarea name="detail_items[{{$itemIndex }}][title]" class="form-input w-full" placeholder="Title">{{  $item->title }}</textarea>
+                        @foreach($data->detailItems as $itemIndex => $item)
+                            <div class="flex flex-col md:w-full mr-4 detail-item" data-id="{{ $item->id }}">
+                                <input type="hidden" name="detail_items[{{ $itemIndex }}][id]" value="{{ $item->id }}">
+                                <label class="text-lg font-medium mb-2">Title</label>
+                                <textarea name="detail_items[{{ $itemIndex }}][title]" class="form-input w-full" placeholder="Title">{{ $item->title }}</textarea>
+                                <button type="button" class="mt-2 bg-red-500 text-white px-3 py-1 rounded remove-title-field" data-id="{{ $item->id }}">Remove</button>
                             </div>
                         @endforeach
 
-
                         <div class="flex items-center space-x-4 mt-4">
                             <button type="button" id="add-title-field" class="btn bg-green-500 text-white py-2 px-4 rounded-lg font-semibold">+</button>
-                            <button type="button" id="remove-title-field" class="btn bg-red-500 text-white py-2 px-4 rounded-lg font-semibold hidden">-</button>
                         </div>
                     </div>
+
                 </div>
 
                 <div class="flex items-center justify-center">
@@ -145,6 +146,7 @@
                     <div id="cards-container">
                         @foreach($data->assessments as $assessmentIndex => $assessment)
                             <div class="dynamic-card card m-5 p-5">
+                                <input type="hidden" name="assessments[{{ $assessmentIndex }}][id]" value="{{ $assessment->id }}"> <!-- Empty ID for new items -->
                                 <div class="flex flex-col md:w-full">
                                     <label for="assessments[{{ $assessmentIndex }}][question]" class="text-lg font-medium mb-2">Question</label>
                                     <input name="assessments[{{ $assessmentIndex }}][question]" class="form-input w-full" placeholder="Question" value="{{ old("assessments.$assessmentIndex.question", $assessment->question) }}">
@@ -305,25 +307,42 @@
 
             //JavaScript to Handle Adding/Removing detailItems Dynamically
             $(document).ready(function () {
-                let itemIndex = {{ count($data->detailItems) }}; // Keep track of the latest index
+                let itemIndex = {{ count($data->detailItems) }}; // Start from existing count
+                let removedItems = []; // Store IDs of removed old items
 
-                // Add new Detail Item
+                //    Add New Detail Item
                 $('#add-title-field').click(function () {
                     let newItem = `
-            <div class="flex flex-col md:w-full mr-4 detail-item">
-                <label for="detail_items[${itemIndex}][title]" class="text-lg font-medium mb-2">Title</label>
-                <textarea name="detail_items[${itemIndex}][title]" class="form-input w-full" placeholder="Title"></textarea>
-                <button type="button" class="mt-2 bg-red-500 text-white px-3 py-1 rounded remove-title-field">Remove</button>
-            </div>`;
+                    <div class="flex flex-col md:w-full mr-4 detail-item">
+                        <input type="hidden" name="detail_items[${itemIndex}][id]" value=""> <!-- No ID for new -->
+                        <label for="detail_items[${itemIndex}][title]" class="text-lg font-medium mb-2">Title</label>
+                        <textarea name="detail_items[${itemIndex}][title]" class="form-input w-full" placeholder="Title"></textarea>
+                        <button type="button" class="mt-2 bg-red-500 text-white px-3 py-1 rounded remove-title-field">Remove</button>
+                    </div>`;
 
                     $('#array-title-container').append(newItem);
                     itemIndex++;
                 });
 
-                // Remove Detail Item
+                //    Remove Detail Item (Both Old & New)
                 $(document).on('click', '.remove-title-field', function () {
-                    $(this).closest('.detail-item').remove();
+                    let itemDiv = $(this).closest('.detail-item');
+                    let itemId = itemDiv.find('input[name^="detail_items["][name$="[id]"]').val(); // Get ID
+
+                    if (itemId) {
+                        //    Store ID for removal if it's an old item
+                        removedItems.push(itemId);
+                        $('<input>').attr({
+                            type: 'hidden',
+                            name: 'removed_detail_items[]',
+                            value: itemId
+                        }).appendTo('#array-title-container');
+                    }
+
+                    // Remove the field from UI
+                    itemDiv.remove();
                 });
+
             });
 
 
@@ -361,45 +380,45 @@
             });
 
 
-            //JavaScript to Handle Adding & Removing Assessments Dynamically
             $(document).ready(function () {
                 let assessmentIndex = {{ count($data->assessments) }}; // Start index from existing assessments
 
-                // Add new Assessment
+                //    Add New Assessment
                 $('#add-assessment-btn').click(function () {
                     let newAssessment = `
                     <div class="dynamic-card card m-5 p-5">
+                        <input type="hidden" name="assessments[${assessmentIndex}][id]" value=""> <!-- Empty ID for new items -->
                         <div class="flex flex-col md:w-full">
-                            <label for="assessments[${assessmentIndex}][question]" class="text-lg font-medium mb-2">Question</label>
+                            <label class="text-lg font-medium mb-2">Question</label>
                             <input name="assessments[${assessmentIndex}][question]" class="form-input w-full" placeholder="Question">
                         </div>
 
                         <div class="flex flex-wrap md:flex-nowrap">
                             <div class="flex flex-col md:w-1/2">
-                                <label for="assessments[${assessmentIndex}][option1]" class="text-lg font-medium mb-2">Option 1</label>
+                                <label class="text-lg font-medium mb-2">Option 1</label>
                                 <input name="assessments[${assessmentIndex}][option1]" class="form-input w-full" placeholder="Option 1">
                             </div>
                             <div class="flex flex-col md:w-1/2 ml-4">
-                                <label for="assessments[${assessmentIndex}][option2]" class="text-lg font-medium mb-2">Option 2</label>
+                                <label class="text-lg font-medium mb-2">Option 2</label>
                                 <input name="assessments[${assessmentIndex}][option2]" class="form-input w-full" placeholder="Option 2">
                             </div>
                             <div class="flex flex-col md:w-1/2 ml-4">
-                                <label for="assessments[${assessmentIndex}][option3]" class="text-lg font-medium mb-2">Option 3</label>
+                                <label class="text-lg font-medium mb-2">Option 3</label>
                                 <input name="assessments[${assessmentIndex}][option3]" class="form-input w-full" placeholder="Option 3">
+                            </div>
+                            <div class="flex flex-col md:w-1/2 ml-4">
+                                <label class="text-lg font-medium mb-2">Option 4</label>
+                                <input name="assessments[${assessmentIndex}][option4]" class="form-input w-full" placeholder="Option 4">
                             </div>
                         </div>
 
                         <div class="flex flex-wrap md:flex-nowrap">
                             <div class="flex flex-col md:w-1/2">
-                                <label for="assessments[${assessmentIndex}][option4]" class="text-lg font-medium mb-2">Option 4</label>
-                                <input name="assessments[${assessmentIndex}][option4]" class="form-input w-full" placeholder="Option 4">
-                            </div>
-                            <div class="flex flex-col md:w-1/2 ml-4">
-                                <label for="assessments[${assessmentIndex}][answer]" class="text-lg font-medium mb-2">Answer</label>
+                                <label class="text-lg font-medium mb-2">Answer</label>
                                 <input name="assessments[${assessmentIndex}][answer]" class="form-input w-full" placeholder="Answer">
                             </div>
                             <div class="flex flex-col md:w-1/2 ml-4">
-                                <label for="assessments[${assessmentIndex}][note]" class="text-lg font-medium mb-2">Note</label>
+                                <label class="text-lg font-medium mb-2">Note</label>
                                 <textarea name="assessments[${assessmentIndex}][note]" class="form-input w-full" placeholder="Note"></textarea>
                             </div>
                         </div>
@@ -413,11 +432,13 @@
                     assessmentIndex++;
                 });
 
-                // Remove Assessment
+                //    Remove Assessment
                 $(document).on('click', '.remove-assessment-btn', function () {
                     $(this).closest('.dynamic-card').remove();
                 });
             });
+
+
 
 
 

@@ -257,108 +257,56 @@ class TreatMentController extends Controller
             //handel update old data and add new category
             $this->handelUpdateAndAddNewCategory($request, $treatment);
 
-            //   Update or Create Treatment Details
-            if ($request->has('details')) {
-                foreach ($request->details as $detailData) {
-                    // Check if ID exists to update, otherwise create a new one
-                    $detail = TreatmentDetails::updateOrCreate(
-                        [
-                            'id' => $detailData['id'] ?? null, // Update if ID exists
-                            'treatment_id' => $treatment->id,
-                        ],
-                        [
-                            'title' => $detailData['title'],
-                            'avatar' => isset($detailData['avatar'])
-                                ? Helper::fileUpload($detailData['avatar'], 'details', 'detail_avatar')
-                                : (isset($detailData['id']) ? TreatmentDetails::find($detailData['id'])->avatar ?? null : null),
-                        ]
-                    );
 
-                    // Handle avatar removal if a new one is uploaded
-                    if (isset($detailData['avatar']) && $detailData['avatar']) {
-                        $oldDetail = TreatmentDetails::find($detailData['id']);
-                        if ($oldDetail && file_exists(public_path($oldDetail->avatar))) {
-                            unlink(public_path($oldDetail->avatar));
-                        }
-                        $detail->avatar = Helper::fileUpload($detailData['avatar'], 'details', 'detail_avatar');
-                        $detail->save();
-                    }
-                }
-            }
+            //Update Treatment Details
+            $this->handelUpdateDetails($request, $treatment);
 
 
             //   **Update Detail Items**
             if ($request->has('detail_items')) {
+                //delete all old data
+                DetailsItems::where('treatment_id', $treatment->id)->delete();
+                //new store
                 foreach ($request->detail_items as $itemData) {
-                    DetailsItems::updateOrCreate(
-                        ['treatment_id' => $treatment->id, 'title' => $itemData['title']],
-                        ['title' => $itemData['title']]
-                    );
+                    DetailsItems::create([
+                        'treatment_id' => $treatment->id,
+                        'title' => $itemData['title']
+                    ]);
                 }
             }
-
 
             //   Update About Section
-            if ($request->has('about')) {
-                foreach ($request->about as $aboutData) {
-                    // Find existing AboutTreatment record (if exists)
-                    $about = AboutTreatment::where('treatment_id', $treatment->id)->first();
-
-                    // Handle avatar update and delete old file
-                    if (isset($aboutData['avatar']) && $aboutData['avatar']) {
-                        if ($about && file_exists(public_path($about->avatar))) {
-                            unlink(public_path($about->avatar)); //   Delete old avatar
-                        }
-                        $avatarPath = Helper::fileUpload($aboutData['avatar'], 'about_treatments', 'avatar');
-                    } else {
-                        $avatarPath = $about->avatar ?? null; // Keep old avatar if no new one is uploaded
-                    }
-
-                    //   Update or Create AboutTreatment
-                    AboutTreatment::updateOrCreate(
-                        ['treatment_id' => $treatment->id], // Find by treatment_id
-                        [
-                            'title' => $aboutData['title'],
-                            'avatar' => $avatarPath,
-                            'short_description' => $aboutData['short_description'],
-                        ]
-                    );
-                }
-            }
+           $this->handelUpdateAbout($request, $treatment);
 
 
 
-            //   **Update FAQs**
+            // Update FAQs
             if ($request->has('faqs')) {
+                //delete old faqs
+                TreatmentFaq::where('treatment_id', $treatment->id)->delete();
                 foreach ($request->faqs as $faqData) {
-                    TreatmentFaq::updateOrCreate(
-                        ['treatment_id' => $treatment->id, 'question' => $faqData['question']],
-                        ['answer' => $faqData['answer']]
-                    );
+                    TreatmentFaq::create([
+                        'treatment_id' => $treatment->id,
+                        'question' => $faqData['question'],
+                        'answer' => $faqData['answer']
+                    ]);
                 }
             }
 
-            //   **Update Medicines**
+
+
+
+            //handel assessment add remove
+            $this->handelAssessmentUpdate($request, $treatment);
+
+
+
+
+            // Update Medicines
             if ($request->has('medicines')) {
                 $treatment->medicines()->sync($request->medicines);
             }
 
-            //   **Update Assessments**
-            if ($request->has('assessments')) {
-                foreach ($request->assessments as $assessmentData) {
-                    Assessment::updateOrCreate(
-                        ['treatment_id' => $treatment->id, 'question' => $assessmentData['question']],
-                        [
-                            'option1' => $assessmentData['option1'],
-                            'option2' => $assessmentData['option2'],
-                            'option3' => $assessmentData['option3'] ?? null,
-                            'option4' => $assessmentData['option4'] ?? null,
-                            'answer' => $assessmentData['answer'] ?? null,
-                            'note' => $assessmentData['note'] ?? null,
-                        ]
-                    );
-                }
-            }
 
             DB::commit();
 
@@ -396,6 +344,7 @@ class TreatMentController extends Controller
 
             $categories = TreatmentCategory::whereIn('id', $categoriesToDelete)->get();
 
+            //delete old imagea and data
             foreach ($categories as $category) {
                 //  Delete category image if it exists
                 if ($category->icon && file_exists(public_path($category->icon))) {
@@ -409,7 +358,6 @@ class TreatMentController extends Controller
             foreach ($request->categories as $categoryData) {
                 if (!empty($categoryData['id'])) {
                     $category = TreatmentCategory::find($categoryData['id']);
-                    dd($category);
                 } else {
                     $category = new TreatmentCategory();
                     $category->treatment_id = $treatment->id;
@@ -424,6 +372,119 @@ class TreatMentController extends Controller
                 }
                 $category->title = $categoryData['title'];
                 $category->save();
+            }
+        }
+    }
+
+    /**
+     * handel Update Details
+     */
+    private function handelUpdateDetails($request, $treatment): void
+    {
+        if ($request->has('details')) {
+            foreach ($request->details as $detailData) {
+
+                $detail = TreatmentDetails::where('treatment_id', $treatment->id)->first();
+                $detail->title = $detailData['title'];
+
+                $imagePath = $detail->avatar ?? null;
+                // Handle avatar removal if a new one is uploaded
+                if (isset($detailData['avatar']) && $detailData['avatar']) {
+                    $oldDetail = TreatmentDetails::find($detailData['id']);
+                    if ($oldDetail && file_exists(public_path($oldDetail->avatar))) {
+                        unlink(public_path($oldDetail->avatar));
+                    }
+                    $imagePath = Helper::fileUpload($detailData['avatar'], 'details', 'detail_avatar');
+                }
+                $detail->save();
+
+            }
+        }
+    }
+
+    /**
+     * Handel update about section
+     */
+    private function handelUpdateAbout($request, $treatment): void
+    {
+        if ($request->has('about')) {
+            foreach ($request->about as $aboutData) {
+                // Find existing AboutTreatment record (if exists)
+                $about = AboutTreatment::where('treatment_id', $treatment->id)->first();
+
+                $about->title = $aboutData['title'];
+                $about->short_description = $aboutData['short_description'];
+
+                $imagePath = $about->avatar ?? null;
+                // Handle avatar update and delete old file
+                if (isset($aboutData['avatar']) && $aboutData['avatar']) {
+                    if ($about && file_exists(public_path($about->avatar))) {
+                        unlink(public_path($about->avatar)); //   Delete old avatar
+                    }
+                    $imagePath = Helper::fileUpload($aboutData['avatar'], 'about_treatments', 'avatar');
+                }
+                $about->avatar = $imagePath;
+
+                $about->save();
+            }
+        }
+    }
+
+    /**
+     * handel Assessment Update
+     */
+    private function handelAssessmentUpdate($request, $treatment): void
+    {
+        if ($request->has('assessments')) {
+            //  Fetch existing assessment IDs from the database
+            $existingAssessmentIds = $treatment->assessments->pluck('id')->toArray();
+
+
+            // Extract IDs from the request (Only existing ones)
+            $incomingAssessmentIds = collect($request->assessments)
+                ->filter(fn($assessment) => !empty($assessment['id'])) // Only take non-null IDs
+                ->pluck('id')
+                ->toArray();
+
+            //  Identify assessments to delete
+            $assessmentsToDelete = array_diff($existingAssessmentIds, $incomingAssessmentIds);
+
+            //find assessments and find assessment results delete
+            foreach ($assessmentsToDelete as $assessmentId) {
+                $assessment = Assessment::with('assessmentResults')->find($assessmentId);
+
+                if ($assessment) {
+                    //Delete related assessment results first
+                    $assessment->assessmentResults->delete();
+
+                    // Now delete the assessment
+                    $assessment->delete();
+                }
+
+            }
+
+
+            //  Process New and Existing Assessments
+            foreach ($request->assessments as $assessmentData) {
+                if (!empty($assessmentData['id'])) {
+                    // Update existing assessment
+                    $assessment = Assessment::find($assessmentData['id']);
+                } else {
+                    // Create new assessment
+                    $assessment = new Assessment();
+                    $assessment->treatment_id = $treatment->id;
+                }
+
+                //Assign values
+                $assessment->question = $assessmentData['question'];
+                $assessment->option1 = $assessmentData['option1'] ?? null;
+                $assessment->option2 = $assessmentData['option2'] ?? null;
+                $assessment->option3 = $assessmentData['option3'] ?? null;
+                $assessment->option4 = $assessmentData['option4'] ?? null;
+                $assessment->answer = $assessmentData['answer'] ?? null;
+                $assessment->note = $assessmentData['note'] ?? null;
+
+                $assessment->save(); //      Save to database
             }
         }
     }
