@@ -184,22 +184,12 @@
     {{-- modal start --}}
     <div id="modalOverlay" style="display:none;">
         <div id="modal" class="rounded-2xl max-w-2xl">
-            <div class="flex py-2 w-full justify-between border-b">
 
-                <button id="close"
-                        class="m-4 absolute top-0 right-1 hover:bg-gray-200 rounded-full p-1 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-black"
-                        type="button">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
             <div class="px-8 py-4">
                 <form id="createUpdateForm" class="max-w-6xl w-full mx-auto space-y-4"
                       enctype="multipart/form-data" >
 
-                    <h1 class="flex align-left h1">Add Medicine</h1>
+                    <h1 class="flex align-left h1">Add/Edit Medicine</h1>
                     <input type="hidden" name="id" id="medicine_id"  value="">
 
                     {{-- favicon --}}
@@ -233,7 +223,7 @@
                     <div class="flex flex-col md:flex-row items-center md:space-x-4">
                         <div class="flex flex-col md:w-1/2">
                             <label for="email" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Title</label>
-                            <input name="title" type="text" class="form-input w-full" id="title" placeholder="example@gmail.com" value="{{ old('title') }}">
+                            <input name="title" type="text" class="form-input w-full" id="title" placeholder="Enter medicine title (e.g., Paracetamol)" value="{{ old('title') }}">
                             @error('title')
                             <span class="text-red-500 block mt-1 text-sm">
                             <strong>{{ $message }}</strong>
@@ -243,7 +233,7 @@
 
                         <div class="flex flex-col md:w-1/2">
                             <label for="department" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Brand</label>
-                            <input name="brand" type="text" class="form-input w-full" id="brand" placeholder="Brand-name.." value="{{ old('brand') }}">
+                            <input name="brand" type="text" class="form-input w-full" id="brand" placeholder="Enter brand name (e.g., Pfizer)" value="{{ old('brand') }}">
 
                             @error('brand')
                             <span class="text-red-500 block mt-1 text-sm">
@@ -256,7 +246,7 @@
                     <div class="flex flex-col md:flex-row items-center md:space-x-4">
                         <div class="flex flex-col md:w-1/2">
                             <label for="email" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Generic Name</label>
-                            <input name="generic_name" type="text" class="form-input w-full" id="generic_name" placeholder="generic name.." value="{{ old('generic_name') }}">
+                            <input name="generic_name" type="text" class="form-input w-full" id="generic_name" placeholder="Enter generic name (e.g., Acetaminophen)" value="{{ old('generic_name') }}">
                             @error('generic_name')
                             <span class="text-red-500 block mt-1 text-sm">
                             <strong>{{ $message }}</strong>
@@ -266,7 +256,7 @@
 
                         <div class="flex flex-col md:w-1/2">
                             <label for="description" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Description</label>
-                            <textarea name="description" class="form-input w-full" id="description" placeholder="generic name.." value="{{ old('description') }}"></textarea>
+                            <textarea name="description" class="form-input w-full" id="description" placeholder="Enter a brief description of the medicine" value="{{ old('description') }}"></textarea>
 
                             @error('description')
                             <span class="text-red-500 block mt-1 text-sm">
@@ -282,7 +272,7 @@
                         <div class="flex flex-col md:w-1/2">
                             <label class="text-lg font-medium mb-2 md:mb-0 flex align-left">Form</label>
                             <select name="form" id="form" class="form-input w-full">
-                                <option value="" disabled selected>Choose a form...</option>
+                                <option value="" disabled selected>Select the form of medicine</option>
                                 <option value="tablet" {{ old('form') == 'tablet' ? 'selected' : '' }}>Tablet</option>
                                 <option value="liquid" {{ old('form') == 'liquid' ? 'selected' : '' }}>Liquid</option>
                                 <option value="capsule" {{ old('form') == 'capsule' ? 'selected' : '' }}>Capsule</option>
@@ -300,7 +290,7 @@
 
                         <div class="flex flex-col md:w-1/2">
                             <label for="description" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Dosage</label>
-                            <input name="dosage" type="text" class="form-input w-full" id="dosage" placeholder="dosage.." value="{{ old('dosage') }}" >
+                            <input name="dosage" type="text" class="form-input w-full" id="dosage" placeholder="Enter dosage" value="{{ old('dosage') }}" >
 
                             @error('description')
                             <span class="text-red-500 block mt-1 text-sm">
@@ -317,7 +307,7 @@
                     <div class="flex flex-col md:flex-row items-center md:space-x-4">
                         <div class="flex flex-col md:w-1/2">
                             <label for="unit" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Unit</label>
-                            <input name="unit" type="text" class="form-input w-full" id="unit" placeholder="Unit...." value="{{old('unit')}}">
+                            <input name="unit" type="text" class="form-input w-full" id="unit" placeholder="Enter unit (e.g., mg, ml, etc.)" value="{{old('unit')}}">
                             @error('unit')
                             <span class="text-red-500 block mt-1 text-sm">
                             <strong>{{ $message }}</strong>
@@ -330,7 +320,7 @@
 
                         <div class="flex flex-col md:w-1/2">
                             <label for="description" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Price</label>
-                            <input name="price" type="text" class="form-input w-full" id="price" placeholder="Price....." value="{{old('price')}}" accept="">
+                            <input name="price" type="text" class="form-input w-full" id="price" placeholder="Enter price (e.g., 10.99)" value="{{old('price')}}" accept="">
 
                             @error('price')
                             <span class="text-red-500 block mt-1 text-sm">
@@ -345,7 +335,7 @@
                     <div class="flex flex-col md:flex-row items-center md:space-x-4">
                         <div class="flex flex-col md:w-1/2">
                             <label for="unit" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Quantity</label>
-                            <input name="quantity" type="text" class="form-input w-full" id="quantity" placeholder="Unit...." value="{{old('quantity')}}">
+                            <input name="quantity" type="text" class="form-input w-full" id="quantity" placeholder="Enter package details (e.g., 1 strip = 20 tablets)" value="{{old('quantity')}}">
                             @error('quantity')
                             <span class="text-red-500 block mt-1 text-sm">
                             <strong>{{ $message }}</strong>
@@ -356,7 +346,7 @@
 
                         <div class="flex flex-col md:w-1/2">
                             <label for="description" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Stock Quantity</label>
-                            <input name="stock_quantity" type="text" class="form-input w-full" id="stock_quantity" placeholder="stock quantity....." value="{{old('stock_quantity')}}" accept="">
+                            <input name="stock_quantity" type="text" class="form-input w-full" id="stock_quantity" placeholder="Enter available stock (e.g., 50 strips in stock)" value="{{old('stock_quantity')}}" accept="">
 
                             @error('stock_quantity')
                             <span class="text-red-500 block mt-1 text-sm">
@@ -375,8 +365,8 @@
                             <div id="inputContainer" class="w-full">
                                 <!-- Initial Input Field -->
                                 <div class="flex items-center mb-2">
-                                    <input type="text" name="feature[]" class="form-input w-full" id="feature" placeholder="Add feature">
-                                    <button type="button" class="ml-2 text-xl font-semibold removeBtn hidden">-</button>
+                                    <input type="text" name="feature[]" class="form-input w-full" id="feature" placeholder="Enter key feature (e.g., Fast pain relief)">
+                                    <button type="button"  onclick="removeFeatureField(this)" class="ml-2 text-xl font-semibold removeBtn hidden">-</button>
                                 </div>
                             </div>
                             <!-- Plus button on the same row, aligned to the right -->
@@ -390,13 +380,14 @@
                     </span>
                         @enderror
                     </div>
-                    <div class="flex justify-center mt-4">
+                    <div class="flex justify-end mt-4 space-x-2">
+                        <button id="close" type="button"
+                                class="bg-red-600 text-white py-2 px-4 rounded-lg font-semibold flex items-center">Close</button>
 
                         <button type="submit"
-                                class="btn bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold ml-auto flex">Save</button>
-
-
+                                class="bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold flex items-center">Save</button>
                     </div>
+
                 </form>
             </div>
         </div>
@@ -610,16 +601,30 @@
                             $('#avatar').val(detail.avatar);
                         }
 
+                        // if (resp.features && resp.features.length > 0) {
+                        //     const featureInputContainer = $('#inputContainer');
+                        //     featureInputContainer.empty(); // Clear existing features
+                        //     resp.features.forEach(function(feature, index) {
+                        //         featureInputContainer.append(`
+                        //         <div class="flex items-center mb-2">
+                        //             <input type="text" name="feature[]" class="form-input w-full" value="${feature}" placeholder="Add feature">
+                        //             <button type="button" class="ml-2 text-xl font-semibold removeBtn">-</button>
+                        //         </div>
+                        //        `);
+                        //     });
+                        // }
+
+                        $('#inputContainer').html(''); // Clear previous feature inputs
+
                         if (resp.features && resp.features.length > 0) {
-                            const featureInputContainer = $('#inputContainer');
-                            featureInputContainer.empty(); // Clear existing features
                             resp.features.forEach(function(feature, index) {
-                                featureInputContainer.append(`
-                            <div class="flex items-center mb-2">
+                                let featureField = `
+                            <div class="flex items-center mb-2 feature-item">
                                 <input type="text" name="feature[]" class="form-input w-full" value="${feature}" placeholder="Add feature">
-                                <button type="button" class="ml-2 text-xl font-semibold removeBtn">-</button>
+                                <button type="button" class="ml-2 text-xl font-semibold removeFeatureBtn" onclick="removeFeatureField(this)">-</button>
                             </div>
-                        `);
+                        `;
+                                $('#inputContainer').append(featureField);
                             });
                         }
 
@@ -642,12 +647,12 @@
 
                                 // Add a dropify input for the existing image preview
                                 featureAvatarContainer.append(`
-            <div class="image-item d-flex flex-shrink-0 w-1/2 mb-4  ">
-                <!-- Add a dropify input field for replacing the image -->
-                <input type="file" name="avatar[]" class="dropify" data-default-file="${imageUrl}" data-height="300" />
+                                    <div class="image-item d-flex flex-shrink-0 w-1/2 mb-4  ">
+                                        <!-- Add a dropify input field for replacing the image -->
+                                        <input type="file" name="avatar[]" class="dropify" data-default-file="${imageUrl}" data-height="300" />
 
-            </div>
-        `);
+                                    </div>
+                                `);
                             });
 
                             // Close the image container
@@ -708,6 +713,10 @@
             // Append the new input container to the main container
             container.appendChild(newInputContainer);
         });
+
+        function removeFeatureField(element) {
+            $(element).closest('.feature-item').remove();
+        }
 
         // Show/hide remove button dynamically based on the presence of input fields
         document.getElementById('inputContainer').addEventListener('click', function(event) {
