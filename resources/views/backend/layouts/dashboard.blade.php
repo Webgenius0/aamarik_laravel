@@ -91,6 +91,28 @@
                         data <i class="uil uil-arrow-right "></i></a>
                 </div>
             </div><!--end-->
+
+
+            <div class="card">
+                <div class="p-5 flex items-center justify-between">
+                    <span>
+                        <span class="text-slate-400 font-semibold block">Medicines Expiring in 5 Days or Less</span>
+                        <span class="text-xl font-semibold"><span></span>{{ $expire_date_medicines ?? '0'  }}</span>
+                    </span>
+
+                    <span
+                        class="flex justify-center items-center h-14 w-14 bg-blue-600/5 shadow shadow-blue-600/5 text-blue-600">
+                        <i class="uil uil-exclamation-triangle text-xl text-red-500"></i>
+
+                    </span>
+                </div>
+
+                <div class="px-5 py-4 bg-slate-50">
+                    <a href="{{ route('medicine.index')  }}"
+                       class="relative inline-block font-semibold tracking-wide align-middle text-base text-center border-none after:content-[''] after:absolute after:h-px after:w-0 hover:after:w-full after:end-0 hover:after:end-auto after:bottom-0 after:start-0 after:transition-all after:duration-500 text-blue-600 hover:text-blue-600 after:bg-blue-600">View
+                        data <i class="uil uil-arrow-right "></i></a>
+                </div>
+            </div><!--end-->
         </div>
 
         <!--Order progress-->

@@ -14,7 +14,7 @@ class Medicine extends Model
         'brand',
         'generic_name',
         'description',
-        'status'
+        'status',
     ];
 
     protected $casts = [

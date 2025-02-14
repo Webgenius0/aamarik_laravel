@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Medicine;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use App\Models\MedicineFeature;
 use Illuminate\Support\Facades\DB;
@@ -40,6 +41,20 @@ class MedicineController extends Controller
                 ->addColumn('stock_quantity', function ($data) {
                     return Str::limit($data->details->stock_quantity?? 0);
                 })
+                ->addColumn('expiry_date', function ($data) {
+                    if ($data->details->expiry_date) {
+                        // Convert expiry_date to Carbon instance
+                        $expiryDate = Carbon::parse($data->details->expiry_date);
+
+                        // Check if the expiry date is close
+                        $expiryDateClass = (now() == $expiryDate || now() > $expiryDate->subDay(5)) ? 'bg-red-500 text-white' : 'bg-white';
+
+                        // Return the formatted expiry date
+                        return "<span class=\"$expiryDateClass\">" . $data->details->expiry_date . "</span>";
+                    } else {
+                        return "<span class=\"\">N/A</span>";
+                    }
+                })
                 ->addColumn('status', function ($data) {
                     return '<input type="checkbox" class="form-switch" onclick="ShowStatusChangeAlert(' . $data->id . ')" ' . ($data->status == "active" ? 'checked' : '') . '>';
                 })
@@ -55,7 +70,7 @@ class MedicineController extends Controller
                         </a>
                     </div>';
                 })
-                ->rawColumns(['title','brand','quantity','stock_quantity','status', 'action','avatar'])
+                ->rawColumns(['title','brand','quantity','expiry_date','stock_quantity','status', 'action','avatar'])
                 ->make(true);
         }
         return view('backend.layouts.medicine.create-medicine');
@@ -73,9 +88,11 @@ class MedicineController extends Controller
             'form' => 'nullable|in:tablet,liquid,capsule,inhaler,syrup,ointment',
             'dosage' => 'nullable|string',
             'unit' => 'nullable|string|max:50',
+            'buying_price' => 'nullable|numeric',
             'price' => 'nullable|numeric',
             'quantity' => 'nullable|integer',
             'stock_quantity' => 'nullable|integer',
+            'expiry_date' => 'nullable|date',
             'feature' => 'nullable|array',
             'feature.*' => 'nullable|string',
         ]);
@@ -116,6 +133,8 @@ class MedicineController extends Controller
                 'dosage' => $request->input('dosage'),
                 'unit' => $request->input('unit'),
                 'price' => $request->input('price'),
+                'buying_price' => $request->input('buying_price'),
+                'expiry_date' => $request->input('expiry_date'),
                 'quantity' => $request->input('quantity'),
                 'stock_quantity' => $request->input('stock_quantity'),
             ]);
@@ -135,7 +154,6 @@ class MedicineController extends Controller
             return response()->json(['success' => true, 'message' => 'Medicine created successfully!']);
         } catch (Exception $e) {
             DB::rollBack();
-            dd($e->getMessage());
             return response()->json(['success' => false, 'message' => 'Medicine creation failed!']);
         }
     }
@@ -155,7 +173,7 @@ class MedicineController extends Controller
 
         return response()->json(['success' => false, 'message' => 'Medicine not found']);
     }
-    //Updat Medicine
+    //Update Medicine
 
     public function update(Request $request, $id)
     {
@@ -170,6 +188,8 @@ class MedicineController extends Controller
             'dosage' => 'nullable|string|max:255',
             'unit' => 'nullable|string|max:50',
             'price' => 'nullable|numeric',
+            'buying_price' => 'nullable|numeric',
+            'expiry_date' => 'nullable|date',
             'quantity' => 'nullable|integer',
             'stock_quantity' => 'nullable|integer',
             'avatar' => 'nullable|array',
@@ -230,6 +250,8 @@ class MedicineController extends Controller
                     'dosage' => $request->input('dosage'),
                     'unit' => $request->input('unit'),
                     'price' => $request->input('price'),
+                    'buying_price' => $request->input('buying_price') ?? $medicineDetail->buying_price,
+                    'expiry_date' => $request->input('expiry_date') ?? $medicineDetail->expiry_date,
                     'quantity' => $request->input('quantity'),
                     'stock_quantity' => $request->input('stock_quantity'),
                 ]);
@@ -240,6 +262,8 @@ class MedicineController extends Controller
                     'dosage' => $request->input('dosage'),
                     'unit' => $request->input('unit'),
                     'price' => $request->input('price'),
+                    'buying_price' => $request->input('buying_price'),
+                    'expiry_date' => $request->input('expiry_date'),
                     'quantity' => $request->input('quantity'),
                     'stock_quantity' => $request->input('stock_quantity'),
                 ]);
@@ -247,6 +271,7 @@ class MedicineController extends Controller
 
             // Update the medicine features (if provided)
             if ($request->has('feature')) {
+
                 // First, delete the existing features
                 MedicineFeature::where('medicine_id', $medicine->id)->delete();
 

@@ -15,7 +15,9 @@ class MedicineDetails extends Model
         'form',
         'dosage',
         'unit',
+        'buying_price',
         'price',
+        'expiry_date',
         'quantity',
         'stock_quantity'
     ];

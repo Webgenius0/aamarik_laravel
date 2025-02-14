@@ -161,6 +161,10 @@
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Expiry Date
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Status
                                     </th>
                                     <th scope="col"
@@ -323,9 +327,36 @@
                             <input name="price" type="text" class="form-input w-full" id="price" placeholder="Enter price (e.g., 10.99)" value="{{old('price')}}" accept="">
 
                             @error('price')
+                                <span class="text-red-500 block mt-1 text-sm">
+                                  <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="flex flex-col md:flex-row items-center md:space-x-4">
+                        <div class="flex flex-col md:w-1/2">
+                            <label for="buying_price" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Buying Price</label>
+                            <input name="buying_price" type="text" class="form-input w-full" id="buying_price" placeholder="Enter buying price (e.g., 10.99)" value="{{old('buying_price')}}">
+                            @error('buying_price')
+                                <span class="text-red-500 block mt-1 text-sm">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+
+                        <div class="flex flex-col md:w-1/2">
+                            <label for="expiry_date" class="text-lg font-medium mb-2 md:mb-0 flex align-left">Expiry Date</label>
+                            <input name="expiry_date" type="datetime-local" class="form-input w-full" id="expiry_date" value="{{old('expiry_date')}}" >
+
+                            @error('expiry_date')
                             <span class="text-red-500 block mt-1 text-sm">
-                            <strong>{{ $message }}</strong>
-                        </span>
+                                  <strong>{{ $message }}</strong>
+                                </span>
                             @enderror
 
                         </div>
@@ -477,6 +508,10 @@
                         name: 'stock_quantity'
                     },
                     {
+                        data: 'expiry_date',
+                        name: 'expiry_date'
+                    },
+                    {
                         data: 'status',
                         name: 'status'
                     },
@@ -582,6 +617,7 @@
                         // Ensure the avatar field is set properly
                         if (resp.data.details) {
                             let detail = resp.data.details;  // Single related detail object
+                            let formattedDate = new Date(detail.expiry_date).toISOString().slice(0, 16); // This formats it to "YYYY-MM-DDTHH:MM"
                             $('#quantity').val(detail.quantity);
                             $('#stock_quantity').val(detail.stock_quantity);
                             $('#form').val(detail.form);
@@ -589,7 +625,8 @@
                             $('#generic_name').val(resp.data.generic_name);
                             $('#dosage').val(detail.dosage);
                             $('#unit').val(detail.unit);
-
+                            $('#buying_price').val(detail.buying_price);
+                            $('#expiry_date').val(formattedDate);
                         } else {
                             // If no details, set defaults
                             $('#quantity').val(0);
