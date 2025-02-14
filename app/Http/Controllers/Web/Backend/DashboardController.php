@@ -91,6 +91,21 @@ public function index(Request $request)
         $q->whereBetween('expiry_date', [Carbon::now()->subDays(5), Carbon::now()]);
     })->count();
 
+    $today = carbon::now();
+    $oneMonthAgo = Carbon::now()->subMonth()->startOfMonth();
+
+    $orders = Order::with('orderItems')->whereBetween('created_at', [$oneMonthAgo, $today])->query(function ($query) {
+        return $totalSaleAmount  = $query->sum('total_price');
+        if ($query->orderItems){
+            $buying_amount = '',
+            $selling_amount = '',
+            foreach ($query->orderItems as $item){
+                
+            }
+        }
+    })->get();
+    dd($orders);
+
 
     return view('backend.layouts.dashboard', [
         'orders_by_month' => $orders_by_month,
