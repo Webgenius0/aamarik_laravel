@@ -181,7 +181,7 @@ class OrderManagement extends Controller
            //create payment intent
             $this->createPaymentIntent($validatedData,$order);
             //notify to user
-//            $user->notify(new OrderNotificationToUser($order));
+            $user->notify(new OrderNotificationToUser($order));
 
             // Commit transaction
             DB::commit();

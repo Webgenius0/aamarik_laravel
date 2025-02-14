@@ -120,7 +120,7 @@ class ProfileController extends Controller
             return [
                 'id' => $notification->id,
                 'title'   => 'Order #' . $notification->data['order_uuid'] . ' Placed',
-                'message' => 'Your order #' . $notification->data['order_uuid'] . ' is being processed. Total: $' . $notification->data['order_total'] . '. Thank you!',
+                'message' => 'Your order #' . $notification->data['order_uuid'] . ' is being processed. We’ll notify you when your order is shipped.',
                 'created_at' => $notification->created_at->toDateTimeString()
             ];
         });

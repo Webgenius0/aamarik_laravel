@@ -38,20 +38,15 @@ class OrderNotificationToUser extends Notification
     /**
      * Get the mail representation of the notification.
      */
-//    public function toMail(object $notifiable): MailMessage
-//    {
-////        return (new MailMessage)
-////            ->subject('Order Confirmation')
-////            ->markdown('backend.layouts.Email.order_notification_to_user', [
-////                'order' =>$this->order,
-////                'notifiable' => $notifiable,
-////            ]);
-//        return $this->view('backend.layouts.Email.order_notification_to_user')
-//            ->with([
-//                'notifiable' => $this->notifiable,
-//                'order'      => $this->order,
-//            ]);
-//    }
+    public function toMail(object $notifiable): MailMessage
+    {
+        return (new MailMessage)
+            ->subject('Order Confirmation')
+            ->markdown('backend.layouts.Email.order_notification_to_user', [
+                'order' => $this->order,
+                'notifiable' => $notifiable,
+            ]);
+    }
 
     /**
      * Get the array representation of the notification.
@@ -62,10 +57,10 @@ class OrderNotificationToUser extends Notification
     {
         return [
             'order_uuid' => $this->order->uuid, // Public UUID for order reference
-            'order_total' => number_format($this->order->total_price, 2), // Total price of the order
             'user_name' => $notifiable->name, // User's name
             'message' => "Thank you for your order! Your order #{$this->order->uuid} has been placed and is currently being processed.",
             'created_at' => now()->toDateTimeString(), // Timestamp of the notification
         ];
+
     }
 }

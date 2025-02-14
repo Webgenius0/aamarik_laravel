@@ -1,79 +1,83 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
             margin: 0;
-            padding: 0;
+            padding: 20px;
+            background-color: #f8f8f8;
+            color: #333;
         }
-        table {
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #27ae60;
+            text-align: center;
+        }
+        .details-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 14px;
+            margin-top: 15px;
         }
-        th, td {
+        .details-table th, .details-table td {
             padding: 10px;
             border: 1px solid #ddd;
             text-align: left;
         }
-        th {
+        .details-table th {
             background-color: #f4f4f4;
         }
-        .responsive-table {
-            width: 100%;
-            max-width: 100%;
-            overflow-x: auto;
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
         }
         @media only screen and (max-width: 600px) {
-            table, th, td {
-                font-size: 12px;
+            .container {
+                padding: 15px;
             }
-            .responsive-table {
-                overflow-x: scroll;
+            .details-table th, .details-table td {
+                font-size: 14px;
             }
         }
     </style>
 </head>
 <body>
-<h1>📦 Order Confirmation</h1>
-<p>Hello {{ $notifiable->name }},</p>
-<p>Thank you for your order! We are excited to let you know that your order has been successfully placed and is being processed.</p>
+<div class="container">
+    <h1>📦 Order Confirmation</h1>
+    <p>Hi {{ $notifiable->name }},</p>
+    <p>Thank you for your order! Below are your order details:</p>
 
-<h2>Order Details</h2>
-<div class="responsive-table">
-    <table>
+    <h2>Order Details</h2>
+    <table class="details-table">
         <tr>
-            <td><strong>Order ID</strong></td>
-            <td>{{ $order->uuid }}</td>
+            <th>Order ID</th>
+            <td>{{ '#'. $order->uuid }}</td>
         </tr>
         <tr>
-            <td><strong>Sub Total</strong></td>
-            <td>${{ number_format($order->sub_total, 2) }}</td>
-        </tr>
-        @if ($order->discount && $order->coupon)
-            <tr>
-                <td><strong>Discount Applied</strong></td>
-                <td>${{ number_format($order->discount, 2) }} (Coupon: {{ $order->coupon->code }})</td>
-            </tr>
-        @endif
-        <tr>
-            <td><strong>Total Amount</strong></td>
-            <td>${{ number_format($order->total_price, 2) }}</td>
+            <th>Order Date</th>
+            <td>{{ $order->order_date }}</td>
         </tr>
         <tr>
-            <td><strong>Status</strong></td>
+            <th>Status</th>
             <td>{{ ucfirst($order->status) }}</td>
         </tr>
-    </table>
-</div>
 
-<h2>Items Ordered</h2>
-<div class="responsive-table">
-    <table>
+    </table>
+
+    <h2>Items Ordered</h2>
+    <table class="details-table">
         <thead>
         <tr>
             <th>Item</th>
@@ -91,31 +95,53 @@
         @endforeach
         </tbody>
     </table>
-</div>
-
-<h2>Delivery Information</h2>
-<div class="responsive-table">
-    <table>
+    <table class="details-table">
         <tr>
-            <td><strong>Name</strong></td>
+            <th>Subtotal</th>
+            <td>${{ number_format($order->sub_total, 2) }}</td>
+        </tr>
+        <tr>
+            <th>Discount</th>
+            <td>${{ number_format($order->discount, 2) }}</td>
+        </tr>
+        <tr>
+            <th>Shipping Charge</th>
+            <td>${{ number_format($order->shipping_charge, 2) }}</td>
+        </tr>
+        <tr>
+            <th>Tax</th>
+            <td>${{ number_format($order->tax, 2) }}</td>
+        </tr>
+        <tr>
+            <th>Total Amount</th>
+            <td>${{ number_format($order->total_price, 2) }}</td>
+        </tr>
+    </table>
+
+    <h2>Billing & Shipping Details</h2>
+    <table class="details-table">
+        <tr>
+            <th>Name</th>
             <td>{{ $order->billingAddress->name }}</td>
         </tr>
         <tr>
-            <td><strong>Address</strong></td>
-            <td>{{ $order->billingAddress->address }}, {{ $order->billingAddress->city }}</td>
+            <th>Email</th>
+            <td>{{ $order->billingAddress->email }}</td>
         </tr>
         <tr>
-            <td><strong>Contact</strong></td>
+            <th>Address</th>
+            <td>{{ $order->billingAddress->address }}, {{ $order->billingAddress->city }}, {{ $order->billingAddress->postcode }}</td>
+        </tr>
+        <tr>
+            <th>Contact</th>
             <td>{{ $order->billingAddress->contact }}</td>
         </tr>
     </table>
+
+    <p>Your order is being processed and will be shipped soon. </p>
+    <p>If you have any questions, feel free to contact our support team.</p>
+
+    <p class="footer">Thanks for shopping with us!<br><strong>{{ config('app.name') }} Team</strong></p>
 </div>
-
-<p>Your order will be shipped soon. We’ll notify you once it’s on its way!</p>
-<p>If you have any questions or need assistance, feel free to reply to this email or contact our support team.</p>
-<p>Thank you for shopping with us!</p>
-
-<p>Thanks,</p>
-<p><strong>{{ config('app.name') }} Team</strong></p>
 </body>
 </html>
