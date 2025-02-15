@@ -153,10 +153,10 @@ class OrderManagement extends Controller
                     throw new \Exception("Medicine " . $medicineRecord->title . " not found.");
                 }
 
-                $totalPrice += $medicine['total_price'];
+                $totalPrice +=  $medicine['quantity'] * $details->price;
             }
 
-            //sub total price
+            //sub-total price
             $sub_total  = $totalPrice ;
 
 
@@ -208,15 +208,16 @@ class OrderManagement extends Controller
 
 
         // Ensure discount does not exceed subtotal
-        $discountedAmount = min($discountedAmount, $sub_total); // Prevent negative amounts
-        $discountedSubTotal = $sub_total - $discountedAmount;
+        $discountedAmount = $coupon ? min($discountedAmount, $sub_total) : $sub_total; // Prevent negative amounts
+        $discountedSubTotal = $sub_total - $discountedAmount ; //only discount amount
 
         // Ensure the total is at least Stripe's minimum charge amount
-        $shippingCharge = $discountedSubTotal * 0.02;
+        $shippingCharge = $discountedAmount * 0.02;
         $royalMailTrackedPrice = $validatedData['royal_mail_tracked_price'] ?? 0;
-        $tax = ($discountedSubTotal + $shippingCharge + $royalMailTrackedPrice) * 0.10;
+        $tax = ($discountedAmount + $shippingCharge + $royalMailTrackedPrice) * 0.10;
 
-        $totalPrice = max($discountedSubTotal + $shippingCharge + $tax + $royalMailTrackedPrice, 0.50); // Ensure it's at least $0.50
+        $totalPrice = max($discountedAmount + $shippingCharge + $tax + $royalMailTrackedPrice, 0.50); // Ensure it's at least $0.50
+
         // Create the order
         $order = Order::create([
             'uuid'                     => substr((string) Str::uuid(), 0, 8),
@@ -226,7 +227,7 @@ class OrderManagement extends Controller
             'tracked'                  => $validatedData['royal_mail_tracked_price'] ? 1 : 0,
             'royal_mail_tracked_price' => $validatedData['royal_mail_tracked_price'] ?? 0,
             'sub_total'                => $sub_total, // Subtotal before discount
-            'discount'                 => $discounted ?? 0, // Discount amount
+            'discount'                 => $coupon ? $discountedSubTotal : 0, // Discount amount
             'shipping_charge'          => $shippingCharge, // Shipping charge (2% of discounted subtotal)
             'tax'                      => $tax, // Tax (10% of discounted subtotal + shipping charge + royal mail tracked price)
             'total_price'              => $totalPrice, // Total amount
@@ -234,7 +235,6 @@ class OrderManagement extends Controller
             'status'                   => 'pending',
             'created_at'               => now(),
         ]);
-
 
         //generate qr code
         $fileName = $this->generateOrderQRcode($order);
@@ -366,12 +366,13 @@ class OrderManagement extends Controller
     private function storeOrderItems($validatedData,$order)
     {
         foreach ($validatedData['medicines'] as $medicineData) {
+            $medicine = Medicine::with('details')->find($medicineData['medicine_id']);
             $orderItem = new order_item([
                 'order_id'    => $order->id,
                 'medicine_id' => $medicineData['medicine_id'],
                 'quantity'    => $medicineData['quantity'],
-                'unit_price'  => $medicineData['unit_price'],
-                'total_price' => $medicineData['total_price'],
+                'unit_price'  => $medicine->details ? $medicine->details->price : 0,
+                'total_price' => $medicine->details ? $medicineData['quantity'] * $medicine->details->price  : 0,
             ]);
             $order->orderItems()->save($orderItem);
         }
@@ -459,8 +460,6 @@ class OrderManagement extends Controller
      */
     private function createSubscription($validatedData,$order,$paymentIntent)
     {
-
-
         //get current user
         $user = auth()->user();
 

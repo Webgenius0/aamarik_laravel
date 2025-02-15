@@ -21,6 +21,8 @@ use App\Http\Controllers\Web\Backend\coupon\CouponController;
 use Illuminate\Support\Facades\Mail;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/orders/filter', [DashboardController::class, 'sellingFiltering'])->name('orders.filter');
+
 
 // Edit Profile
 Route::get('profile', [DashboardController::class, 'editProfile'])->name('admin.edit.profile');

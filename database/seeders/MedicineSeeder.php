@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Medicine;
 use App\Models\MedicineDetails;
 use App\Models\MedicineFeature;
+use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -28,9 +29,11 @@ class MedicineSeeder extends Seeder
                     'form' => 'tablet',
                     'dosage' => '500mg',
                     'unit' => 'mg',
+                    'buying_price' => 8.50,
                     'price' => 10.99,
                     'quantity' => 100,
                     'stock_quantity' => 50,
+                    'expiry_date' => Carbon::now()->addDays(30),
                 ],
                 'features' => [
                     'Relieves pain quickly',
@@ -49,9 +52,11 @@ class MedicineSeeder extends Seeder
                     'form' => 'capsule',
                     'dosage' => '250mg',
                     'unit' => 'mg',
+                    'buying_price' => 9.50,
                     'price' => 12.50,
                     'quantity' => 50,
                     'stock_quantity' => 30,
+                    'expiry_date' => Carbon::now()->addDays(1),
                 ],
                 'features' => [
                     'Reduces inflammation',
@@ -70,9 +75,11 @@ class MedicineSeeder extends Seeder
                     'form' => 'tablet',
                     'dosage' => '100mg',
                     'unit' => 'mg',
+                    'buying_price' => 2.50,
                     'price' => 5.99,
                     'quantity' => 200,
                     'stock_quantity' => 150,
+                    'expiry_date' => Carbon::now()->addDays(30),
                 ],
                 'features' => [
                     'Prevents blood clots',
@@ -91,9 +98,11 @@ class MedicineSeeder extends Seeder
                     'form' => 'capsule',
                     'dosage' => '250mg',
                     'unit' => 'mg',
+                    'buying_price' => 11.00,
                     'price' => 15.99,
                     'quantity' => 120,
                     'stock_quantity' => 80,
+                    'expiry_date' => Carbon::now()->addDays(10),
                 ],
                 'features' => [
                     'Prevents blood clots',
@@ -112,9 +121,11 @@ class MedicineSeeder extends Seeder
                     'form' => 'tablet',
                     'dosage' => '500mg',
                     'unit' => 'mg',
+                    'buying_price' => 9.50,
                     'price' => 14.50,
                     'quantity' => 60,
                     'stock_quantity' => 130,
+                    'expiry_date' => Carbon::now()->addDays(30),
                 ],
                 'features' => [
                     'Prevents blood clots',
