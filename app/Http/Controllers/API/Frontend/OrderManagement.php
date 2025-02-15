@@ -432,6 +432,7 @@ class OrderManagement extends Controller
                 'allow_redirects' => 'never',
             ],
         ]);
+        Log::info("PaymentIntent created". $order->uuid);
 
         // Update the order with payment intent details
         $orderData->update([

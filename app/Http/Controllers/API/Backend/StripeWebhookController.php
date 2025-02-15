@@ -27,7 +27,7 @@ class StripeWebhookController extends Controller
         $payload        = $request->getContent();
         $sigHeader      = $request->header('Stripe-Signature');
         $endpointSecret = config('services.stripe.webhook_secret');
-        Log::info('Stripe Webhook Received', ['payload' => $payload]);
+        Log::debug('Webhook received: ' . $payload);
         try {
             $event = Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
             Log::info('Stripe Event Type:', ['type' => $event->type]);
