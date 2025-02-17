@@ -56,6 +56,13 @@
                 </a>
             </li>
 
+            <li class="menu-item">
+                <a class="menu-link {{  Request::routeIs('meetings.index')   ? 'bg-blue-500 text-white' : '' }}" href="{{route('meetings.index')}}">
+                    <span class="menu-icon"><i class="uil uil-video"></i></span>
+                    <span class="menu-text"> Meeting Management </span>
+                </a>
+            </li>
+
             <li class="menu-title">Frontend</li>
 
             <li class="menu-item">

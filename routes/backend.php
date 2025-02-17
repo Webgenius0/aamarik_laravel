@@ -1,16 +1,13 @@
 <?php
 
 //use App\Http\Controllers\API\Frontend\CMSController;
-use App\Models\DuaCategory;
+use App\Http\Controllers\Web\Backend\MeetingManagement\MeetingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Web\Backend\DuaController;
 use App\Http\Controllers\Web\Backend\VerseController;
 use App\Http\Controllers\Web\Backend\SettingController;
 use App\Http\Controllers\Web\Backend\settings\MailSettingsController;
 use App\Http\Controllers\Web\Backend\DashboardController;
-use App\Http\Controllers\Web\Backend\MessagingController;
-use App\Http\Controllers\Web\Backend\NewsLetterController;
 use App\Http\Controllers\Web\Backend\UserUpdateController;
 use App\Http\Controllers\Web\Backend\SocialMediaController;
 use App\Http\Controllers\Web\Backend\CMSController;
@@ -181,11 +178,19 @@ Route::controller(\App\Http\Controllers\Web\Backend\user\CustomerManagementContr
     Route::get('/customer/order-details/{id}', 'orderDetails')->name('customer.order.details');
 });
 
-//! Route for empolyee management
+//! Route for employee management
 Route::controller(\App\Http\Controllers\Web\Backend\user\EmployeeManagementController::class)->group(function () {
     Route::get('/employees', 'index')->name('employees.index');
     Route::get('/employees/add', 'create')->name('employees.add');
     Route::post('/employees/add', 'store')->name('employees.store');
     Route::get('/employees-edit/{id}', 'edit')->name('employees.edit');
     Route::post('/employees-update/{id}', 'update')->name('employees.update');
+});
+
+
+//! Route for meeting management
+Route::controller(MeetingController::class)->group(function () {
+    Route::get('/meetings', 'index')->name('meetings.index');
+    Route::post('/meeting/status/update/{id}', 'updateStatus')->name('meeting.status.update');
+    Route::delete('/meeting/delete/{id}', 'destroy')->name('meeting.delete');
 });

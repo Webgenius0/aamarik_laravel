@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.tailwind.min.css">
     <!-- Dropify CSS for file input styling -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.min.css"/>
     <!-- Tailwind CSS for layout and styling -->
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <style>
@@ -53,7 +53,6 @@
         div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-cancel) {
             background-color: #6e7881 !important;
         }
-
 
 
         #modalOverlay {
@@ -154,12 +153,17 @@
     </main>
 
     <!-- Order Details Modal -->
-    <div id="orderDetailsModal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center transition-opacity duration-300">
-        <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-3xl w-full transform scale-95 transition-transform duration-300 relative" id="modalContent">
+    <div id="orderDetailsModal"
+         class="hidden fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center transition-opacity duration-300">
+        <div
+            class="bg-white p-6 rounded-2xl shadow-2xl max-w-3xl w-full transform scale-95 transition-transform duration-300 relative"
+            id="modalContent">
             <!-- Modal Header -->
             <div class="flex justify-between items-center border-b pb-3">
                 <h2 class="text-2xl font-semibold text-gray-800">Order Details</h2>
-                <button onclick="closeOrderModal()" class="text-gray-600 hover:text-red-500 text-2xl font-bold">&times;</button>
+                <button onclick="closeOrderModal()" class="text-gray-600 hover:text-red-500 text-2xl font-bold">
+                    &times;
+                </button>
             </div>
 
             <!-- Scrollable Content -->
@@ -168,7 +172,8 @@
                 <h4 class="text-lg font-bold text-gray-900">🛒 Order Information</h4>
                 <div class="grid grid-cols-2 gap-4 text-gray-800">
                     <p><strong>Order ID:</strong> <span id="order-id"></span></p>
-                    <p><strong>Status:</strong> <span id="order-status" class="px-3 py-1 rounded-lg bg-gray-200 text-sm"></span></p>
+                    <p><strong>Status:</strong> <span id="order-status"
+                                                      class="px-3 py-1 rounded-lg bg-gray-200 text-sm"></span></p>
                     <p><strong>Order Date:</strong> <span id="order-date"></span></p>
                     <p><strong>Delivery Date:</strong> <span id="delivery-date"></span></p>
                 </div>
@@ -187,35 +192,53 @@
 
                         <!-- Display Address -->
                         <div id="shipping-address-display">
-                            <p><strong>Name:</strong> <span id="billing-name">{{ $order->billing_address->name ?? '' }}</span></p>
-                            <p><strong>Email:</strong> <span id="billing-email">{{ $order->billing_address->email ?? '' }}</span></p>
-                            <p><strong>Address:</strong> <span id="billing-address">{{ $order->billing_address->address ?? '' }}</span></p>
-                            <p><strong>Contact:</strong> <span id="billing-contact">{{ $order->billing_address->contact ?? '' }}</span></p>
-                            <p><strong>City:</strong> <span id="billing-city">{{ $order->billing_address->city ?? '' }}</span></p>
-                            <p><strong>Postcode:</strong> <span id="billing-postcode">{{ $order->billing_address->postcode ?? '' }}</span></p>
-                            <p><strong>Gp Number:</strong> <span id="billing-gpNumber">{{ $order->billing_address->gp_number ?? '' }}</span></p>
-                            <p><strong>Gp :</strong> <span id="billing-gpAddress">{{ $order->billing_address->gp_address ?? '' }}</span></p>
+                            <p><strong>Name:</strong> <span
+                                    id="billing-name">{{ $order->billing_address->name ?? '' }}</span></p>
+                            <p><strong>Email:</strong> <span
+                                    id="billing-email">{{ $order->billing_address->email ?? '' }}</span></p>
+                            <p><strong>Address:</strong> <span
+                                    id="billing-address">{{ $order->billing_address->address ?? '' }}</span></p>
+                            <p><strong>Contact:</strong> <span
+                                    id="billing-contact">{{ $order->billing_address->contact ?? '' }}</span></p>
+                            <p><strong>City:</strong> <span
+                                    id="billing-city">{{ $order->billing_address->city ?? '' }}</span></p>
+                            <p><strong>Postcode:</strong> <span
+                                    id="billing-postcode">{{ $order->billing_address->postcode ?? '' }}</span></p>
+                            <p><strong>Gp Number:</strong> <span
+                                    id="billing-gpNumber">{{ $order->billing_address->gp_number ?? '' }}</span></p>
+                            <p><strong>Gp :</strong> <span
+                                    id="billing-gpAddress">{{ $order->billing_address->gp_address ?? '' }}</span></p>
                         </div>
 
                         <!-- Editable Form (Hidden Initially) -->
                         <form id="edit-shipping-address-form" class="hidden">
-                            <input type="text" id="edit-billing-name" class="w-full p-2 border rounded-lg my-2" placeholder="Name">
-                            <input type="email" id="edit-billing-email" class="w-full p-2 border rounded-lg my-2" placeholder="Email">
-                            <input type="text" id="edit-billing-address" class="w-full p-2 border rounded-lg my-2" placeholder="Address">
-                            <input type="text" id="edit-billing-contact" class="w-full p-2 border rounded-lg my-2" placeholder="Contact">
-                            <input type="text" id="edit-billing-city" class="w-full p-2 border rounded-lg my-2" placeholder="City">
-                            <input type="text" id="edit-billing-postcode" class="w-full p-2 border rounded-lg my-2" placeholder="Postcode">
-                            <input type="text" id="edit-billing-gpNumber" class="w-full p-2 border rounded-lg my-2" placeholder="Gp Number">
-                            <input type="text" id="edit-billing-gpAddress" class="w-full p-2 border rounded-lg my-2" placeholder="Gp Address">
+                            <input type="text" id="edit-billing-name" class="w-full p-2 border rounded-lg my-2"
+                                   placeholder="Name">
+                            <input type="email" id="edit-billing-email" class="w-full p-2 border rounded-lg my-2"
+                                   placeholder="Email">
+                            <input type="text" id="edit-billing-address" class="w-full p-2 border rounded-lg my-2"
+                                   placeholder="Address">
+                            <input type="text" id="edit-billing-contact" class="w-full p-2 border rounded-lg my-2"
+                                   placeholder="Contact">
+                            <input type="text" id="edit-billing-city" class="w-full p-2 border rounded-lg my-2"
+                                   placeholder="City">
+                            <input type="text" id="edit-billing-postcode" class="w-full p-2 border rounded-lg my-2"
+                                   placeholder="Postcode">
+                            <input type="text" id="edit-billing-gpNumber" class="w-full p-2 border rounded-lg my-2"
+                                   placeholder="Gp Number">
+                            <input type="text" id="edit-billing-gpAddress" class="w-full p-2 border rounded-lg my-2"
+                                   placeholder="Gp Address">
 
                             <!-- Save Button -->
-                            <button type="button" id="save-shipping-address" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">
+                            <button type="button" id="save-shipping-address"
+                                    class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">
                                 Save Address
                             </button>
                         </form>
 
                         <!-- Edit Button -->
-                        <button id="edit-shipping-button" class="absolute top-2 right-2 text-blue-600 hover:text-blue-800">
+                        <button id="edit-shipping-button"
+                                class="absolute top-2 right-2 text-blue-600 hover:text-blue-800">
                             ✏️ Edit
                         </button>
                     </div>
@@ -257,39 +280,46 @@
                 <!-- Order Note -->
                 <h4 class="text-lg font-bold text-gray-900 mt-4">📝 Order Note</h4>
                 <textarea id="order-note" class="italic text-gray-600 w-full p-2 border rounded-lg"></textarea>
-                <button id="save-order-note" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">Save Note</button>
+                <button id="save-order-note"
+                        class="mt-2 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">
+                    Save Note
+                </button>
 
                 <!-- Order Prescription Section -->
                 <h4 class="text-lg font-bold text-gray-900 mt-4">📝 Order Prescription</h4>
                 <div class="flex items-center space-x-3">
-                    <button id="toggle-prescription" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">
+                    <button id="toggle-prescription"
+                            class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">
                         See Prescription
                     </button>
-                    <span id="toggle-prescription-icon" class="cursor-pointer text-blue-500 hover:text-blue-700 text-xl">
+                    <span id="toggle-prescription-icon"
+                          class="cursor-pointer text-blue-500 hover:text-blue-700 text-xl">
                         👁️
                     </span>
                 </div>
 
                 <!-- Prescription Image or PDF (Initially Hidden) -->
                 <div id="prescription-container" class="hidden mt-4">
-                    <iframe id="prescription-file" src="" class="rounded-lg shadow-lg max-w-full h-auto" style="width:100%; height:500px; display:none;"></iframe>
-                    <img id="prescription-image" src="" alt="Prescription Image" class="rounded-lg shadow-lg max-w-full h-auto" style="display:none;">
+                    <iframe id="prescription-file" src="" class="rounded-lg shadow-lg max-w-full h-auto"
+                            style="width:100%; height:500px; display:none;"></iframe>
+                    <img id="prescription-image" src="" alt="Prescription Image"
+                         class="rounded-lg shadow-lg max-w-full h-auto" style="display:none;">
                 </div>
             </div>
 
             <!-- Footer Buttons -->
             <div class="mt-5 flex justify-end space-x-3">
-                <a href="#" id="downloadPDF" class="bg-green-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-green-600 transition">
+                <a href="#" id="downloadPDF"
+                   class="bg-green-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-green-600 transition">
                     Download Invoice PDF
                 </a>
-                <button onclick="closeOrderModal()" class="bg-red-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-red-600 transition">
+                <button onclick="closeOrderModal()"
+                        class="bg-red-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-red-600 transition">
                     Close
                 </button>
             </div>
         </div>
     </div>
-
-
 
 @endsection
 
@@ -300,7 +330,7 @@
     {{--Flashar--}}
     <script defer src="https://cdn.jsdelivr.net/npm/@flasher/flasher@1.2.4/dist/flasher.min.js"></script>
     {{-- Ck Editor --}}
-{{--    <script src="{{ asset('Backend/plugins/tinymc/tinymce.min.js') }}"></script>--}}
+    {{--    <script src="{{ asset('Backend/plugins/tinymc/tinymce.min.js') }}"></script>--}}
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -313,8 +343,8 @@
     </script>
 
     <script>
-        console.log('working.')
-        $(document).ready(function() {
+
+        $(document).ready(function () {
 
             $('#data-table').DataTable({
                 order: [],
@@ -375,25 +405,23 @@
         });
 
 
-    function ShowCreateUpdateModal() {
+        function ShowCreateUpdateModal() {
             $('#createUpdateForm')[0].reset();
             $('#medicine_id').val('');
             $('#modalTitle').html('Create New Medicine');
             $('#modalOverlay').show().addClass('modal-open');
         }
 
-        $('#close').click(function() {
+        $('#close').click(function () {
             var modal = $('#modalOverlay');
             modal.removeClass('modal-open');
-            setTimeout(function() {
+            setTimeout(function () {
                 modal.hide();
             }, 200);
         });
 
 
-
-
-        $(document).ready(function() {
+        $(document).ready(function () {
             const flasher = new Flasher({
                 selector: '[data-flasher]',
                 duration: 3000,
@@ -429,7 +457,7 @@
                             status: status,
                             _token: '{{ csrf_token() }}'
                         },
-                        success: function(response) {
+                        success: function (response) {
                             if (response.success) {
                                 flasher.success(response.message);
                                 // Reload DataTable after successful status update
@@ -438,7 +466,7 @@
                                 flasher.error('Error updating the status.');
                             }
                         },
-                        error: function(error) {
+                        error: function (error) {
                             flasher.error('An error occurred. Please try again.');
                         }
                     });
@@ -516,7 +544,6 @@
                         $('#order-items').html(orderItemsHTML);
 
 
-
                         // Show Modal
                         $('#orderDetailsModal').removeClass('hidden');
                         $('#modalContent').removeClass('scale-95').addClass('scale-100');
@@ -532,14 +559,14 @@
 
 
         //see order prescription image ----start
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             // Event listener for button click
-            document.getElementById("toggle-prescription").addEventListener("click", function() {
+            document.getElementById("toggle-prescription").addEventListener("click", function () {
                 document.getElementById("prescription-container").classList.toggle("hidden");
             });
 
             // Event listener for eye icon click
-            document.getElementById("toggle-prescription-icon").addEventListener("click", function() {
+            document.getElementById("toggle-prescription-icon").addEventListener("click", function () {
                 document.getElementById("prescription-container").classList.toggle("hidden");
             });
         });
@@ -581,8 +608,6 @@
         }
 
 
-
-
         // delete Confirm
         function showDeleteConfirm(id) {
             event.preventDefault();
@@ -613,7 +638,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
 
-                success: function(resp) {
+                success: function (resp) {
                     console.log(resp);
                     // Reload DataTable
                     $('#data-table').DataTable().ajax.reload();
@@ -627,7 +652,7 @@
                         flasher.error(resp.message);
                     }
                 }, // success end
-                error: function(error) {
+                error: function (error) {
                     // location.reload();
                 } // Error
             })
@@ -635,7 +660,7 @@
 
 
         //update order note
-        document.getElementById('save-order-note').addEventListener('click', function() {
+        document.getElementById('save-order-note').addEventListener('click', function () {
             var orderId = document.getElementById('order-id').textContent.trim();
             var note = document.getElementById('order-note').value.trim();
 
@@ -654,26 +679,25 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                data: { note: note },
-                success: function(data) {
+                data: {note: note},
+                success: function (data) {
                     if (data.success) {
                         Swal.fire('Updated!', 'Order note has been updated successfully.', 'success');
                     } else {
                         Swal.fire('Error!', 'Failed to update order note.', 'error');
                     }
                 },
-                error: function() {
+                error: function () {
                     Swal.fire('Error!', 'Something went wrong.', 'error');
                 }
             });
         });
 
 
-
         //edit shipping address
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Toggle edit form and populate old data
-            $('#edit-shipping-button').click(function() {
+            $('#edit-shipping-button').click(function () {
                 // Get current values from displayed fields
                 $('#edit-billing-name').val($('#billing-name').text());
                 $('#edit-billing-email').val($('#billing-email').text());
@@ -690,7 +714,7 @@
             });
 
             // Save Updated Shipping Address with AJAX
-            $('#save-shipping-address').click(function() {
+            $('#save-shipping-address').click(function () {
                 var orderId = $('#order-id').text().trim(); // Get Order ID
                 var updatedData = {
                     name: $('#edit-billing-name').val(),
@@ -717,7 +741,7 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     data: updatedData,
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             Swal.fire('Updated!', 'Shipping address has been updated.', 'success');
 
@@ -738,7 +762,7 @@
                             Swal.fire('Error!', 'Failed to update shipping address.', 'error');
                         }
                     },
-                    error: function() {
+                    error: function () {
                         Swal.fire('Error!', 'Something went wrong.', 'error');
                     }
                 });
