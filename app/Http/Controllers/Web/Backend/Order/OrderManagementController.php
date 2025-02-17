@@ -237,7 +237,7 @@ class OrderManagementController extends Controller
             'note' => 'nullable|string|max:1500',
         ]);
 
-        $order = Order::where('uuid', 'a962968a')->first();
+        $order = Order::where('uuid', $id)->first();
 
         if (!$order) {
             return response()->json(['success' => false, 'message' => 'Order not found']);

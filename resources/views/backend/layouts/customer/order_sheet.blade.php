@@ -560,7 +560,7 @@
 
 
                         // Fill Order Note
-                        $('#order-note').text(data.note || 'No notes available');
+                        $('#order-note').text(data.note || '');
 
                         // Populate Order Items Table
                         var orderItemsHTML = '';
