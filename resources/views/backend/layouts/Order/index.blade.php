@@ -117,23 +117,15 @@
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Order Date
+                                        Products
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Delivery Date
+                                        Status Logs
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Pay Amount
-                                    </th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Due Amount
-                                    </th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Status
+                                        Order Total
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -375,24 +367,16 @@
                         name: 'order_code'
                     },
                     {
-                        data: 'order_date',
-                        name: 'order_date'
+                        data: 'products',
+                        name: 'products'
                     },
                     {
-                        data: 'delivery_date',
-                        name: 'delivery_date'
+                        data: 'status_logs',
+                        name: 'status_logs'
                     },
                     {
-                        data: 'pay_amount',
-                        name: 'pay_amount'
-                    },
-                    {
-                        data: 'due_amount',
-                        name: 'due_amount'
-                    },
-                    {
-                        data: 'order_status',
-                        name: 'order_status'
+                        data: 'order_total',
+                        name: 'order_total'
                     },
                     {
                         data: 'action',

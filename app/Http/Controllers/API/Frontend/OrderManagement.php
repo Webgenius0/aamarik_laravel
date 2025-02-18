@@ -200,7 +200,6 @@ class OrderManagement extends Controller
     /**
      * Calculate total amount
      */
-
     private function storeOrderData($validatedData,$sub_total,$discountedAmount ,$request)
     {
 
@@ -235,6 +234,9 @@ class OrderManagement extends Controller
             'status'                   => 'pending',
             'created_at'               => now(),
         ]);
+
+        //store active log
+        $this->activityLog($order->id,'placed');
 
         //generate qr code
         $fileName = $this->generateOrderQRcode($order);

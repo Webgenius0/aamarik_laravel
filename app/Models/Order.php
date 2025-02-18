@@ -105,4 +105,10 @@ class Order extends Model
         return $this->belongsTo(Coupon::class);
     }
 
+    //Define the relationship with Activity log model
+    public function ActivityLogs()
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
+
 }

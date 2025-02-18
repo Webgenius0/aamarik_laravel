@@ -119,9 +119,13 @@ class OrderManagementController extends Controller
                 return $this->sendError('Order not found.',[],404);
             }
             $order->status = $validatedData['status'];
+            //store active log
+            $this->activityLog($order->id,$validatedData['status']);
             if (!in_array($user->role, ['user', 'pharmacist']))
             {
                 $order->note   = $validatedData['note'];
+                //store active log
+                $this->activityLog($order->id,$validatedData['status']);
             }
             $order->save();
 

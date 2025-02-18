@@ -162,31 +162,15 @@
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Sub Total
+                                        Products
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Discount
+                                        Status Logs
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Total
-                                    </th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Pay Amount
-                                    </th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Order Date
-                                    </th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Delivery Date
-                                    </th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Status
+                                        Order Total
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -391,38 +375,21 @@
                     name: 'DT_RowIndex',
                     orderable: false,
                     searchable: false
-                },
-                    {
+                }, {
                         data: 'order_code',
                         name: 'order_code'
                     },
                     {
-                        data: 'sub_total',
-                        name: 'sub_total'
+                        data: 'products',
+                        name: 'products'
                     },
                     {
-                        data: 'discount',
-                        name: 'discount'
+                        data: 'status_logs',
+                        name: 'status_logs'
                     },
                     {
-                        data: 'total',
-                        name: 'total'
-                    },
-                    {
-                        data: 'pay_amount',
-                        name: 'pay_amount'
-                    },
-                    {
-                        data: 'order_date',
-                        name: 'order_date'
-                    },
-                    {
-                        data: 'delivery_date',
-                        name: 'delivery_date'
-                    },
-                    {
-                        data: 'status',
-                        name: 'status'
+                        data: 'order_total',
+                        name: 'order_total'
                     },
                     {
                         data: 'action',

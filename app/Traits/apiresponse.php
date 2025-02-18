@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 
 trait apiresponse
@@ -41,5 +42,18 @@ trait apiresponse
         }
 
         return response()->json($response, $code);
+    }
+
+
+
+    //activity log
+    public function activityLog($orderID,$action)
+    {
+        ActivityLog::create([
+            'user_id' => auth()->user()->id,
+            'order_id' => $orderID,
+            'action' => $action,
+        ]);
+        return true;
     }
 }
