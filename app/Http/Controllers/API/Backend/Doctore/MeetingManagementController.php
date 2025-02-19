@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\API\Backend\Doctore;
 
+use App\Action\ZoomMeeting;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MeetingResource;
 use App\Models\Meeting;
 use App\Models\Order;
 use App\Traits\apiresponse;
+use App\Traits\ZoomMeetingTrait;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use GuzzleHttp\Client;
@@ -19,8 +22,7 @@ use Microsoft\Kiota\Authentication\Oauth\ClientCredentialContext;
 
 class MeetingManagementController extends Controller
 {
-    use apiresponse;
-
+    use apiresponse,ZoomMeetingTrait;
 
     /**
      * list of meeting
@@ -62,19 +64,44 @@ class MeetingManagementController extends Controller
         }
 
 
-        //generate meeting schedule link
-        $data = $this->generateMeetingLink($validatedData,$order);
+        $meetingDate = Carbon::parse($validatedData['date']);
+        // Check if the meeting date is today or in the future
+        if (!$meetingDate->isToday() && !$meetingDate->isFuture()) {
+            return $this->sendError('Meeting date must be today or in the future.');
+        }
 
+
+        $data = [
+            'topic'      => $validatedData['title'],
+            'description'=> $validatedData['description'],
+            'start_time' => $validatedData['date'] . ' ' . $validatedData['time'],
+            'duration'   => 60,
+            'host_video' => 1,
+            'participant_video' => 1,
+        ];
+
+        //generate meeting schedule link
+        $zoomMeeting = $this->createMeeting($data);
+
+        if (empty($zoomMeeting) || !$zoomMeeting) {
+            return $this->sendError('Zoom meeting not found.');
+        }
+
+
+
+        $zoomMeetingDate = Carbon::parse($zoomMeeting['start_time'])->format('Y-m-d');
+        $zoomMeetingTime = Carbon::parse($zoomMeeting['start_time'])->format('h:i A');
 
 
         try {
             $meeting = Meeting::create([
+                'meeting_id' => $zoomMeeting['id'],
                 'user_id' => $order->user_id,
                 'title' => $validatedData['title'],
                 'description' => $validatedData['description'],
-                'link' => $data['onlineMeeting']['joinUrl'],
-                'date' => $validatedData['date'],
-                'time' => $validatedData['time'],
+                'link' => $zoomMeeting['join_url'],
+                'date' => $zoomMeetingDate,
+                'time' => $zoomMeetingTime,
             ]);
 
             //success response
@@ -85,111 +112,6 @@ class MeetingManagementController extends Controller
     }
 
 
-    /**
-     * Generate meeting schedule link
-     */
-    private function generateMeetingLink($validatedData, $order)
-    {
-        // Get Microsoft Access Token
-//        $accessToken = $this->getMicrosoftAccessToken();
-
-//        if (!$accessToken) {
-//            return $this->sendError('Failed to get access token', [], 500);
-//        }
-
-        $tokenRequestContext = new ClientCredentialContext(
-            env('MS_TENANT_ID'),
-            env('MS_CLIENT_ID'),
-            env('MS_CLIENT_SECRET'),
-        );
-
-        $graphServiceClient = new GraphServiceClient($tokenRequestContext,['https://graph.microsoft.com/.default']);
-
-
-
-        // Meeting Data
-        $meetingData = [
-            "subject" => $validatedData['title'],
-            "body" => [
-                "contentType" => "HTML",
-                "content" => $validatedData['description'],
-            ],
-            "start" => [
-                "dateTime" => $validatedData['date'] . 'T' . $validatedData['time'],
-                "timeZone" => "UTC",
-            ],
-            "end" => [
-                "dateTime" => date('Y-m-d\TH:i:s', strtotime('+1 hour', strtotime($validatedData['date'] . 'T' . $validatedData['time']))),
-                "timeZone" => "UTC",
-            ],
-            "attendees" => [
-                [
-                    "emailAddress" => [
-                        "address" => $order->user->email,
-                        "name" => $order->user->name,
-                    ],
-                    "type" => "required",
-                ],
-            ],
-            "isOnlineMeeting" => true,
-            "onlineMeetingProvider" => "teamsForBusiness",
-        ];
-
-       $onlineMeeting = new OnlineMeeting();
-       $onlineMeeting->setAdditionalData($meetingData);
-
-        // Create Meeting via Microsoft Graph API
-        try {
-
-            $response = $graphServiceClient->me()->onlineMeetings()->post($onlineMeeting);
-dd($response);
-//            return $data;
-        } catch (\Exception $e) {
-            return $this->sendError('Failed to create meeting: ' . $e->getMessage(), [], 500);
-        }
-    }
-
-
-
-    /**
-     * Get Microsoft Graph API Access Token
-     */
-    private function getMicrosoftAccessToken()
-    {
-        $client = new Client();
-
-        try {
-            $response = $client->post(env('MS_AUTHORITY') . '/' . env('MS_TENANT_ID') . '/oauth2/v2.0/token', [
-                'form_params' => [
-                    'client_id' => env('MS_CLIENT_ID'),
-                    'client_secret' => env('MS_CLIENT_SECRET'),
-                    'grant_type' => 'client_credentials',
-                    'scope' => 'https://graph.microsoft.com/.default',
-                ],
-                'headers' => [
-                    'Content-Type' => 'application/x-www-form-urlencoded'
-                ]
-            ]);
-
-            $data = json_decode($response->getBody(), true);
-
-            if (isset($data['access_token'])) {
-                return $data['access_token'];
-            } else {
-                throw new \Exception("Error retrieving token: " . json_encode($data));
-            }
-        } catch (\Exception $e) {
-            return $this->sendError('Failed to get access token: ' . $e->getMessage(), [], 500);
-        }
-    }
-    public function getToken()
-    {
-       return new GraphServiceClient(
-            env('MS_TENANT_ID'),
-            env('MS_CLIENT_ID'),
-            env('MS_CLIENT_SECRET'),
-        );
-    }
 
     /**
      * update meeting status

@@ -30,8 +30,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // Admin  Check (Admin Can only login)
-        if (Auth::user()->role === 'user') {
+        // Admin  Check (Admin and pharmacist Can only log in)
+        if (in_array(Auth::user()->role, ['user', 'doctor'])) {
             Auth::guard('web')->logout();
 
             $request->session()->invalidate();

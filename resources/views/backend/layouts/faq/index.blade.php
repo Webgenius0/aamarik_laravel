@@ -87,7 +87,7 @@
         <div class="card bg-white overflow-hidden">
             <div class="card-header">
                 <div class="flex justify-between align-middle">
-                    <h3 class="card-title">Social Media</h3>
+                    <h3 class="card-title">FAQ Management</h3>
                     <div>
                         <button class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md"
                             onclick="ShowCreateUpdateModal()">
@@ -189,6 +189,7 @@
                                 <option value="Placing an order" {{ old('type') == 'Placing an order' ? 'selected' : '' }}>Placing an order</option>
                                 <option value="Delivery" {{ old('type') == 'Delivery' ? 'selected' : '' }}>Delivery</option>
                                 <option value="About myhealthneeds" {{ old('type') == 'About myhealthneeds' ? 'selected' : '' }}>About myhealthneeds</option>
+                                <option value="Supplement" {{ old('type') == 'Supplement' ? 'selected' : '' }}>Supplement</option>
                             </select>
 
                             <span class="text-red-500 text-sm" role="alert">
@@ -199,7 +200,9 @@
                     </div>
 
                     <div class="mt-5 flex justify-end gap-x-2">
-
+                        <button id="close" type="button" class="btn bg bg-danger text-white py-2 px-5 rounded-md">
+                            close
+                        </button>
                         <button type="submit" class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md">
                             Submit
                         </button>
@@ -486,5 +489,26 @@
                 }
             })
         }
+
+
+        // Get the modal and the close button elements
+        const modalOverlay = document.getElementById("modalOverlay");
+        const modal = document.getElementById("modal");
+        const closeButtons = document.querySelectorAll("#close");
+
+        // Add event listeners to close the modal when the close button is clicked
+        closeButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                modalOverlay.style.display = "none"; // Hide the modal
+            });
+        });
+
+        // Optional: Close the modal if the overlay itself is clicked
+        modalOverlay.addEventListener("click", function(event) {
+            if (event.target === modalOverlay) {
+                modalOverlay.style.display = "none"; // Hide the modal
+            }
+        });
+
     </script>
 @endpush

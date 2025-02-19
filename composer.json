@@ -9,6 +9,7 @@
         "barryvdh/laravel-dompdf": "^3.1",
         "barryvdh/laravel-snappy": "^1.0",
         "endroid/qr-code": "^5.0",
+        "firebase/php-jwt": "^6.11",
         "guzzlehttp/guzzle": "^7.9",
         "kreait/firebase-php": "^5.26",
         "laravel/framework": "^11.9",

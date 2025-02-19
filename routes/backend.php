@@ -46,6 +46,10 @@ Route::post('stripe/setting', [SettingController::class, 'stripeSettingUpdate'])
 //Microsoft Setting Controller
 Route::get('microsoft/setting', [SettingController::class, 'microsoftSetting'])->name('microsoft.setting');
 Route::post('microsoft/setting', [SettingController::class, 'microsoftSettingUpdate'])->name('microsoft.setting.update');
+
+//zoom Setting Controller
+Route::get('zoom/setting', [SettingController::class, 'zoomSetting'])->name('zoom.setting');
+Route::post('zoom/setting', [SettingController::class, 'zoomSettingUpdate'])->name('zoom.setting.update');
 /* // Social Media
 Route::get('social-media/setting', [SocialMediaController::class, 'index'])->name('social.setting'); */
 

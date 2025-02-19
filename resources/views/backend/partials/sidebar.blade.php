@@ -205,13 +205,19 @@
                         </a>
                     </li>
 
-
                     <li class="menu-item">
-                        <a href="{{route('microsoft.setting')}}" class="menu-link">
+                        <a href="{{route('zoom.setting')}}" class="menu-link">
                             <span class="menu-dot"></span>
-                            <span class="menu-text">Microsoft Settings</span>
+                            <span class="menu-text">Zoom Settings</span>
                         </a>
                     </li>
+
+{{--                    <li class="menu-item">--}}
+{{--                        <a href="{{route('microsoft.setting')}}" class="menu-link">--}}
+{{--                            <span class="menu-dot"></span>--}}
+{{--                            <span class="menu-text">Microsoft Settings</span>--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
                 </ul>
             </li>
             <li class="menu-item">

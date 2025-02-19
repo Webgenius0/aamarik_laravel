@@ -274,15 +274,15 @@ class SettingController extends Controller
         }
     }
 
- /**
-     * get Microsoft Setting
-     *
-     */
+         /**
+             * get Microsoft Setting
+             *
+             */
 
-public function microsoftSetting()
-{
-    return view('backend.layouts.setting.microsoft-setting');
-}
+        public function microsoftSetting()
+        {
+            return view('backend.layouts.setting.microsoft-setting');
+        }
 
       /**
      * Update Microsoft Setting
@@ -321,6 +321,46 @@ public function microsoftSetting()
              session()->flash('success', 'Microsoft settings updated successfully.');
              return redirect()->back();
             // return redirect()->back()->with('t-success', 'Stripe Setting Update successfully.');
+         } catch (\Throwable $th) {
+             return redirect(route('dashboard'))->with('t-error', 'Microsoft Setting Update Failed');
+         }
+     }
+
+
+     /**
+      * zoom setting
+      */
+     public function zoomSetting()
+     {
+         return view('backend.layouts.setting.zoom-setting');
+     }
+
+     /**
+      * Zoom update
+      */
+     public function zoomSettingUpdate(Request $request)
+     {
+         $request->validate([
+             'ZOOM_CLIENT_ID' => 'nullable|string',
+             'ZOOM_CLIENT_SECRET' => 'nullable|string',
+         ]);
+
+         try {
+             $envContent = File::get(base_path('.env'));
+             $lineBreak = "\n";
+             $envContent = preg_replace([
+                 '/ZOOM_CLIENT_ID=(.*)\s/',
+                 '/ZOOM_CLIENT_SECRET=(.*)\s/',
+             ], [
+                 'ZOOM_CLIENT_ID=' . $request->ZOOM_CLIENT_ID . $lineBreak,
+                 'ZOOM_CLIENT_SECRET=' . $request->ZOOM_CLIENT_SECRET . $lineBreak,
+             ], $envContent);
+
+             if ($envContent !== null) {
+                 File::put(base_path('.env'), $envContent);
+             }
+             session()->flash('success', 'Zoom settings updated successfully.');
+             return redirect()->back();
          } catch (\Throwable $th) {
              return redirect(route('dashboard'))->with('t-error', 'Microsoft Setting Update Failed');
          }

@@ -8,7 +8,7 @@ use Illuminate\Support\Carbon;
 class Meeting extends Model
 {
     protected $fillable = [
-        'user_id', 'title', 'description', 'link', 'date', 'time', 'status',
+        'user_id', 'title', 'description', 'link', 'date', 'time', 'status','meeting_id',
     ];
 
 
@@ -24,6 +24,7 @@ class Meeting extends Model
             'user_id' => 'integer',
             'date'    => 'date',
             'time'    => 'string',
+            'meeting_id' => 'string',
         ];
     }
 

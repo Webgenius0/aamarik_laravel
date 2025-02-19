@@ -89,7 +89,7 @@
         <div class="card bg-white overflow-hidden">
             <div class="card-header">
                 <div class="flex justify-between align-middle">
-                    <h3 class="card-title">Doctors</h3>
+                    <h3 class="card-title">Employee Management</h3>
                     <div>
                         <a href="{{route('employees.add')}}" class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md">
                             Add Employee
