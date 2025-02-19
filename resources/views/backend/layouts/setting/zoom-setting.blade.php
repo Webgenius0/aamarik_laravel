@@ -47,6 +47,19 @@
                                     @enderror
                                 </div>
 
+                                <!--  ACCOUNT ID -->
+                                <div class="flex flex-col md:flex-row md:items-center md:space-x-4">
+                                    <label for="ZOOM_ACCOUNT_ID" class="text-lg font-medium mb-2 md:w-1/4">ZOOM ACCOUNT ID</label>
+                                    <input class="form-control @error('ZOOM_ACCOUNT_ID') is-invalid @enderror md:w-3/4" id="ZOOM_ACCOUNT_ID"
+                                           name="ZOOM_ACCOUNT_ID" placeholder="Enter your zoom account id" type="text"
+                                           value="{{ old('ZOOM_ACCOUNT_ID', env('ZOOM_ACCOUNT_ID')) }}">
+                                    @error('ZOOM_ACCOUNT_ID')
+                                    <span class="text-red-500 block mt-1 text-sm">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                    @enderror
+                                </div>
+
                                 <!-- Submit Button -->
                                 <div class="flex justify-end mt-4">
                                     <button type="submit" class="btn bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold ml-2">

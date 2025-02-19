@@ -343,6 +343,7 @@ class SettingController extends Controller
          $request->validate([
              'ZOOM_CLIENT_ID' => 'nullable|string',
              'ZOOM_CLIENT_SECRET' => 'nullable|string',
+             'ZOOM_ACCOUNT_ID' => 'nullable|string',
          ]);
 
          try {
@@ -351,9 +352,11 @@ class SettingController extends Controller
              $envContent = preg_replace([
                  '/ZOOM_CLIENT_ID=(.*)\s/',
                  '/ZOOM_CLIENT_SECRET=(.*)\s/',
+                 '/ZOOM_ACCOUNT_ID=(.*)\s/',
              ], [
                  'ZOOM_CLIENT_ID=' . $request->ZOOM_CLIENT_ID . $lineBreak,
                  'ZOOM_CLIENT_SECRET=' . $request->ZOOM_CLIENT_SECRET . $lineBreak,
+                 'ZOOM_ACCOUNT_ID' . $request->ZOOM_ACCOUNT_ID . $lineBreak,
              ], $envContent);
 
              if ($envContent !== null) {
