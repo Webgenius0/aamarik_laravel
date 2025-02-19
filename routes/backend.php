@@ -142,6 +142,7 @@ Route::controller(MedicineController::class)->group(function () {
     Route::delete('/medicine/delete/{id}', 'destroy')->name('medicine.destroy');
     Route::get('/medicine/status/update/{id}', 'updateStatus')->name('medicine.status.update');
 });
+
 //treatment section
 Route::controller(TreatMentController::class)->group(function () {
     Route::get('/treatment', 'index')->name('treatment.index');

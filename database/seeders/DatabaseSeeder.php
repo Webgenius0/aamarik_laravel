@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Setting;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
 
 class DatabaseSeeder extends Seeder
 {
@@ -63,5 +64,9 @@ class DatabaseSeeder extends Seeder
 
         //call coupon seeder
         $this->call(CouponSeeder::class);
+
+        //admin
+        $admin = User::where('role', 'admin')->first();
+        $admin->givePermissionTo(Permission::all());
     }
 }

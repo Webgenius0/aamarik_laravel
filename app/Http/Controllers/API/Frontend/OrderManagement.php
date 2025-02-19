@@ -420,37 +420,34 @@ class OrderManagement extends Controller
             'order_uuid' => $orderData->uuid,
             'user_id'    => $user->id,
         ];
-
-        // Create a payment intent with the calculated amount and metadata
-        $paymentIntent = PaymentIntent::create([
-            'amount' =>  $orderData->total_price * 100, // Stripe accepts amounts in cents
-            'currency' => 'usd',
-            'metadata' => $metadata,
-            'payment_method' => $validatedData['payment_method_id'],
-            'customer' => $user->stripe_customer_id, // Add the customer ID here
-            'confirm' => true,
-            'automatic_payment_methods' => [
-                'enabled' => true,
-                'allow_redirects' => 'never',
-            ],
-        ]);
-        Log::info("PaymentIntent created". $order->uuid);
-
-        // Update the order with payment intent details
-        $orderData->update([
-            'stripe_payment_id' => $paymentIntent->id,
-        ]);
-
-
-        //create subscription if subscripiton is true
-        if($validatedData['subscription']){
-           $subscription =  $this->createSubscription($validatedData,$order,$paymentIntent);
-
-           //update order data
-            $orderData->update([
-                'subscription_id' => $subscription->id,
+        if(!$validatedData['subscription']){
+            // Create a payment intent with the calculated amount and metadata
+            $paymentIntent = PaymentIntent::create([
+                'amount' =>  $orderData->total_price * 100, // Stripe accepts amounts in cents
+                'currency' => 'usd',
+                'metadata' => $metadata,
+                'payment_method' => $validatedData['payment_method_id'],
+                'customer' => $user->stripe_customer_id, // Add the customer ID here
+                'confirm' => true,
+                'automatic_payment_methods' => [
+                    'enabled' => true,
+                    'allow_redirects' => 'never',
+                ],
             ]);
+            Log::info("PaymentIntent created". $order->uuid);
 
+            // Update the order with payment intent details
+            $orderData->update([
+                'stripe_payment_id' => $paymentIntent->id,
+            ]);
+        }else{
+
+            //create subscription if subscripiton is true
+                $subscription =  $this->createSubscription($validatedData,$order,$metadata);
+                //update order data
+                $orderData->update([
+                    'subscription_id' => $subscription->id,
+                ]);
         }
 
 
@@ -461,7 +458,7 @@ class OrderManagement extends Controller
     /**
      * create subscription if Request -> subscription is true
      */
-    private function createSubscription($validatedData,$order,$paymentIntent)
+    private function createSubscription($validatedData,$order,$metadata)
     {
         //get current user
         $user = auth()->user();
@@ -525,10 +522,7 @@ class OrderManagement extends Controller
                     'recurring' => ['interval' => 'month'], // Monthly subscription
                 ],
             ]],
-            'metadata' => [
-                'order_id' => $order->uuid, // Custom metadata
-                'user_id' => $user->id,
-            ],
+            'metadata' => $metadata,
             'expand' => ['latest_invoice.payment_intent'],
         ]);
 

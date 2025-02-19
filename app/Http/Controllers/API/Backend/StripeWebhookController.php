@@ -35,8 +35,13 @@ class StripeWebhookController extends Controller
             switch ($event->type) {
                 case 'payment_intent.succeeded':
                     $paymentIntent = $event->data->object;
-
-                    $uuid = $paymentIntent->metadata->order_uuid;
+                    if($paymentIntent->invoice){
+                        $invoice = \Stripe\Invoice::retrieve($paymentIntent->invoice);
+                        $subscription = \Stripe\Subscription::retrieve($invoice->subscription);
+                        $uuid = $subscription?->metadata?->order_uuid;
+                    }else{
+                        $uuid = $paymentIntent->metadata->order_uuid;
+                    }
 
                     Log::info('Payment Intent Succeeded', ['uuid' => $uuid]);
 
