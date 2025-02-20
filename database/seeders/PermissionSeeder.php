@@ -17,110 +17,55 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'view dashboard']);
         Permission::create(['name' => 'filter orders']);
 
-        // UserUpdateController Permissions
-        Permission::create(['name' => 'edit profile']);
-        Permission::create(['name' => 'change password']);
+        // Coupon Permissions
+        Permission::create(['name' => 'coupon management']);
+        Permission::create(['name' => 'coupon edit']);
+        Permission::create(['name' => 'coupon delete']);
 
-        // SettingController Permissions
-        Permission::create(['name' => 'update settings']);
-        Permission::create(['name' => 'view settings']);
-        Permission::create(['name' => 'update home page']);
-        Permission::create(['name' => 'view home page']);
-        Permission::create(['name' => 'update stripe settings']);
-        Permission::create(['name' => 'view stripe settings']);
-        Permission::create(['name' => 'update microsoft settings']);
-        Permission::create(['name' => 'view microsoft settings']);
-        Permission::create(['name' => 'update zoom settings']);
-        Permission::create(['name' => 'view zoom settings']);
+        //meeting permissions
+        Permission::create(['name' => 'meeting management']);
+        Permission::create(['name' => 'meeting delete']);
 
-        // SocialMediaController Permissions
-        Permission::create(['name' => 'view social media settings']);
-        Permission::create(['name' => 'manage social media settings']);
-        Permission::create(['name' => 'create social media']);
-        Permission::create(['name' => 'edit social media']);
-        Permission::create(['name' => 'update social media']);
-        Permission::create(['name' => 'delete social media']);
+        //order permissions
+        Permission::create(['name' => 'order management']);
+        Permission::create(['name' => 'order edit']);
+        Permission::create(['name' => 'order delete']);
 
-        // FaqController Permissions
-        Permission::create(['name' => 'view faqs']);
-        Permission::create(['name' => 'create faq']);
-        Permission::create(['name' => 'update faq']);
-        Permission::create(['name' => 'delete faq']);
-        Permission::create(['name' => 'update faq status']);
+        //role permissions
 
-        // CMSController Permissions
-        Permission::create(['name' => 'update cms settings']);
-        Permission::create(['name' => 'update home section']);
-        Permission::create(['name' => 'update personalized cms']);
-        Permission::create(['name' => 'update confidential cms section']);
-        Permission::create(['name' => 'update working process cms section']);
-        Permission::create(['name' => 'update doctor section']);
+        // Setting  Permissions
+        Permission::create(['name' => 'settings management']);
 
-        // DoctorController Permissions
-        Permission::create(['name' => 'view doctors']);
-        Permission::create(['name' => 'add doctor']);
-        Permission::create(['name' => 'edit doctor']);
-        Permission::create(['name' => 'update doctor']);
-        Permission::create(['name' => 'delete doctor']);
-        Permission::create(['name' => 'view departments']);
-        Permission::create(['name' => 'manage departments']);
+        //Customer permissions
+        Permission::create(['name' => 'customer management']);
 
-        // DepartmentController Permissions
-        Permission::create(['name' => 'view departments']);
-        Permission::create(['name' => 'create department']);
-        Permission::create(['name' => 'edit department']);
-        Permission::create(['name' => 'update department']);
-        Permission::create(['name' => 'delete department']);
+        //Employee permissions
+        Permission::create(['name' => 'employee management']);
 
-        // MedicineController Permissions
-        Permission::create(['name' => 'view medicines']);
-        Permission::create(['name' => 'add medicine']);
-        Permission::create(['name' => 'edit medicine']);
-        Permission::create(['name' => 'update medicine']);
-        Permission::create(['name' => 'delete medicine']);
-        Permission::create(['name' => 'update medicine status']);
+        //CMS permissions
+        Permission::create(['name' => 'cms management']);
 
-        // TreatMentController Permissions
-        Permission::create(['name' => 'view treatments']);
-        Permission::create(['name' => 'add treatment']);
-        Permission::create(['name' => 'edit treatment']);
-        Permission::create(['name' => 'update treatment']);
-        Permission::create(['name' => 'delete treatment']);
-        Permission::create(['name' => 'update treatment status']);
-        Permission::create(['name' => 'view treatment list']);
+        // Department permissions
+        Permission::create(['name' => 'department management']);
 
-        // CouponController Permissions
-        Permission::create(['name' => 'view coupons']);
-        Permission::create(['name' => 'create coupon']);
-        Permission::create(['name' => 'edit coupon']);
-        Permission::create(['name' => 'update coupon']);
-        Permission::create(['name' => 'delete coupon']);
-        Permission::create(['name' => 'update coupon status']);
+        // Department permissions
+        Permission::create(['name' => 'doctor management']);
 
-        // OrderManagementController Permissions
-        Permission::create(['name' => 'view orders']);
-        Permission::create(['name' => 'update order status']);
-        Permission::create(['name' => 'view order details']);
-        Permission::create(['name' => 'delete order']);
-        Permission::create(['name' => 'update order note']);
-        Permission::create(['name' => 'update order address']);
+        // Faq Permissions
+        Permission::create(['name' => 'faq management']);
 
-        // CustomerManagementController Permissions
-        Permission::create(['name' => 'view customers']);
-        Permission::create(['name' => 'view customer details']);
-        Permission::create(['name' => 'view customer order sheet']);
-        Permission::create(['name' => 'view customer order details']);
+        //medicine permissions
+        Permission::create(['name' => 'medicine management']);
+        Permission::create(['name' => 'medicine edit']);
+        Permission::create(['name' => 'medicine update stock']);
+        Permission::create(['name' => 'medicine delete']);
 
-        // EmployeeManagementController Permissions
-        Permission::create(['name' => 'view employees']);
-        Permission::create(['name' => 'add employee']);
-        Permission::create(['name' => 'edit employee']);
-        Permission::create(['name' => 'update employee']);
+        // SocialMedia Permissions
+        Permission::create(['name' => 'socialMedia management']);
 
-        // MeetingController Permissions
-        Permission::create(['name' => 'view meetings']);
-        Permission::create(['name' => 'update meeting status']);
-        Permission::create(['name' => 'delete meeting']);
+        // treatment Permissions
+        Permission::create(['name' => 'treatment management']);
+
     }
 
 

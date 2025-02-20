@@ -168,6 +168,7 @@ class OrderManagement extends Controller
             // Create the order
             $order = $this->storeOrderData($validatedData,$sub_total,$discountedAmount,$request);
 
+
             // Save billing address
             $this->storeBillingInfo($validatedData,$order);
 
@@ -511,6 +512,16 @@ class OrderManagement extends Controller
         }
 
 
+        //calculate subscription amount
+        $orderSubTotal  = $order->sub_total;
+        $shippingCharge = $orderSubTotal * 0.02;
+        $royalMailTrackedPrice = $Order->royal_mail_tracked_price ?? 0;
+        $tax = ($orderSubTotal + $shippingCharge + $royalMailTrackedPrice) * 0.10;
+
+        $totalPrice = max($orderSubTotal + $shippingCharge + $tax + $royalMailTrackedPrice, 0.50); // Ensure it's at least $0.50
+
+
+        $amountInCents = (int) round($totalPrice * 100); // Round the amount and cast to integer
         // Create Subscription
         $subscription = Subscription::create([
             'customer' => $user->stripe_customer_id,
@@ -518,7 +529,7 @@ class OrderManagement extends Controller
                 'price_data' => [
                     'currency' => 'usd',
                     'product' => $product->id,
-                    'unit_amount' => $order->sub_total * 100, // Amount in cents
+                    'unit_amount' => $amountInCents, // Amount in cents
                     'recurring' => ['interval' => 'month'], // Monthly subscription
                 ],
             ]],

@@ -62,6 +62,13 @@
                     <span class="menu-text"> Meeting Management </span>
                 </a>
             </li>
+            <li class="menu-title">Role and Permission Management</li>
+            <li class="menu-item">
+                <a class="menu-link {{ Request::RouteIs('roles.index') ? 'bg-blue-500 text-white' : '' }}" href="{{route('roles.index')}}">
+                    <span class="menu-icon"><i class="uil uil-compass"></i></span>
+                    <span class="menu-text"> Role </span>
+                </a>
+            </li>
 
             <li class="menu-title">Frontend</li>
 

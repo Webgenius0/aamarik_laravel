@@ -19,7 +19,8 @@ use Illuminate\Support\Facades\Mail;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/orders/filter', [DashboardController::class, 'sellingFiltering'])->name('orders.filter');
-
+//Route::middleware(['role_or_permission:view dashboard'])->get('/dashboard', [DashboardController::class, 'index']);
+//Route::middleware(['role_or_permission:filter orders'])->get('/dashboard/filter', [DashboardController::class, 'sellingFiltering']);
 
 // Edit Profile
 Route::get('profile', [DashboardController::class, 'editProfile'])->name('admin.edit.profile');
@@ -199,3 +200,17 @@ Route::controller(MeetingController::class)->group(function () {
     Route::post('/meeting/status/update/{id}', 'updateStatus')->name('meeting.status.update');
     Route::delete('/meeting/delete/{id}', 'destroy')->name('meeting.delete');
 });
+
+//! Route for role management
+Route::controller(\App\Http\Controllers\Web\Backend\RoleAndPermission\RoleController::class)->group(function () {
+    Route::get('/roles', 'index')->name('roles.index');
+    Route::post('/role/store', 'store')->name('role.store');
+    Route::get('/role/edit/{id}', 'edit')->name('role.edit');
+    Route::put('/role/update/{id}', 'update')->name('role.update');
+    Route::delete('/role/delete/{id}', 'destroy')->name('role.delete');
+});
+
+//! Route for permission management
+Route::get('/permissions', [\App\Http\Controllers\Web\Backend\RoleAndPermission\PermissionController::class, 'index'])->name('permissions.index');  // Get permissions
+
+//! Route for employee role management

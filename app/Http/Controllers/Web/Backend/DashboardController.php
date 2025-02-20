@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
 
+
 class DashboardController extends Controller
 {
 
@@ -176,6 +177,5 @@ public function index(Request $request)
     public function editProfile()
     {
             return view('backend.layouts.setting.profile');
-
     }
 }
