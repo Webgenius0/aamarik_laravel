@@ -28,8 +28,9 @@ class RoleController extends Controller
                     return implode(', ', $data->permissions->pluck('name')->toArray());
                 })
                 ->addColumn('action', function ($data) {
+                    $routeUrl = route('role.edit', $data->id);
                     return '<div class="inline-flex gap-1">
-                        <a href="javascript:void(0);" onclick="edit(' . $data->id . ')" class="btn bg-success text-white rounded">
+                      <a href="' . $routeUrl . '" class="btn bg-success text-white rounded">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>
                         <a href="javascript:void(0);" onclick="showDeleteConfirm(' . $data->id . ')" class="btn bg-danger text-white rounded" title="Delete">
@@ -44,7 +45,17 @@ class RoleController extends Controller
     }
 
     /**
-     * create new role
+     * create new role with permission
+     */
+    public function create()
+    {
+        $permissions = Permission::orderBy('name')->pluck('name', 'id')->toArray();
+
+        return view('backend.layouts.RoleAndPermission.Role.create', compact('permissions'));
+    }
+
+    /**
+     * store new role with permission
      */
     public function store(Request $request)
     {
@@ -75,23 +86,22 @@ class RoleController extends Controller
      */
     public function edit($id)
     {
-        $role = Role::findById($id);
-        // Fetch the current permissions associated with the role
-        $permissions = $role->permissions->pluck('id')->toArray();
+        $role = Role::findOrFail($id);
+        $allPermissions = Permission::all(); // Fetch all permissions
+        $rolePermissions = $role->permissions->pluck('id')->toArray(); // Fetch assigned permissions
 
-        return response()->json([
-            'success' => true,
-            'data' => $role,
-            'permissions' => $permissions
-        ]);
+        return view('backend.layouts.RoleAndPermission.Role.edit', compact('role', 'allPermissions', 'rolePermissions'));
     }
+
 
     /**
      * Update role
      */
     public function update(Request $request, $id)
     {
+
         $validation = $request->validate(['role' => ['required', 'min:4', 'unique:roles,name,' . $id]]);
+
         $role = Role::findById($id);
         $role->name = $request->role;
         $role->save();
@@ -117,6 +127,8 @@ class RoleController extends Controller
     public function destroy($id)
     {
         $role = Role::findById($id);
+        // Remove all existing permissions before assigning new ones
+        $role->permissions()->detach();
         $role->delete();
         return response()->json(['success' => true, 'message' => 'Role deleted successfully']);
     }

@@ -50,9 +50,9 @@
                 <div class="flex justify-between align-middle">
                     <h3 class="card-title">Role Management</h3>
                     <div>
-                        <button class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md" onclick="ShowCreateUpdateModal()">
-                            Add Role
-                        </button>
+                        <a href="{{ route('roles.add')  }}" class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md">
+                            Role Add
+                        </a>
                     </div>
                 </div>
             </div>
@@ -77,33 +77,6 @@
         </div>
     </main>
 
-    {{-- Modal --}}
-    <div id="modalOverlay">
-        <div id="modal" class="rounded-2xl max-w-2xl">
-            <form id="createUpdateForm">
-                @csrf <!-- CSRF token -->
-                <div class="px-8 py-4">
-                    <input type="hidden" name="id" id="role_id">
-                    <div class="pe-3 mb-3">
-                        <label for="role">Role Name:</label>
-                        <input type="text" name="role" id="role" placeholder="Enter role" class="form-input w-full border bg-gray-100">
-                    </div>
-
-                    <div class="pe-3 mb-3">
-                        <label for="permissions">Permissions:</label>
-                        <select name="permissions[]" id="permissions" class="form-input w-full h-32" multiple>
-                            <!-- Permissions will be dynamically loaded -->
-                        </select>
-                    </div>
-
-                    <div class="mt-5 flex justify-end gap-x-2">
-                        <button id="close" type="button" class="btn bg-danger text-white py-2 px-5 rounded-md">Close</button>
-                        <button type="submit" class="btn bg-info text-white py-2 px-5 hover:bg-success rounded-md">Submit</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
 @endsection
 
 @push('scripts')
@@ -137,73 +110,7 @@
             });
         });
 
-        // Show Create/Update Modal
-        function ShowCreateUpdateModal() {
-            $.ajax({
-                url: "{{ route('permissions.index') }}",
-                type: "GET",
-                success: function(response) {
-                    if (response.success) {
-                        let permissionsOptions = '';
-                        response.permissions.forEach(function(permission) {
-                            permissionsOptions += `<option value="${permission.id}">${permission.name}</option>`;
-                        });
-                        $('#permissions').html(permissionsOptions);
-                    } else {
-                        flasher.error('Failed to load permissions.');
-                    }
-                }
-            });
-            $('#createUpdateForm')[0].reset();
-            $('#role_id').val('');
-            $('#modalOverlay').addClass('modal-open');
-        }
 
-        // Edit role
-        function edit(id) {
-            let route = '{{ route('role.edit', ':id') }}'.replace(':id', id);
-            $.ajax({
-                type: "GET",
-                url: route,
-                success: function(resp) {
-                    if (resp.success) {
-                        $('#role_id').val(resp.data.id);
-                        $('#role').val(resp.data.name);
-                        let selectedPermissions = resp.permissions;
-                        $('#permissions').val(selectedPermissions).trigger('change');
-                    }
-                }
-            });
-            $('#modalOverlay').addClass('modal-open');
-        }
-
-        // Close Modal
-        $('#close').click(function() {
-            $('#modalOverlay').removeClass('modal-open');
-        });
-
-        // Submit Form for Create/Update
-        $('#createUpdateForm').on('submit', function(e) {
-            e.preventDefault();
-            var roleId = $('#role_id').val();
-            var url = roleId ? "{{ route('role.update', ':id') }}".replace(':id', roleId) : "{{ route('role.store') }}";
-            var method = roleId ? "PUT" : "POST";
-
-            $.ajax({
-                type: method,
-                url: url,
-                data: $(this).serialize(),
-                success: function(resp) {
-                    if (resp.success) {
-                        flasher.success(resp.message);
-                        $('#data-table').DataTable().ajax.reload();
-                        $('#modalOverlay').removeClass('modal-open');
-                    } else {
-                        flasher.error(resp.errors[0]);
-                    }
-                }
-            });
-        });
 
         // Delete Confirm
         function showDeleteConfirm(id) {

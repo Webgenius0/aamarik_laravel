@@ -52,18 +52,16 @@ class StripeWebhookController extends Controller
                         $uuid = $paymentIntent->metadata->order_uuid;
                     }
 
-//                    return $uuid;
+
                     if ($uuid) {
                         //find order with uuid
-                        $order = Order::get();
-                        return $order;
+                        $order = Order::where('uuid', $uuid)->first();
 
                         if ($order) {
                             $order->status = 'paid';
                             $order->pay_amount = $order->total_price;
                             $order->save();
                         }
-
 
                     } else {
                         Log::error('Order UUID not found in metadata', ['payment_intent' => $paymentIntent]);

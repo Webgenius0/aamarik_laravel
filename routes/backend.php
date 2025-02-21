@@ -204,6 +204,7 @@ Route::controller(MeetingController::class)->group(function () {
 //! Route for role management
 Route::controller(\App\Http\Controllers\Web\Backend\RoleAndPermission\RoleController::class)->group(function () {
     Route::get('/roles', 'index')->name('roles.index');
+    Route::get('/roles/add', 'create')->name('roles.add');
     Route::post('/role/store', 'store')->name('role.store');
     Route::get('/role/edit/{id}', 'edit')->name('role.edit');
     Route::put('/role/update/{id}', 'update')->name('role.update');
@@ -214,3 +215,6 @@ Route::controller(\App\Http\Controllers\Web\Backend\RoleAndPermission\RoleContro
 Route::get('/permissions', [\App\Http\Controllers\Web\Backend\RoleAndPermission\PermissionController::class, 'index'])->name('permissions.index');  // Get permissions
 
 //! Route for employee role management
+Route::get('/employee-roles', [\App\Http\Controllers\Web\Backend\RoleAndPermission\EmployeeRoleManagementController::class, 'index'])->name('employee.roles.index');
+Route::post('/employee/{id}/attach-role', [\App\Http\Controllers\Web\Backend\RoleAndPermission\EmployeeRoleManagementController::class, 'attachRole'])->name('employee.attach.role');
+Route::post('/employee/{id}/detach-role', [\App\Http\Controllers\Web\Backend\RoleAndPermission\EmployeeRoleManagementController::class, 'detachRole'])->name('employee.detach.role');

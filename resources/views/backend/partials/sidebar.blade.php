@@ -69,6 +69,12 @@
                     <span class="menu-text"> Role </span>
                 </a>
             </li>
+            <li class="menu-item">
+                <a class="menu-link {{ Request::RouteIs('employee.roles.index') ? 'bg-blue-500 text-white' : '' }}" href="{{route('employee.roles.index')}}">
+                    <span class="menu-icon"><i class="uil uil-compass"></i></span>
+                    <span class="menu-text"> Employee Role </span>
+                </a>
+            </li>
 
             <li class="menu-title">Frontend</li>
 
