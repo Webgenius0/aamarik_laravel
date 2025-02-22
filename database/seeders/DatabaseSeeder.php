@@ -34,14 +34,17 @@ class DatabaseSeeder extends Seeder
 
         $this->call(UserSeeder::class);
 
+        //permission seeder
+        $this->call(PermissionSeeder::class);
+
         Setting::create([
-            'title' => 'pharmacy',
+            'title' => 'myhealthneeds',
             'description' => "Lorem Ipsdam Doller"
         ]);
         $this->call(DoctorSeeder::class);
 
 
-        // Call the CMSseeder
+        // Call the CMS seeder
         $this->call(CMSseeder::class);
 
         $this->call([
@@ -54,10 +57,10 @@ class DatabaseSeeder extends Seeder
         //call the medicineSeeder
         $this->call(MedicineSeeder::class);
 
-        //call the treatmetn
+        //call the treatment
         $this->call(TreatmentSeeder::class);
 
-        //call the deliver info
+        //call the delivery info
         $this->call(DeliveryInfoSeeder::class);
         //Start Your Quick Consultation
         $this->call(ConsultationSeeder::class);

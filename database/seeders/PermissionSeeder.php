@@ -13,59 +13,56 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        // Dashboard Permissions
-        Permission::create(['name' => 'view dashboard']);
-        Permission::create(['name' => 'filter orders']);
+        // Coupon Permissions -*-
+        Permission::create(['name' => 'coupon view']); // index
+        Permission::create(['name' => 'coupon create']); // store
+        Permission::create(['name' => 'coupon edit']); // edit and update
+        Permission::create(['name' => 'coupon delete']); // delete
 
-        // Coupon Permissions
-        Permission::create(['name' => 'coupon management']);
-        Permission::create(['name' => 'coupon edit']);
-        Permission::create(['name' => 'coupon delete']);
-
-        //meeting permissions
-        Permission::create(['name' => 'meeting management']);
+        //meeting permissions -*-
+        Permission::create(['name' => 'meeting index']);
+        Permission::create(['name' => 'meeting update']);
         Permission::create(['name' => 'meeting delete']);
 
-        //order permissions
-        Permission::create(['name' => 'order management']);
-        Permission::create(['name' => 'order edit']);
-        Permission::create(['name' => 'order delete']);
+        //role permissions -*-
+        Permission::create(['name' => 'role and permission manage']);
 
-        //role permissions
 
-        // Setting  Permissions
+        // Setting  Permissions -*-
         Permission::create(['name' => 'settings management']);
 
-        //Customer permissions
+        //Customer permissions -*-
         Permission::create(['name' => 'customer management']);
 
-        //Employee permissions
+        //Employee permissions -*-
         Permission::create(['name' => 'employee management']);
 
-        //CMS permissions
+        //CMS permissions -*-
         Permission::create(['name' => 'cms management']);
 
-        // Department permissions
+        // Department permissions -*-
         Permission::create(['name' => 'department management']);
 
-        // Department permissions
+        // Department permissions -*-
         Permission::create(['name' => 'doctor management']);
 
-        // Faq Permissions
+        // Faq Permissions -*-
         Permission::create(['name' => 'faq management']);
 
-        //medicine permissions
-        Permission::create(['name' => 'medicine management']);
-        Permission::create(['name' => 'medicine edit']);
-        Permission::create(['name' => 'medicine update stock']);
+        //medicine permissions -*-
+        Permission::create(['name' => 'medicine view']); //index
+        Permission::create(['name' => 'medicine create']); //store
+        Permission::create(['name' => 'medicine edit']); //edit
         Permission::create(['name' => 'medicine delete']);
 
-        // SocialMedia Permissions
+        // SocialMedia Permissions -*-
         Permission::create(['name' => 'socialMedia management']);
 
-        // treatment Permissions
+        // treatment Permissions -*-
         Permission::create(['name' => 'treatment management']);
 
+        // order permissions
+        Permission::create(['name' => 'order management']);
     }
 
 

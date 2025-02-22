@@ -23,8 +23,10 @@ class EmployeeRoleManagementController extends Controller
                 ->addIndexColumn()
                 ->addColumn('user_email', fn($data) => $data->email)
                 ->addColumn('roles', function ($data) {
-                    return $data->roles->map(fn($role) => "<span class='bg-blue-500 text-white m-5 px-2 py-1 rounded text-xs'>
-                            {$role->name} <button class='text-red-500 remove-role' data-user='{$data->id}' data-role='{$role->id}'>✖</button></span>")->implode(' ');
+                    return $data->roles->map(fn($role) => "<span class='badge'>
+                        {$role->name} <button class='text-red-500 remove-role' data-user='{$data->id}' data-role='{$role->id}'>✖</button>
+                    </span>")->implode(' ');
+
                 })
                 ->addColumn('permissions', function ($data) {
                     // Collect all permissions from roles
@@ -38,9 +40,9 @@ class EmployeeRoleManagementController extends Controller
 
                     // Format permissions as HTML badges
                     return "<div id='permissions-{$data->id}'>" .
-                            $allPermissions->map(fn($permission) =>
-                            "<span class='bg-blue-500 text-white px-2 py-1 rounded text-xs'>{$permission}</span>"
-                            )->implode(' ') .
+                        $allPermissions->map(fn($permission) =>
+                        "<span class='badge'>{$permission}</span>"
+                        )->implode(' ') .
                         "</div>";
                 })
                 ->addColumn('action', function ($data) {

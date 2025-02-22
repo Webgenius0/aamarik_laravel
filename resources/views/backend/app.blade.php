@@ -55,7 +55,7 @@
 
                         </div>
                         <span class="font-medium text-base">{{ auth()->user()->name}}</span> <br>
-                        <span class="text-sm">Admin</span>
+                        <span class="text-sm">{{ auth()->user()->role == 'admin' ? 'Admin' : 'Pharmacist'}}</span>
                     </button>
 
                     <div

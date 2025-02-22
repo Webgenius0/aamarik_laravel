@@ -90,28 +90,41 @@ public function index(Request $request)
 
     //expire date medicines count
     $expireDateMedicines = Medicine::whereHas('details', function($q) {
-        $q->whereBetween('expiry_date', [Carbon::now()->subDays(5), Carbon::now()]);
+        // Medicines expiring within the next 5 days or have already expired
+        $q->whereBetween('expiry_date', [Carbon::now(), Carbon::now()->addDays(5)]);
+    })->orWhereHas('details', function($q) {
+        // Medicines already expired (expiry date less than today)
+        $q->where('expiry_date', '<=', Carbon::now());
     })->count();
 
 
-
-
-
-
-    return view('backend.layouts.dashboard', [
-        'orders_by_month' => $orders_by_month,
-        'previous_orders_by_month' => $previous_orders_by_month,
-        'total_users' => $total_users,
-        'today_orders' => $today_orders,
-        'total_medicines' => $total_medicines,
-        'low_stock' => $low_stock,
-        'yesterday_orders' => $yesterday_orders,
-        'order_difference' => $order_difference,
-        'orders_trend' => $orders_trend,
-        'total_sales' => $total_sales,
-        'selectedFilter' => $selectedFilter,
-        'expire_date_medicines' => $expireDateMedicines
-    ]);
+    if (auth()->user()->role == 'admin') {
+        return view('backend.layouts.dashboard', [
+            'orders_by_month' => $orders_by_month,
+            'previous_orders_by_month' => $previous_orders_by_month,
+            'total_users' => $total_users,
+            'today_orders' => $today_orders,
+            'total_medicines' => $total_medicines,
+            'low_stock' => $low_stock,
+            'yesterday_orders' => $yesterday_orders,
+            'order_difference' => $order_difference,
+            'orders_trend' => $orders_trend,
+            'total_sales' => $total_sales,
+            'selectedFilter' => $selectedFilter,
+            'expire_date_medicines' => $expireDateMedicines
+        ]);
+    }else{
+        return view('backend.layouts.Employee-dashboard', [
+            'orders_by_month' => $orders_by_month,
+            'previous_orders_by_month' => $previous_orders_by_month,
+            'total_users' => $total_users,
+            'today_orders' => $today_orders,
+            'total_medicines' => $total_medicines,
+            'low_stock' => $low_stock,
+            'total_sales' => $total_sales,
+            'expire_date_medicines' => $expireDateMedicines
+        ]);
+    }
 }
 
     /**

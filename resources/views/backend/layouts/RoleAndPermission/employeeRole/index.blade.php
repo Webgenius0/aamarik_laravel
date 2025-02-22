@@ -5,6 +5,22 @@
 @push('styles')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+
+
+    <style>
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            border-radius: 0.25rem;
+            background-color: #3b82f6; /* Tailwind blue-500 */
+            color: white;
+            margin-right: 0.5rem;
+        }
+        .badge button {
+            margin-left: 0.5rem;
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -43,8 +59,8 @@
                     <option value="{{ $role->id }}">{{ $role->name }}</option>
                 @endforeach
             </select>
-            <button id="attach-role" class="mt-3 bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded-md">Attach Role</button>
-            <button id="close-modal" class="mt-3 bg-danger-500 text-white px-4 py-2 rounded-md">Close</button>
+            <button id="attach-role" class="mt-3 bg-success text-white  px-4 py-2 rounded-md">Attach Role</button>
+            <button id="close-modal" class="mt-3 bg-danger text-white px-4 py-2 rounded-md">Close</button>
         </div>
     </div>
 @endsection
