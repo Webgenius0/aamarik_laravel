@@ -34,7 +34,7 @@ class SocialLoginController extends Controller
 
     public function SocialLogin(Request $request): JsonResponse
     {
-        Log::info($request->token);
+        dd($request);
         $request->validate([
             'token'    => 'required',
             'provider' => 'required|in:google',
