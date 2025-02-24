@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Helpers\Helper;
 use App\Traits\apiresponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -33,6 +34,7 @@ class SocialLoginController extends Controller
 
     public function SocialLogin(Request $request): JsonResponse
     {
+        Log::info($request->token);
         $request->validate([
             'token'    => 'required',
             'provider' => 'required|in:google',
